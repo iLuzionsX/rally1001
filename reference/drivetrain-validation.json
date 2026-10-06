@@ -1,0 +1,49 @@
+{
+  "handling": [
+    {
+      "kind": "suv",
+      "zeroTo60": 1.9,
+      "tenSecondSpeed": 173.8,
+      "zeroTo100": 3.7,
+      "sustainedSpeed": 242.8,
+      "maxGear": 6,
+      "brake120Time": 2.02,
+      "brake120Distance": 33.2,
+      "brake80Time": 1.35,
+      "brake80Distance": 14.7,
+      "minimumUp": 1,
+      "maxYawRate": 1.259,
+      "wetBrake80Distance": 17.5
+    },
+    {
+      "kind": "truck",
+      "zeroTo60": 2.57,
+      "tenSecondSpeed": 152.9,
+      "zeroTo100": 4.98,
+      "sustainedSpeed": 197.6,
+      "maxGear": 6,
+      "brake120Time": 2.53,
+      "brake120Distance": 41.6,
+      "brake80Time": 1.7,
+      "brake80Distance": 18.5,
+      "minimumUp": 1,
+      "maxYawRate": 0.98,
+      "wetBrake80Distance": 19.8
+    }
+  ],
+  "circuitLaps": [
+    {
+      "kind": "suv",
+      "seconds": 117.4,
+      "checkpoints": 12,
+      "maxCenterOffset": 1.27
+    },
+    {
+      "kind": "truck",
+      "seconds": 127.9,
+      "checkpoints": 12,
+      "maxCenterOffset": 1.32
+    }
+  ],
+  "camera": "standard and dynamic framing, low angle, frame rates, reverse, hood, yaw wrap and obstacles passed"
+}

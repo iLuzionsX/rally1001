@@ -1,0 +1,17 @@
+{
+  "launches": [
+    {"centerDifferential":"open","zeroTo60":2.933,"maxAxleDifference":90.59,"downshifts":0,"speedAfterFourSeconds":79.5},
+    {"centerDifferential":"limited-slip","zeroTo60":2.35,"maxAxleDifference":1,"downshifts":0,"speedAfterFourSeconds":93}
+  ],
+  "throttleControl": [
+    {"kind":"suv","profiles":[{"throttle":0.15,"sideslipDegrees":14.83,"speed":70.5,"x":-3.1183459758758545,"z":-25.70783233642578},{"throttle":0.75,"sideslipDegrees":14.31,"speed":83.1,"x":-3.1307108402252197,"z":-27.490737915039062}]},
+    {"kind":"truck","profiles":[{"throttle":0.15,"sideslipDegrees":10.03,"speed":73.9,"x":-1.8336130380630493,"z":-26.397449493408203},{"throttle":0.75,"sideslipDegrees":8.85,"speed":82,"x":-1.8874638080596924,"z":-27.465545654296875}]}
+  ],
+  "brakingCoupling":"passed",
+  "airborneInertia":"passed",
+  "frameRates": [
+    {"hz":30,"x":-17.96353530883789,"z":-87.1400375366211,"speed":90.53492833992675},
+    {"hz":60,"x":-17.96353530883789,"z":-87.1400375366211,"speed":90.53492833992675},
+    {"hz":120,"x":-17.96353530883789,"z":-87.1400375366211,"speed":90.53492833992675}
+  ]
+}

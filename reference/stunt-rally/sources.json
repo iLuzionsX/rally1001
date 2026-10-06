@@ -1,0 +1,48 @@
+{
+  "repository": "https://github.com/stuntrally/stuntrally3",
+  "commit": "fe3ecd73fff671c3d75ecaeadccea5c5e6afe0d8",
+  "license": "GPL-3.0-or-later",
+  "runtime": "lib/rally/vendor/stunt-rally/pacejka.ts ports CARTIRE GetForce, Pacejka_Fx/Fy and optimum-slip load lookup; gravel.ts preserves the hard-mode gravel coefficients unchanged. The wheel-contact/spring and rotation adapter derives from the downloaded Ecctrl ShapeCastWheel. Rapier resolves the chassis and world collisions. lib/rally/vendor/stunt-rally/abs.ts ports CARDYNAMICS::DoABS. engine-friction.ts adapts CARENGINE::GetFrictionTorque and its power/redline normalization. Configured front/rear cornering-response gains sharpen the donor force curve without modifying its coefficients or force limit. differential.ts ports CARDIFFERENTIAL::ComputeWheelTorques with conserved torque transfer and a timestep equalization bound. The center/front/rear tree follows CalculateDriveTorque. Configured wheel inertia follows CARWHEEL, rather than the earlier load-dependent Ecctrl approximation. CARDYNAMICS::Tick informs 240 Hz chassis integration with adaptive 960 Hz wheel/driveline integration near walking speed. NextGear supplies the average-slip autoshift guard; ApplyTireForce supplies tangential loose-ground rollingDrag.",
+  "files": {
+    "cartire.cpp": {
+      "path": "src/vdrift/cartire.cpp",
+      "sha256": "e066ca1c55b079a726ef30904cb35e693096a7d5de94dab0e868e2201a8c8a75"
+    },
+    "cartire.h": {
+      "path": "src/vdrift/cartire.h",
+      "sha256": "5520a5547db29cae49d6f87820089ce447972c3ab9bf7611fdae16d3f6a74c0e"
+    },
+    "gravel.tire": {
+      "path": "data/carsim/hard/tires/gravel.tire",
+      "sha256": "44d0d9a8ddc7099d9390ea0b60524dfb94ac69cdf4af782f77ac569c44bad00b"
+    },
+    "LICENSE": {
+      "path": "License.txt",
+      "sha256": "3972dc9744f6499f0f9b2dbf76696f2ae7ad8af9b23dde66d6af86c9dfb36986"
+    },
+    "cardynamics_simulate.cpp": {
+      "path": "src/vdrift/cardynamics_simulate.cpp",
+      "sha256": "25cbebaa2b68a0cc3e55155c4ef25855d0887afb6fb67e5553e251ca826cf81d"
+    },
+    "carengine.cpp": {
+      "path": "src/vdrift/carengine.cpp",
+      "sha256": "ae567224f8208bfb4e824adb9159474f45a827514afcb812e0d9ec3140f6ca3c"
+    },
+    "cardifferential.cpp": {
+      "path": "src/vdrift/cardifferential.cpp",
+      "sha256": "c62f5cc501e55858aa0f5e8fd6e7944f9338ab5ddde421e36d72334eb0e2bde2"
+    },
+    "cardifferential.h": {
+      "path": "src/vdrift/cardifferential.h",
+      "sha256": "a39a9431ecc00f347200fa486007bba8aab509944f3634540334d3c93bf4b75c"
+    },
+    "cardynamics_update.cpp": {
+      "path": "src/vdrift/cardynamics_update.cpp",
+      "sha256": "f3028c0de1b621e48684d8df27e6df75a7846639510445f54ee372290d133979"
+    },
+    "carwheel.h": {
+      "path": "src/vdrift/carwheel.h",
+      "sha256": "ba40c1900a59ca97991f69c0484859e5a871919d17f6db0d4319d10956abd05e"
+    }
+  }
+}

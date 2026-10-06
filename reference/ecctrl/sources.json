@@ -1,0 +1,24 @@
+{
+  "repository": "https://github.com/pmndrs/ecctrl",
+  "commit": "e2cab804f9f15661a642e76f52d09f0b2db63f35",
+  "license": "MIT",
+  "runtime": "lib/rally/drive-model.ts adapts the automatic transmission and wheel torque/steering equations; CurveLUT.ts is used unchanged. lib/rally/wheel-model.ts adapts ShapeCastWheel contact/support, wheel inertia, contact axes, rotation and low-speed static blending. Stunt Rally gravel forces replace generic tire curves. Rapier resolves chassis/world collisions.",
+  "files": {
+    "EcctrlVehicle.tsx": {
+      "source": "https://raw.githubusercontent.com/pmndrs/ecctrl/e2cab804f9f15661a642e76f52d09f0b2db63f35/src/vehicles/EcctrlVehicle.tsx",
+      "sha256": "fa54c89b0eed5dfab97d95b3bc69c04003df7143d0386d45f33f88d2ca928790"
+    },
+    "ShapeCastWheel.tsx": {
+      "source": "https://raw.githubusercontent.com/pmndrs/ecctrl/e2cab804f9f15661a642e76f52d09f0b2db63f35/src/vehicles/components/ShapeCastWheel.tsx",
+      "sha256": "bab540bcc8c9b3d5fca885a03b9e9d40bbbdbea2ae9ae2848f7f55d0c20eaf8b"
+    },
+    "LICENSE": {
+      "source": "https://raw.githubusercontent.com/pmndrs/ecctrl/e2cab804f9f15661a642e76f52d09f0b2db63f35/LICENSE",
+      "sha256": "45f4d4f795549c054228269b835f7557b2e5db274e7fef9f6cb4c2e1f9024f7c"
+    },
+    "CurveLUT.ts": {
+      "source": "https://raw.githubusercontent.com/pmndrs/ecctrl/e2cab804f9f15661a642e76f52d09f0b2db63f35/src/curves/CurveLUT.ts",
+      "sha256": "080350ed96bedd55159df55b6c2610f3630e6bfc84a2c8a052ead3dfd3aef065"
+    }
+  }
+}

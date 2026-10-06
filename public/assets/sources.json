@@ -1,0 +1,282 @@
+[
+  {
+    "file": "public/assets/models/suv.glb",
+    "url": "https://raw.githubusercontent.com/Hidencod/tge-assets/main/packs/car-kit/suv.glb",
+    "bytes": 219840,
+    "sha256": "9b98b8626cf99728136e2413b618b68daa3f362981bfc911446a20f765cc82f5"
+  },
+  {
+    "file": "public/assets/models/truck.glb",
+    "url": "https://raw.githubusercontent.com/Hidencod/tge-assets/main/packs/car-kit/truck.glb",
+    "bytes": 188652,
+    "sha256": "80454be69df2a50f32c225b5d6a29c62d9ce23bc446f26970a5e9a9e9ba99293"
+  },
+  {
+    "file": "public/assets/models/wheel-dark.glb",
+    "url": "https://raw.githubusercontent.com/Hidencod/tge-assets/main/packs/car-kit/wheel-dark.glb",
+    "bytes": 41512,
+    "sha256": "ac2239a8a46ffa7214a34cea76b73a9e50b6ceb4b99996f85d8d4e4ddd4194d6"
+  },
+  {
+    "file": "public/assets/models/wheel-truck.glb",
+    "url": "https://raw.githubusercontent.com/Hidencod/tge-assets/main/packs/car-kit/wheel-truck.glb",
+    "bytes": 46700,
+    "sha256": "46af1e1069d34658a7d348e31b04ff5237f286fc01917bfb00c2655a54bc4ff0"
+  },
+  {
+    "file": "public/assets/models/tree-palmdetailedtall.glb",
+    "url": "https://raw.githubusercontent.com/Hidencod/tge-assets/main/packs/nature-kit/tree-palmdetailedtall.glb",
+    "bytes": 28204,
+    "sha256": "2cbea0f9621cde884c63a7b4ad787bda1d051fa27ef3c66b9f2b65328dc53683"
+  },
+  {
+    "file": "public/assets/models/tree-palmbend.glb",
+    "url": "https://raw.githubusercontent.com/Hidencod/tge-assets/main/packs/nature-kit/tree-palmbend.glb",
+    "bytes": 14820,
+    "sha256": "8af9dae16ce3c03183f9457996ebdd135167199514e8f4f944ee2bd82828d5c9"
+  },
+  {
+    "file": "public/assets/models/tree-palmdetailedshort.glb",
+    "url": "https://raw.githubusercontent.com/Hidencod/tge-assets/main/packs/nature-kit/tree-palmdetailedshort.glb",
+    "bytes": 28212,
+    "sha256": "bc1013aaacca3bdd116ad1cded4f9499f008fe3056e760f3238be05aa21ff9f2"
+  },
+  {
+    "file": "public/assets/models/tree-detailed.glb",
+    "url": "https://raw.githubusercontent.com/Hidencod/tge-assets/main/packs/nature-kit/tree-detailed.glb",
+    "bytes": 31412,
+    "sha256": "c041daf2f0fb1d49e4325227cbcd58667adbe51e9b55e8c1f0a94b74cc521b3b"
+  },
+  {
+    "file": "public/assets/models/tree-plateau.glb",
+    "url": "https://raw.githubusercontent.com/Hidencod/tge-assets/main/packs/nature-kit/tree-plateau.glb",
+    "bytes": 16304,
+    "sha256": "7f19e347ff28703dd9e5fcce89b920156e291fbdb19331a57cb31a95c73e1322"
+  },
+  {
+    "file": "public/assets/models/plant-bushlarge.glb",
+    "url": "https://raw.githubusercontent.com/Hidencod/tge-assets/main/packs/nature-kit/plant-bushlarge.glb",
+    "bytes": 6436,
+    "sha256": "10e1d9fbf29d96d1d1a56fb2ce25ae66537505101759229afe01ae22c6c45e02"
+  },
+  {
+    "file": "public/assets/models/plant-bushdetailed.glb",
+    "url": "https://raw.githubusercontent.com/Hidencod/tge-assets/main/packs/nature-kit/plant-bushdetailed.glb",
+    "bytes": 10172,
+    "sha256": "2e0487020d68ccf664435db9d829c78ae00e6d2785ee3ec10b9f89cc70a10406"
+  },
+  {
+    "file": "public/assets/models/grass-leafslarge.glb",
+    "url": "https://raw.githubusercontent.com/Hidencod/tge-assets/main/packs/nature-kit/grass-leafslarge.glb",
+    "bytes": 13988,
+    "sha256": "a68b9b3d9639afaeb4ace840d5a8e3f21ffc4e8afc1eab15566500fbb2bee3e3"
+  },
+  {
+    "file": "public/assets/models/plant-flattall.glb",
+    "url": "https://raw.githubusercontent.com/Hidencod/tge-assets/main/packs/nature-kit/plant-flattall.glb",
+    "bytes": 3480,
+    "sha256": "b192523736f32754788de4dc7a5dcf30a58322b260ec8969120c91432a10b633"
+  },
+  {
+    "file": "public/assets/models/rock-largea.glb",
+    "url": "https://raw.githubusercontent.com/Hidencod/tge-assets/main/packs/nature-kit/rock-largea.glb",
+    "bytes": 7552,
+    "sha256": "6dd15390fd96501dcd1454765a17ba61dbbd8d47705dfe5149c8dd92b353ce25"
+  },
+  {
+    "file": "public/assets/models/rock-largeb.glb",
+    "url": "https://raw.githubusercontent.com/Hidencod/tge-assets/main/packs/nature-kit/rock-largeb.glb",
+    "bytes": 8560,
+    "sha256": "caa8b025833d4dabf6d98fe2e96cf2fbd886693ac990df0db75f9d827194374b"
+  },
+  {
+    "file": "public/assets/models/rock-talla.glb",
+    "url": "https://raw.githubusercontent.com/Hidencod/tge-assets/main/packs/nature-kit/rock-talla.glb",
+    "bytes": 12072,
+    "sha256": "88250f236a3b75f8b55c1d8afb6af020f8a91b1e81f9fb51f7ef513420d45a2d"
+  },
+  {
+    "file": "public/assets/models/rock-smallflata.glb",
+    "url": "https://raw.githubusercontent.com/Hidencod/tge-assets/main/packs/nature-kit/rock-smallflata.glb",
+    "bytes": 3300,
+    "sha256": "40ceafacfaabb0f04f93688fd8696c1464c65512bef219e1459c1f238cbbbe21"
+  },
+  {
+    "file": "reference/three-rapier-vehicle.html",
+    "url": "https://raw.githubusercontent.com/mrdoob/three.js/dev/examples/physics_rapier_vehicle_controller.html",
+    "bytes": 11444,
+    "sha256": "d29b84fde42702b3ea3b66121dcd6c78bc32568817c2d8e4e1cc1f7bef5d6737"
+  },
+  {
+    "file": "reference/rapier-raycast-vehicle.rs",
+    "url": "https://raw.githubusercontent.com/dimforge/rapier/master/src/control/ray_cast_vehicle_controller.rs",
+    "bytes": 31392,
+    "sha256": "d36f2abcfed9055c1ad4bdd95b737dfa09a4a894c4c386804280cfae3f0902d3"
+  },
+  {
+    "file": "reference/rapier-js-vehicle.ts",
+    "url": "https://raw.githubusercontent.com/dimforge/rapier.js/master/src.ts/control/ray_cast_vehicle_controller.ts",
+    "bytes": 16265,
+    "sha256": "c4790058d1424befa05725e5dc9fc21e5690fdf255990dd526c3a46f4ca9a559"
+  },
+  {
+    "file": "reference/RAPIER-LICENSE",
+    "url": "https://raw.githubusercontent.com/dimforge/rapier/master/LICENSE",
+    "bytes": 11347,
+    "sha256": "ceacfa4d7fa67df64ab09a56fe248c50a3bfc9bc00374d69bd74ad763b14b89c"
+  },
+  {
+    "file": "reference/THREE-LICENSE",
+    "url": "https://raw.githubusercontent.com/mrdoob/three.js/dev/LICENSE",
+    "bytes": 1081,
+    "sha256": "8b378ebe60e2fe500158cb0ac71cb5e8b7d92953c2abcc63a0eb90499653b5bc"
+  },
+  {
+    "file": "reference/ASSET-LICENSE",
+    "url": "https://raw.githubusercontent.com/Hidencod/tge-assets/main/LICENSE",
+    "bytes": 510,
+    "sha256": "6913dd72bdc20532b7f02d86469058f45d886c9dabf60831275ed16927aa523b"
+  },
+  {
+    "file": "public/assets/textures/brown_mud_leaves_01_diff.jpg",
+    "url": "https://dl.polyhaven.org/file/ph-assets/Textures/jpg/1k/brown_mud_leaves_01/brown_mud_leaves_01_diff_1k.jpg",
+    "bytes": 459293,
+    "sha256": "5d9e205e5218d61282d00695c5d9f00ffc4c02000edc685683ba1d24e4554859",
+    "license": "CC0",
+    "author": "Rob Tuytel / Poly Haven"
+  },
+  {
+    "file": "public/assets/textures/brown_mud_leaves_01_nor_gl.jpg",
+    "url": "https://dl.polyhaven.org/file/ph-assets/Textures/jpg/1k/brown_mud_leaves_01/brown_mud_leaves_01_nor_gl_1k.jpg",
+    "bytes": 575762,
+    "sha256": "ee0ed897b95acd951101469d17b994601bbc8cf3282a5a5f4cc193731ecdfb83",
+    "license": "CC0",
+    "author": "Rob Tuytel / Poly Haven"
+  },
+  {
+    "file": "public/assets/textures/brown_mud_leaves_01_rough.jpg",
+    "url": "https://dl.polyhaven.org/file/ph-assets/Textures/jpg/1k/brown_mud_leaves_01/brown_mud_leaves_01_rough_1k.jpg",
+    "bytes": 232211,
+    "sha256": "5f6ebe806c44b2e3e556baa1095b685fbac8550f626e9634418559f2e2d6e6b9",
+    "license": "CC0",
+    "author": "Rob Tuytel / Poly Haven"
+  },
+  {
+    "file": "public/assets/textures/brown_mud_02_diff.jpg",
+    "url": "https://dl.polyhaven.org/file/ph-assets/Textures/jpg/1k/brown_mud_02/brown_mud_02_diff_1k.jpg",
+    "bytes": 270777,
+    "sha256": "feea3193113a0b8f640998e1e9fa6c7a92083ec1e7e5e74f2f26231401260400",
+    "license": "CC0",
+    "author": "Rob Tuytel / Poly Haven"
+  },
+  {
+    "file": "public/assets/textures/brown_mud_02_nor_gl.jpg",
+    "url": "https://dl.polyhaven.org/file/ph-assets/Textures/jpg/1k/brown_mud_02/brown_mud_02_nor_gl_1k.jpg",
+    "bytes": 504090,
+    "sha256": "960f938fcb69ce4f038c1798a04adb28edf78019239ad938d46462b929b9a309",
+    "license": "CC0",
+    "author": "Rob Tuytel / Poly Haven"
+  },
+  {
+    "file": "public/assets/textures/brown_mud_02_rough.jpg",
+    "url": "https://dl.polyhaven.org/file/ph-assets/Textures/jpg/1k/brown_mud_02/brown_mud_02_rough_1k.jpg",
+    "bytes": 252478,
+    "sha256": "86c55bb15827b07f16b8e1d389ac39a962c5d4dfe1a0dbdc1fbcea2b483fde92",
+    "license": "CC0",
+    "author": "Rob Tuytel / Poly Haven"
+  },
+  {
+    "file": "public/assets/models/subaru-rally.glb",
+    "url": "https://raw.githubusercontent.com/JonnyChappp/2005-sti-configurator/main/public/assets/models/sti-blobeye.gltf",
+    "bytes": 1723300,
+    "sha256": "9d88655539c991cf3dee75c17539e1f3a7e12f2f7d9854d99dd44dc1299eee5b",
+    "author": "MAC ULT ARTS",
+    "license": "CC BY 4.0",
+    "adaptations": "Normalized orientation and scale; independent animated wheel pivots; truck geometry reduced and textures resized"
+  },
+  {
+    "file": "public/assets/models/ford-rally.glb",
+    "url": "https://raw.githubusercontent.com/TyByers21/f150-customizer/main/public/models/F150.glb",
+    "bytes": 5644900,
+    "sha256": "fbf84f422812f658f563b0b5fd6b5f1d534d41251b21bdd26d821b6ba75208d1",
+    "author": "F150 customizer asset",
+    "license": "Source repository asset; private game",
+    "adaptations": "Normalized orientation and scale; independent animated wheel pivots; truck geometry reduced and textures resized"
+  },
+  {
+    "file": "public/assets/models/canopy-tree-03.glb",
+    "url": "https://polyhaven.com/a/island_tree_03",
+    "bytes": 2028700,
+    "sha256": "48d55358e2082422af9e87d7a45a2f60e513a28fb689e1724c86039d36fa962a",
+    "license": "CC0",
+    "author": "Poly Haven contributors",
+    "adaptations": "Meshoptimizer geometry reduction; embedded 1K WebP texture maps"
+  },
+  {
+    "file": "public/assets/models/canopy-tree-01.glb",
+    "url": "https://polyhaven.com/a/island_tree_01",
+    "bytes": 1927464,
+    "sha256": "5ef45ada438c01e6f36d39c14e884570f8e9256465ba467b9011ec56ebf46dca",
+    "license": "CC0",
+    "author": "Poly Haven contributors",
+    "adaptations": "Meshoptimizer geometry reduction; embedded 1K WebP texture maps"
+  },
+  {
+    "file": "public/assets/models/fern-real.glb",
+    "url": "https://polyhaven.com/a/fern_02",
+    "bytes": 220100,
+    "sha256": "6e8538ba72e06bee0778240e7742474ac4a00433152e10d574fc4fde936f2a3e",
+    "license": "CC0",
+    "author": "Poly Haven contributors",
+    "adaptations": "Meshoptimizer geometry reduction; embedded 1K WebP texture maps"
+  },
+  {
+    "file": "public/assets/models/grass-real.glb",
+    "url": "https://polyhaven.com/a/grass_medium_02",
+    "bytes": 192764,
+    "sha256": "72552c2d3d9d2b43acb7629beba7a1188782ffaca053e1de6a304efbdd73de8d",
+    "license": "CC0",
+    "author": "Poly Haven contributors",
+    "adaptations": "Meshoptimizer geometry reduction; embedded 1K WebP texture maps"
+  },
+  {
+    "file": "public/assets/models/rock-real.glb",
+    "url": "https://polyhaven.com/a/rock_09",
+    "bytes": 355948,
+    "sha256": "4d04eeb861e82dbe512b06c3fa78776d7a5276d8df756d4d30509a63bf2f7f87",
+    "license": "CC0",
+    "author": "Poly Haven contributors",
+    "adaptations": "Meshoptimizer geometry reduction; embedded 1K WebP texture maps"
+  },
+  {
+    "file": "public/assets/textures/kiara_1_dawn.hdr",
+    "url": "https://polyhaven.com/a/kiara_1_dawn",
+    "bytes": 1475077,
+    "sha256": "ee70fb8c8fb3e34566802191d83b299e179ecc392b97639e6c750f66e161c8e2",
+    "license": "CC0",
+    "author": "Poly Haven contributors",
+    "adaptations": "1K HDR lighting environment"
+  },
+  {
+    "file": "public/assets/textures/kloppenheim_03_puresky_4k.webp",
+    "url": "https://dl.polyhaven.org/file/ph-assets/HDRIs/extra/Tonemapped%20JPG/kloppenheim_03_puresky.jpg",
+    "asset_url": "https://polyhaven.com/a/kloppenheim_03_puresky",
+    "bytes": 187576,
+    "sha256": "81a0c3c157f8f8721bcade58dccdf176ab1f99b94fd715f884f8ec53456fe363",
+    "source_sha256": "a4aec1c5a8fd956cf35797c35aed3dfd53f8b4936a0cd7d137f23202e737ce8d",
+    "license": "CC0",
+    "author": "Greg Zaal (original), Jarod Guest (sky edits) / Poly Haven",
+    "adaptations": "Poly Haven tonemapped 8K JPEG resized to 4096x2048; quality-90 WebP"
+  },
+  {
+    "file": "public/assets/textures/kloppenheim_03_puresky_1k.hdr",
+    "url": "https://dl.polyhaven.org/file/ph-assets/HDRIs/hdr/2k/kloppenheim_03_puresky_2k.hdr",
+    "asset_url": "https://polyhaven.com/a/kloppenheim_03_puresky",
+    "bytes": 1444522,
+    "sha256": "e607252f4fde0ff1ac6d6eadeaadbf002cc4780951ce0f57c3bcad21f0947bd7",
+    "source_sha256": "cf28b37889826b2c9af5059b67110d11fff159d6cef31226ba117034e27c7287",
+    "license": "CC0",
+    "author": "Greg Zaal (original), Jarod Guest (sky edits) / Poly Haven",
+    "adaptations": "Source 2K HDR downsampled to 1024x512; per-source-pixel luminance above 2 compressed with 2+10*(1-exp(-(L-2)/10)), preserving chroma; lossless RGBE scanline compression"
+  }
+]

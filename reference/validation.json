@@ -1,0 +1,78 @@
+{
+  "vehiclePhysics": "Upstream Rapier/Bullet raycast vehicle, fixed 60 Hz",
+  "assets": {
+    "downloadedGlbModels": 17,
+    "hashesVerified": true
+  },
+  "handling": [
+    {
+      "kind": "suv",
+      "zeroTo60Kmh": 4.016666666666658,
+      "zeroTo80Kmh": 6.11666666666665,
+      "initialBrakingKmh": 80.06397171020508,
+      "brakingTime": 3.683333333333325,
+      "brakingDistance": 41.25365447998047,
+      "reverseSpeedKmh": -10.71394584246957,
+      "leftTurn": true,
+      "remainsUpright": true,
+      "finite": true
+    },
+    {
+      "kind": "truck",
+      "zeroTo60Kmh": 5.249999999999987,
+      "zeroTo80Kmh": 9.333333333333377,
+      "initialBrakingKmh": 80.02801208496093,
+      "brakingTime": 4.099999999999991,
+      "brakingDistance": 45.67021179199219,
+      "reverseSpeedKmh": -8.596942140086318,
+      "leftTurn": true,
+      "remainsUpright": true,
+      "finite": true
+    }
+  ],
+  "fullScene": {
+    "constructed": true,
+    "meshes": 117,
+    "instances": 9586,
+    "propColliders": 298,
+    "checkpointGates": 12,
+    "courseLength": 1048.7054859464088
+  },
+  "courseLaps": [
+    {
+      "kind": "suv",
+      "finished": true,
+      "time": 69.85,
+      "passedGates": 12,
+      "offRoadSeconds": 0,
+      "flippedSeconds": 0,
+      "airtime": 0.25,
+      "topSpeed": 66.38687779799889,
+      "maxLaneDistance": 0.8827269960293462,
+      "dirtClumps": 16010,
+      "dustPuffs": 4907,
+      "tireTrackQuads": 10481,
+      "independentWheels": 4
+    },
+    {
+      "kind": "truck",
+      "finished": true,
+      "time": 71.1,
+      "passedGates": 12,
+      "offRoadSeconds": 0,
+      "flippedSeconds": 0,
+      "airtime": 0.08333333333333333,
+      "topSpeed": 65.69749016498197,
+      "maxLaneDistance": 0.8812545469717484,
+      "dirtClumps": 32794,
+      "dustPuffs": 10016,
+      "tireTrackQuads": 10300,
+      "independentWheels": 4
+    }
+  ],
+  "browserChecks": {
+    "gpuRendering": "Unverified. Previous preview browser disabled WebGL; this test uses CPU scene construction and physics.",
+    "mobileTouchFeel": "Not playtested on a physical phone.",
+    "webmcp": "Registration and representative calls require a supported browser context; not validated."
+  }
+}

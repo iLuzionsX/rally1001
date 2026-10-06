@@ -1,0 +1,130 @@
+{
+  "validation": "CPU production geometry, half-float asset decoding and photographed-sun alignment; not a GPU render",
+  "sky": {
+    "dimensions": [
+      4096,
+      2048
+    ],
+    "checkedVertices": 2015,
+    "maxUVError": 1.2506851221338877e-08,
+    "mainAndReflectionCameraPositions": [
+      [
+        37,
+        4,
+        -122
+      ],
+      [
+        -210,
+        7,
+        90
+      ],
+      [
+        0,
+        -4,
+        0
+      ]
+    ],
+    "maxCameraCenterError": 0,
+    "noSkyFog": true,
+    "noSkyDepthWrites": true,
+    "sunAlignmentDegrees": 0,
+    "maximumPreBloomLuminance": 1.0,
+    "skyPixelsTriggerBloom": false
+  },
+  "environment": {
+    "dimensions": [
+      1024,
+      512
+    ],
+    "halfFloatSafe": true,
+    "maxLuminance": 12.032501562499998,
+    "sourceSolarPeak": 39067.9901078125
+  },
+  "lighting": {
+    "exposure": 0.76,
+    "sunIntensity": 3.1,
+    "environmentIntensity": 0.65,
+    "fogOpacityAt100m": 0.06058693718652419,
+    "previousFogOpacityAt100m": 0.19820314403305872,
+    "bloomStrength": 0.025,
+    "bloomThreshold": 2.4
+  },
+  "checks": {
+    "uvAlignment": true,
+    "cameraCentering": true,
+    "sunAlignment": true,
+    "hdrDecode": true,
+    "skyOutsideBloomThreshold": true,
+    "sunFacingSkyNotClipped": true,
+    "typescript": true,
+    "productionBuild": true,
+    "builtAssetHashes": true
+  },
+  "limits": [
+    "Browser/GPU QA unavailable in this execution environment",
+    "Vehicle materials, shadow appearance and phone performance still require visual playtesting"
+  ],
+  "photometry": {
+    "method": "CPU panorama projection and exact production grade/Three ACES output math, sampled at 320x180; scene geometry and GPU not rendered",
+    "views": [
+      {
+        "view": "toward_sun",
+        "aspect": 1.7778,
+        "maximumDisplayChannel": 0.7694,
+        "clippedWhiteFraction": 0.0,
+        "blueSkyFraction": 0.4007
+      },
+      {
+        "view": "away_from_sun",
+        "aspect": 1.7778,
+        "maximumDisplayChannel": 0.7101,
+        "clippedWhiteFraction": 0.0,
+        "blueSkyFraction": 0.7144
+      },
+      {
+        "view": "sun_centered",
+        "aspect": 1.7778,
+        "maximumDisplayChannel": 0.8512,
+        "clippedWhiteFraction": 0.0,
+        "blueSkyFraction": 0.2624
+      },
+      {
+        "view": "blue_sky",
+        "aspect": 1.7778,
+        "maximumDisplayChannel": 0.7393,
+        "clippedWhiteFraction": 0.0,
+        "blueSkyFraction": 0.5939
+      },
+      {
+        "view": "toward_sun",
+        "aspect": 0.5625,
+        "maximumDisplayChannel": 0.7788,
+        "clippedWhiteFraction": 0.0,
+        "blueSkyFraction": 0.6135
+      },
+      {
+        "view": "away_from_sun",
+        "aspect": 0.5625,
+        "maximumDisplayChannel": 0.6423,
+        "clippedWhiteFraction": 0.0,
+        "blueSkyFraction": 0.6724
+      },
+      {
+        "view": "sun_centered",
+        "aspect": 0.5625,
+        "maximumDisplayChannel": 0.8512,
+        "clippedWhiteFraction": 0.0,
+        "blueSkyFraction": 0.1005
+      },
+      {
+        "view": "blue_sky",
+        "aspect": 0.5625,
+        "maximumDisplayChannel": 0.6849,
+        "clippedWhiteFraction": 0.0,
+        "blueSkyFraction": 0.6885
+      }
+    ]
+  },
+  "supersededBy": "exposure-regression.json",
+  "note": "Historical sky-only calibration from the preceding version; current material brightness is validated in exposure-regression.json."
+}

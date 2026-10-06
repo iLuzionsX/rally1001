@@ -1,0 +1,20 @@
+Engine loop
+  File: engine.ogg
+  Source: https://github.com/esensar/bugged-racing/blob/main/assets/engine.wav
+  Original: MarlonHJ, "Firebird_v2", https://freesound.org/people/MarlonHJ/sounds/242740/
+  License: CC0
+
+Tire squeal
+  File: squeal.ogg
+  Source: https://github.com/esensar/bugged-racing/blob/main/assets/tires_squal_loop.wav
+  Original: Tom Haigh (audible-edge), submitted by qubodup
+  https://opengameart.org/content/car-tire-squeal-skid-loop
+  License: CC BY 3.0
+
+Gravel and asphalt rolls
+  Files: gravel.ogg, asphalt.ogg
+  Source recordings: https://github.com/minetest/minetest_game/tree/master/mods/default/sounds
+  default_gravel_footstep, default_gravel_dig, default_hard_footstep
+  Adapted into short loops for this game (pitch, overlap, filtering).
+  License: CC BY-SA 3.0. These two adapted loops stay under that license.
+  Copyright (C) 2010-2023 Minetest Game contributors. See the upstream license.txt.
