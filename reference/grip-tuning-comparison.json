@@ -1,0 +1,43 @@
+{
+  "comparison": [
+    {
+      "kind": "suv",
+      "profiles": [
+        {
+          "profile": "previous",
+          "cornerEntrySideslipDegrees": 16.89,
+          "countersteerRecoverySeconds": 1.38,
+          "speedAfterFourSecondLift": 74.49,
+          "gentleCornerSideslipDegrees": 5.15
+        },
+        {
+          "profile": "revised",
+          "cornerEntrySideslipDegrees": 15.45,
+          "countersteerRecoverySeconds": 0.88,
+          "speedAfterFourSecondLift": 69.15,
+          "gentleCornerSideslipDegrees": 3.95
+        }
+      ]
+    },
+    {
+      "kind": "truck",
+      "profiles": [
+        {
+          "profile": "previous",
+          "cornerEntrySideslipDegrees": 12.44,
+          "countersteerRecoverySeconds": 1.17,
+          "speedAfterFourSecondLift": 75.65,
+          "gentleCornerSideslipDegrees": 3.97
+        },
+        {
+          "profile": "revised",
+          "cornerEntrySideslipDegrees": 11.26,
+          "countersteerRecoverySeconds": 0.93,
+          "speedAfterFourSecondLift": 71.87,
+          "gentleCornerSideslipDegrees": 3.02
+        }
+      ]
+    }
+  ],
+  "surfaceContrast": "passed"
+}

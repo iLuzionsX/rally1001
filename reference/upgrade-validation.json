@@ -1,0 +1,35 @@
+{
+  "assets": 5,
+  "meshes": 476,
+  "instances": 5139,
+  "totalWorldInstancedTriangles": 6700989,
+  "spatialCells": 252,
+  "visibleCellsAtStart": {
+    "high": 63,
+    "battery": 43
+  },
+  "windAndShadowMaterials": 199,
+  "lapChecks": [
+    {
+      "kind": "suv",
+      "finished": true,
+      "time": 87.51666666666667,
+      "topSpeed": 73.07287749747259,
+      "offRoadSeconds": 0,
+      "flippedSeconds": 0
+    },
+    {
+      "kind": "truck",
+      "finished": true,
+      "time": 92,
+      "topSpeed": 73.55435366590264,
+      "offRoadSeconds": 0.85,
+      "flippedSeconds": 0
+    }
+  ],
+  "splitChecks": {
+    "bestRecorded": true,
+    "slowerLapRetainsBest": true
+  },
+  "browserVerification": "Unavailable: control-browser skill is not exposed. GPU rendering and physical mobile controls not playtested."
+}

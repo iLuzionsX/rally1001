@@ -1,0 +1,16 @@
+{
+  "exposure": 0.76,
+  "skyIntensity": 1.0,
+  "environmentIntensity": 0.65,
+  "sunIntensity": 3.1,
+  "hemisphereIntensity": 0.4,
+  "bloomThreshold": 2.4,
+  "bloomStrength": 0.025,
+  "sunOffset": [
+    46.0010876,
+    106.7370596,
+    -46.0010876
+  ],
+  "sunColor": "#fff1dd",
+  "aoIntensity": 0.58
+}

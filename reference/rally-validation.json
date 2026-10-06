@@ -1,0 +1,67 @@
+{
+  "handling": [
+    {
+      "kind": "suv",
+      "zeroTo60": 2.67,
+      "tenSecondSpeed": 154.8,
+      "zeroTo100": 4.9,
+      "sustainedSpeed": 233.5,
+      "maxGear": 6,
+      "brake120Time": 3.98,
+      "brake120Distance": 62.6,
+      "brake80Time": 2.77,
+      "brake80Distance": 28.7,
+      "minimumUp": 0.999,
+      "maxYawRate": 0.914,
+      "wetBrake80Distance": 44.7
+    },
+    {
+      "kind": "truck",
+      "zeroTo60": 3.2,
+      "tenSecondSpeed": 136.3,
+      "zeroTo100": 6.17,
+      "sustainedSpeed": 198,
+      "maxGear": 6,
+      "brake120Time": 4.03,
+      "brake120Distance": 65.9,
+      "brake80Time": 2.72,
+      "brake80Distance": 29.5,
+      "minimumUp": 0.997,
+      "maxYawRate": 0.835,
+      "wetBrake80Distance": 46.7
+    }
+  ],
+  "rallyDynamics": [
+    {
+      "kind": "suv",
+      "cornerEntrySideslipDegrees": 16.5,
+      "countersteerRecoverySeconds": 1.37,
+      "coastTurnSideslipDegrees": 16,
+      "handbrakeSideslipDegrees": 26.9,
+      "brakingFrontLoadPercent": 70
+    },
+    {
+      "kind": "truck",
+      "cornerEntrySideslipDegrees": 12.1,
+      "countersteerRecoverySeconds": 1.13,
+      "coastTurnSideslipDegrees": 10.7,
+      "handbrakeSideslipDegrees": 12.6,
+      "brakingFrontLoadPercent": 64.7
+    }
+  ],
+  "circuitLaps": [
+    {
+      "kind": "suv",
+      "seconds": 127.6,
+      "checkpoints": 12,
+      "maxCenterOffset": 6.59
+    },
+    {
+      "kind": "truck",
+      "seconds": 135.8,
+      "checkpoints": 12,
+      "maxCenterOffset": 4.27
+    }
+  ],
+  "camera": "standard and dynamic framing, low angle, frame rates, reverse, hood, yaw wrap and obstacles passed"
+}

@@ -1,0 +1,253 @@
+{
+  "test": "Offscreen GLSL diffuse material probes using actual textures, cosine-integrated source HDR, production grade and Three ACES/sRGB functions",
+  "renderer": "llvmpipe (LLVM 20.1.2, 256 bits)",
+  "api": "4.5 (Core Profile) Mesa 25.2.8-0ubuntu0.24.04.2",
+  "probeResolution": [
+    160,
+    160
+  ],
+  "baseline": {
+    "exposure": 0.76,
+    "skyIntensity": 1.0,
+    "environmentIntensity": 0.65,
+    "sunIntensity": 3.1,
+    "hemisphereIntensity": 0.4,
+    "bloomThreshold": 2.4,
+    "bloomStrength": 0.025,
+    "sunOffset": [
+      46.0010876,
+      106.7370596,
+      -46.0010876
+    ],
+    "sunColor": "#fff1dd",
+    "aoIntensity": 0.58
+  },
+  "current": {
+    "exposure": 1.1,
+    "skyRotation": 1.4147760083,
+    "skyIntensity": 0.85,
+    "environmentIntensity": 1.15,
+    "sunColor": "#fff1dd",
+    "sunIntensity": 3.1,
+    "sunOffset": [
+      46.0010876,
+      106.7370596,
+      -46.0010876
+    ],
+    "hemisphereIntensity": 0.7,
+    "aoIntensity": 0.38,
+    "fogColor": "#a9bdc8",
+    "fogDensity": 0.0025,
+    "bloomStrength": 0.025,
+    "bloomRadius": 0.18,
+    "bloomThreshold": 2.4
+  },
+  "iblDiffuse": [
+    0.5977706430236264,
+    0.6107522605720603,
+    0.6631100370825911
+  ],
+  "before": {
+    "Dirt / sun": {
+      "median": 0.1868,
+      "p10": 0.1133,
+      "clippedFraction": 0.0
+    },
+    "Dirt / shade": {
+      "median": 0.076,
+      "p10": 0.039,
+      "clippedFraction": 0.0
+    },
+    "Canopy / contact shade": {
+      "median": 0.0585,
+      "p10": 0.0359,
+      "clippedFraction": 0.0
+    },
+    "18% gray / sun": {
+      "median": 0.4669,
+      "p10": 0.4578,
+      "clippedFraction": 0.0
+    },
+    "18% gray / shade": {
+      "median": 0.2402,
+      "p10": 0.234,
+      "clippedFraction": 0.0
+    },
+    "White / sun": {
+      "median": 0.8559,
+      "p10": 0.851,
+      "clippedFraction": 0.0
+    },
+    "Sky": {
+      "median": 0.4641,
+      "p10": 0.1925,
+      "clippedFraction": 0.0
+    }
+  },
+  "after": {
+    "Dirt / sun": {
+      "median": 0.313,
+      "p10": 0.2045,
+      "clippedFraction": 0.0
+    },
+    "Dirt / shade": {
+      "median": 0.1904,
+      "p10": 0.1193,
+      "clippedFraction": 0.0
+    },
+    "Canopy / contact shade": {
+      "median": 0.1708,
+      "p10": 0.1235,
+      "clippedFraction": 0.0
+    },
+    "18% gray / sun": {
+      "median": 0.6492,
+      "p10": 0.6404,
+      "clippedFraction": 0.0
+    },
+    "18% gray / shade": {
+      "median": 0.4712,
+      "p10": 0.462,
+      "clippedFraction": 0.0
+    },
+    "White / sun": {
+      "median": 0.9282,
+      "p10": 0.9255,
+      "clippedFraction": 0.0
+    },
+    "Sky": {
+      "median": 0.5239,
+      "p10": 0.2293,
+      "clippedFraction": 0.0
+    }
+  },
+  "qualityProfiles": {
+    "high": {
+      "Dirt / sun": {
+        "median": 0.313,
+        "p10": 0.2045,
+        "clippedFraction": 0.0
+      },
+      "Dirt / shade": {
+        "median": 0.1904,
+        "p10": 0.1193,
+        "clippedFraction": 0.0
+      },
+      "Canopy / contact shade": {
+        "median": 0.1708,
+        "p10": 0.1235,
+        "clippedFraction": 0.0
+      },
+      "18% gray / sun": {
+        "median": 0.6492,
+        "p10": 0.6404,
+        "clippedFraction": 0.0
+      },
+      "18% gray / shade": {
+        "median": 0.4712,
+        "p10": 0.462,
+        "clippedFraction": 0.0
+      },
+      "White / sun": {
+        "median": 0.9282,
+        "p10": 0.9255,
+        "clippedFraction": 0.0
+      },
+      "Sky": {
+        "median": 0.5239,
+        "p10": 0.2293,
+        "clippedFraction": 0.0
+      }
+    },
+    "balanced": {
+      "Dirt / sun": {
+        "median": 0.313,
+        "p10": 0.2045,
+        "clippedFraction": 0.0
+      },
+      "Dirt / shade": {
+        "median": 0.1904,
+        "p10": 0.1193,
+        "clippedFraction": 0.0
+      },
+      "Canopy / contact shade": {
+        "median": 0.1972,
+        "p10": 0.1444,
+        "clippedFraction": 0.0
+      },
+      "18% gray / sun": {
+        "median": 0.6492,
+        "p10": 0.6404,
+        "clippedFraction": 0.0
+      },
+      "18% gray / shade": {
+        "median": 0.4712,
+        "p10": 0.462,
+        "clippedFraction": 0.0
+      },
+      "White / sun": {
+        "median": 0.9282,
+        "p10": 0.9255,
+        "clippedFraction": 0.0
+      },
+      "Sky": {
+        "median": 0.5239,
+        "p10": 0.2293,
+        "clippedFraction": 0.0
+      }
+    },
+    "battery": {
+      "Dirt / sun": {
+        "median": 0.313,
+        "p10": 0.2045,
+        "clippedFraction": 0.0
+      },
+      "Dirt / shade": {
+        "median": 0.1904,
+        "p10": 0.1193,
+        "clippedFraction": 0.0
+      },
+      "Canopy / contact shade": {
+        "median": 0.1972,
+        "p10": 0.1444,
+        "clippedFraction": 0.0
+      },
+      "18% gray / sun": {
+        "median": 0.6492,
+        "p10": 0.6404,
+        "clippedFraction": 0.0
+      },
+      "18% gray / shade": {
+        "median": 0.4712,
+        "p10": 0.462,
+        "clippedFraction": 0.0
+      },
+      "White / sun": {
+        "median": 0.9282,
+        "p10": 0.9255,
+        "clippedFraction": 0.0
+      },
+      "Sky": {
+        "median": 0.5239,
+        "p10": 0.2293,
+        "clippedFraction": 0.0
+      }
+    }
+  },
+  "checks": {
+    "shadowGrayReadable": true,
+    "sunlitGrayBounded": true,
+    "shadedDirtBrighter": true,
+    "contactShadeBrighter": true,
+    "skyHighlightsRetained": true,
+    "whiteHighlightsRetained": true,
+    "skyCannotTriggerBloom": true,
+    "allQualityProfilesBounded": true
+  },
+  "limits": [
+    "Material probes are not full-game screenshots",
+    "Environment diffuse integration approximates production PMREM",
+    "Specular reflections, actual tree visibility and geometry-derived GTAO are not rendered",
+    "Phone/browser playtesting remains unverified"
+  ]
+}
