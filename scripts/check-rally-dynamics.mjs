@@ -25,7 +25,7 @@ try{
     course.surfaceAt=()=>({grip:.59,rollingResistance:.025,rollingDrag:4,mud:false,label:'LOOSE DIRT'});
     const world=new RAPIER.World({x:0,y:-9.81,z:0});world.integrationParameters.numSolverIterations=8;
     world.createCollider(RAPIER.ColliderDesc.cuboid(2000,.5,2000).setTranslation(0,-.5,0));
-    const v=new RallyVehicle(world,kind),step=(input=zero,frameStep=dt)=>advanceVehicle(v,world,input,frameStep,true);
+    const v=new RallyVehicle(world,kind,process.env.RALLY_HANDLING_MODE==='baseline'?'baseline':'refined'),step=(input=zero,frameStep=dt)=>advanceVehicle(v,world,input,frameStep,true);
     v.reset({x:0,y:0,z:0,tx:0,tz:-1,width:12,s:0,distance:0});
     for(let i=0;i<120;i++)advanceVehicle(v,world,zero,dt,false);
     const atSpeed=kmh=>{

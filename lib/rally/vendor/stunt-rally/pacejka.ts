@@ -6,7 +6,8 @@
  * See reference/stunt-rally/LICENSE and the original downloaded sources.
  * Modified: C++ -> TypeScript; omit visual outputs and steering-wheel FFB;
  * symmetric zero-camber forces avoid the donor's small alignment bias;
- * configurable cornering stiffness preserves the donor's force ceiling.
+ * configurable cornering stiffness preserves the donor's force ceiling;
+ * optional relaxed lateral slip feeds combined forces; telemetry stays raw.
  */
 import {lateral as a,longitudinal as b} from './gravel';
 
@@ -40,14 +41,14 @@ export function optimumGravelSlip(load:number){
   return {sigmaHat,alphaHat};
 }
 
-export function gravelForce(load:number,mu:number,longVelocity:number,sideVelocity:number,patchSpeed:number,lateralResponse=1){
+export function gravelForce(load:number,mu:number,longVelocity:number,sideVelocity:number,patchSpeed:number,lateralResponse=1,effectiveSlipAngle?:number){
   const fz=Math.min(30,Math.max(0,load)*.001);
   if(fz<1e-6)return {long:0,side:0,slipRatio:0,slipAngle:0};
   const {sigmaHat,alphaHat}=optimumGravelSlip(load);
   const denominator=Math.max(Math.abs(longVelocity),.01);
   const sigma=(patchSpeed-longVelocity)/denominator,alpha=-Math.atan2(sideVelocity,denominator)*180/Math.PI;
   // CARTIRE GetForce: Beckman combined slip, then the donor's traction cap.
-  const s=sigma/sigmaHat,angle=alpha*lateralResponse/alphaHat,rho=Math.max(Math.hypot(s,angle),.0001);
+  const s=sigma/sigmaHat,angle=(effectiveSlipAngle===undefined?alpha:effectiveSlipAngle*180/Math.PI)*lateralResponse/alphaHat,rho=Math.max(Math.hypot(s,angle),.0001);
   let long=s/rho*fx(rho*sigmaHat,fz,mu),side=angle/rho*fy(rho*alphaHat,fz,mu);
   const sum=Math.abs(long)+Math.abs(side),longFactor=sum>1?Math.abs(long)/sum:1;
   const maximum=Math.abs((b[1]*fz+b[2])*fz*mu)*longFactor+Math.abs((a[1]*fz+a[2])*fz*mu)*(1-longFactor);

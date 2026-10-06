@@ -1,0 +1,136 @@
+{
+  "comparison": [
+    {
+      "kind": "suv",
+      "surface": "dry gravel",
+      "profiles": [
+        {
+          "mode": "baseline",
+          "stop80Metres": 25.8163,
+          "stop80Seconds": 2.3583,
+          "largestBrakePressureStep": 0.45,
+          "trailPeakSideslipDegrees": 5.5551,
+          "trailPeakYawRate": 0.4438,
+          "trailPeakFrontLoadShare": 0.7966,
+          "trailExitKmh": 47.6509,
+          "slalomPeakSideslipDegrees": 5.0159,
+          "firstSlipResponseRatio": 1
+        },
+        {
+          "mode": "refined",
+          "stop80Metres": 26.0465,
+          "stop80Seconds": 2.3708,
+          "largestBrakePressureStep": 0.0542,
+          "trailPeakSideslipDegrees": 6.3715,
+          "trailPeakYawRate": 0.4595,
+          "trailPeakFrontLoadShare": 0.7736,
+          "trailExitKmh": 49.5157,
+          "slalomPeakSideslipDegrees": 5.1316,
+          "firstSlipResponseRatio": 0.2513
+        }
+      ]
+    },
+    {
+      "kind": "suv",
+      "surface": "wet mud",
+      "profiles": [
+        {
+          "mode": "baseline",
+          "stop80Metres": 33.7187,
+          "stop80Seconds": 3.2667,
+          "largestBrakePressureStep": 0.45,
+          "trailPeakSideslipDegrees": 5.8318,
+          "trailPeakYawRate": 0.306,
+          "trailPeakFrontLoadShare": 0.7731,
+          "trailExitKmh": 43.3923,
+          "slalomPeakSideslipDegrees": 5.5958,
+          "firstSlipResponseRatio": 1
+        },
+        {
+          "mode": "refined",
+          "stop80Metres": 33.8284,
+          "stop80Seconds": 3.275,
+          "largestBrakePressureStep": 0.0542,
+          "trailPeakSideslipDegrees": 6.8827,
+          "trailPeakYawRate": 0.3302,
+          "trailPeakFrontLoadShare": 0.7703,
+          "trailExitKmh": 43.6703,
+          "slalomPeakSideslipDegrees": 5.6862,
+          "firstSlipResponseRatio": 0.2513
+        }
+      ]
+    },
+    {
+      "kind": "truck",
+      "surface": "dry gravel",
+      "profiles": [
+        {
+          "mode": "baseline",
+          "stop80Metres": 27.4476,
+          "stop80Seconds": 2.5,
+          "largestBrakePressureStep": 0.45,
+          "trailPeakSideslipDegrees": 3.9651,
+          "trailPeakYawRate": 0.2619,
+          "trailPeakFrontLoadShare": 0.7113,
+          "trailExitKmh": 52.4566,
+          "slalomPeakSideslipDegrees": 3.5434,
+          "firstSlipResponseRatio": 1
+        },
+        {
+          "mode": "refined",
+          "stop80Metres": 27.7289,
+          "stop80Seconds": 2.5125,
+          "largestBrakePressureStep": 0.0542,
+          "trailPeakSideslipDegrees": 4.4016,
+          "trailPeakYawRate": 0.2696,
+          "trailPeakFrontLoadShare": 0.6898,
+          "trailExitKmh": 54.2611,
+          "slalomPeakSideslipDegrees": 3.6435,
+          "firstSlipResponseRatio": 0.2066
+        }
+      ]
+    },
+    {
+      "kind": "truck",
+      "surface": "wet mud",
+      "profiles": [
+        {
+          "mode": "baseline",
+          "stop80Metres": 38.7304,
+          "stop80Seconds": 3.6583,
+          "largestBrakePressureStep": 0.45,
+          "trailPeakSideslipDegrees": 4.5141,
+          "trailPeakYawRate": 0.2,
+          "trailPeakFrontLoadShare": 0.7057,
+          "trailExitKmh": 46.9835,
+          "slalomPeakSideslipDegrees": 3.5992,
+          "firstSlipResponseRatio": 1
+        },
+        {
+          "mode": "refined",
+          "stop80Metres": 38.9684,
+          "stop80Seconds": 3.6792,
+          "largestBrakePressureStep": 0.0542,
+          "trailPeakSideslipDegrees": 5.0108,
+          "trailPeakYawRate": 0.2065,
+          "trailPeakFrontLoadShare": 0.7053,
+          "trailExitKmh": 47.7797,
+          "slalomPeakSideslipDegrees": 3.6744,
+          "firstSlipResponseRatio": 0.2066
+        }
+      ]
+    }
+  ],
+  "cadence": [
+    {
+      "mode": "baseline",
+      "result": "passed at 30 / 60 / 120 Hz"
+    },
+    {
+      "mode": "refined",
+      "result": "passed at 30 / 60 / 120 Hz"
+    }
+  ],
+  "contactLifecycle": "airborne, reset, mode switch and parked stability passed",
+  "limitations": "Scripted production-physics checks; no hands-on DiRT Rally comparison or browser/GPU verification."
+}

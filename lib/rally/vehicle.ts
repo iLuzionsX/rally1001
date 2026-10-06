@@ -6,8 +6,8 @@ import {engineFrictionTorque} from './vendor/stunt-rally/engine-friction';
 import {differentialTorques} from './vendor/stunt-rally/differential';
 import {DRIVELINE_STEP} from './simulation';
 import {clamp,damp,courseAt,surfaceAt,type CoursePoint} from './course';
-import {VEHICLES,type VehicleKind,type DriveInput,type V3} from './vehicle-config';
-export {VEHICLES,type VehicleKind,type DriveInput,type V3} from './vehicle-config';
+import {VEHICLES,type VehicleKind,type DriveInput,type V3,type HandlingMode} from './vehicle-config';
+export {VEHICLES,type VehicleKind,type DriveInput,type V3,type HandlingMode} from './vehicle-config';
 export type WheelPose=RallyWheel;
 /** Downloaded Stunt Rally gravel tire forces + Ecctrl contact/rotation model.
  * Rapier resolves chassis/world collisions. There is no sideways velocity clamp. */
@@ -17,7 +17,7 @@ export class RallyVehicle{
  driveModel:EcctrlDriveModel;driveDirection:1|-1=1;directionTimer=0;handbrake=0;engineWheelTorque=0;diffTransfer={front:0,rear:0,center:0};
  wheels:WheelPose[]=[];position:V3={x:0,y:0,z:0};rotation={x:0,y:0,z:0,w:1};velocity:V3={x:0,y:0,z:0};forward:V3={x:0,y:0,z:-1};previousPosition:V3={x:0,y:0,z:0};previousRotation={x:0,y:0,z:0,w:1};
  private wheelABS=Array.from({length:4},()=>new GravelABS());
- constructor(public world:RAPIER.World,public kind:VehicleKind){
+ constructor(public world:RAPIER.World,public kind:VehicleKind,public handlingMode:HandlingMode='refined'){
  const c=this.config=VEHICLES[kind];this.driveModel=new EcctrlDriveModel(c.powertrain,c.radius);this.body=world.createRigidBody(RAPIER.RigidBodyDesc.dynamic().setCcdEnabled(true).setCanSleep(false).setLinearDamping(0).setAngularDamping(.08).setAdditionalSolverIterations(4));
  world.createCollider(RAPIER.ColliderDesc.cuboid(c.width*.42,.26,c.length*.45).setTranslation(0,-.18,0).setDensity(0).setFriction(.6).setRestitution(.02),this.body);
  world.createCollider(RAPIER.ColliderDesc.cuboid(c.width*.36,.46,kind==='suv'?1.24:.84).setTranslation(0,.48,kind==='suv'?.18:-.58).setDensity(0).setFriction(.5),this.body);
@@ -25,7 +25,12 @@ export class RallyVehicle{
  // Apply deferred mass changes before the first vehicle query, including swaps.
  this.body.recomputeMassPropertiesFromColliders();
  this.wheels=[{x:-c.track/2,z:c.front},{x:c.track/2,z:c.front},{x:-c.track/2,z:c.back},{x:c.track/2,z:c.back}].map(p=>new RallyWheel(world,this.body,kind,p.x,p.z));
+ this.setHandlingMode(handlingMode);
  this.reset(courseAt(0));
+ }
+ setHandlingMode(mode:HandlingMode){
+  this.handlingMode=mode;
+  for(const wheel of this.wheels){wheel.handlingMode=mode;wheel.relaxedSlipAngle=0;}
  }
  reset(point:CoursePoint){const yaw=Math.atan2(-point.tx,-point.tz);this.body.setTranslation({x:point.x,y:point.y+this.config.radius+this.config.suspension-this.config.mount+.12,z:point.z},true);this.body.setRotation({x:0,y:Math.sin(yaw/2),z:0,w:Math.cos(yaw/2)},true);this.body.setLinvel({x:0,y:0,z:0},true);this.body.setAngvel({x:0,y:0,z:0},true);this.body.resetForces(true);this.body.resetTorques(true);this.steer=this.throttle=this.brake=this.speed=this.forwardSpeed=this.airborne=this.handbrake=this.directionTimer=0;this.driveDirection=1;this.engineWheelTorque=0;this.diffTransfer={front:0,rear:0,center:0};this.driveModel.reset();this.rpm=this.config.powertrain.idleRPM;this.gear=1;for(const wheel of this.wheels)wheel.reset();for(const abs of this.wheelABS)abs.active=false;this.readPose();this.previousPosition={...this.position};this.previousRotation={...this.rotation};}
  beforeStep(input:DriveInput,dt:number,enabled:boolean){
@@ -45,8 +50,14 @@ export class RallyVehicle{
  const drivePedal=enabled?(this.driveDirection===1?gas:pedal):0;
  const stopPedal=enabled?(this.driveDirection===1?pedal:gas):1;
  this.throttle=damp(this.throttle,drivePedal,c.throttleRate,dt);
- // Apply braking immediately; releasing it is smoothed. Brake always overrides gas.
- this.brake=stopPedal>this.brake?stopPedal:damp(this.brake,stopPedal,20,dt);
+ // Preserve the original brake response in baseline mode. Brake overrides gas.
+ if(this.handlingMode==='baseline')this.brake=stopPedal>this.brake?stopPedal:damp(this.brake,stopPedal,20,dt);
+ else{
+  // Progressive partial pedal pressure and a short hydraulic buildup/release.
+  // Full pedal retains full torque. Raw pedal still cuts propulsion immediately.
+  const pressure=stopPedal**1.15;
+  this.brake=enabled?damp(this.brake,pressure,pressure>this.brake?35:14,dt):1;
+ }
  this.handbrake=damp(this.handbrake,enabled?clamp(input.handbrake,0,1):0,12,dt);
  const wheelbase=c.back-c.front;
  this.driveModel.updateTransmission(this.wheels.map((w,i)=>({angularSpeed:w.angularSpeed,longSlip:w.longSlip,weight:i<2?c.frontDrive/2:(1-c.frontDrive)/2})),dt,this.driveDirection===-1);
