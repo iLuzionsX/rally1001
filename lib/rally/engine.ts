@@ -21,7 +21,7 @@ export class RallyEngine{
  resume(){if(this.phase==='paused'){this.phase=this.resumePhase;this.lastTime=performance.now();this.accumulator=0;this.emit();void this.audio.start().catch(()=>{});}}
  garage(){this.phase='garage';this.touch={...ZERO};this.keys.clear();this.effects.clear();this.vehicle.reset(courseAt(0));this.cameraInitialized=false;this.emit();}
  reset(){if(!['driving','countdown'].includes(this.phase))return;this.vehicle.reset(courseAt((this.gate-1)/GATE_COUNT));if(this.phase==='driving'){this.penalties++;this.raceTime+=3;this.notify('Back on the trail · +3s');}this.recoverTimer=0;this.effects.lastContacts=[null,null,null,null];this.cameraInitialized=false;this.emit();}
- private recordKey(type:'best'|'splits'){return `wildtrail-${type}-${COURSE_ID}${this.handlingMode==='baseline'?'':this.handlingMode==='refined'?'-refined-v1':'-rally-v1'}`;}
+ private recordKey(type:'best'|'splits'){return `wildtrail-${type}-${COURSE_ID}${this.handlingMode==='baseline'?'':this.handlingMode==='refined'?'-refined-v1':'-rally-v2'}`;}
  setHandlingMode(mode:HandlingMode){
   if(!['baseline','refined','rally'].includes(mode)||mode===this.handlingMode||!['garage','paused','finished'].includes(this.phase))return;
   this.handlingMode=mode;this.vehicle.setHandlingMode(mode);this.bestTimes={};this.bestSplits={};
