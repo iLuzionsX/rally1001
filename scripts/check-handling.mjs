@@ -34,7 +34,7 @@ try {
     world.timestep = dt;
     world.integrationParameters.numSolverIterations = 8;
     world.createCollider(RAPIER.ColliderDesc.cuboid(2000, .5, 2000).setTranslation(0,-.5,0).setFriction(.9));
-    const v = new RallyVehicle(world, kind, process.env.RALLY_HANDLING_MODE==='baseline'?'baseline':'refined');
+    const v = new RallyVehicle(world, kind, ['baseline','rally'].includes(process.env.RALLY_HANDLING_MODE)?process.env.RALLY_HANDLING_MODE:'refined');
     v.reset({x:0,y:0,z:0,tx:0,tz:-1,width:12,s:0,distance:0});
     const step = (input=zero, enabled=true)=>advanceVehicle(v,world,input,dt,enabled);
     for (let i=0;i<120;i++) step(zero,false);
@@ -180,7 +180,7 @@ try {
   for(const kind of ['suv','truck']){
     const world=new RAPIER.World({x:0,y:-9.81,z:0});world.timestep=dt;world.integrationParameters.numSolverIterations=8;
     for(const mesh of [terrain,road])world.createCollider(RAPIER.ColliderDesc.trimesh(mesh.vertices,mesh.indices).setFriction(.9));
-    const v=new RallyVehicle(world,kind,process.env.RALLY_HANDLING_MODE==='baseline'?'baseline':'refined');
+    const v=new RallyVehicle(world,kind,['baseline','rally'].includes(process.env.RALLY_HANDLING_MODE)?process.env.RALLY_HANDLING_MODE:'refined');
     for(let i=0;i<120;i++)advanceVehicle(v,world,zero,dt,false);
     let lastS=0,progress=0,maxOffset=0,gate=1;
     for(let tick=0;tick<60*320&&gate<=course.GATE_COUNT;tick++){

@@ -17,7 +17,7 @@ export class RallyVehicle{
  driveModel:EcctrlDriveModel;driveDirection:1|-1=1;directionTimer=0;handbrake=0;engineWheelTorque=0;diffTransfer={front:0,rear:0,center:0};
  wheels:WheelPose[]=[];position:V3={x:0,y:0,z:0};rotation={x:0,y:0,z:0,w:1};velocity:V3={x:0,y:0,z:0};forward:V3={x:0,y:0,z:-1};previousPosition:V3={x:0,y:0,z:0};previousRotation={x:0,y:0,z:0,w:1};
  private wheelABS=Array.from({length:4},()=>new GravelABS());
- constructor(public world:RAPIER.World,public kind:VehicleKind,public handlingMode:HandlingMode='refined'){
+ constructor(public world:RAPIER.World,public kind:VehicleKind,public handlingMode:HandlingMode='rally'){
  const c=this.config=VEHICLES[kind];this.driveModel=new EcctrlDriveModel(c.powertrain,c.radius);this.body=world.createRigidBody(RAPIER.RigidBodyDesc.dynamic().setCcdEnabled(true).setCanSleep(false).setLinearDamping(0).setAngularDamping(.08).setAdditionalSolverIterations(4));
  world.createCollider(RAPIER.ColliderDesc.cuboid(c.width*.42,.26,c.length*.45).setTranslation(0,-.18,0).setDensity(0).setFriction(.6).setRestitution(.02),this.body);
  world.createCollider(RAPIER.ColliderDesc.cuboid(c.width*.36,.46,kind==='suv'?1.24:.84).setTranslation(0,.48,kind==='suv'?.18:-.58).setDensity(0).setFriction(.5),this.body);
@@ -92,7 +92,7 @@ export class RallyVehicle{
  }
 
  private solveDriveline(dt:number,driveDemand:number,reverse:boolean){
- const c=this.config;
+ const c=this.config,differential=this.handlingMode==='rally'?c.rallyDifferential:c.differential;
  for(const wheel of this.wheels)wheel.refreshVelocity();
  const maxWheelSpeed=Math.max(...this.wheels.map(w=>Math.abs(w.angularSpeed)));
  // One engine curve at driven shaft speed, then the donor's center/front/rear
@@ -103,9 +103,9 @@ export class RallyVehicle{
  const friction=engineFrictionTorque(shaftSpeed,ratio,c.powertrain.engineMaxRPM,c.powertrain.idleRPM,c.powertrain.engineHorsepower*7022/c.powertrain.engineMaxRPM,this.throttle,c.engineBraking);
  const disengaged=this.handbrake>.02;
  this.engineWheelTorque=disengaged?0:driveTorque+friction;
- const center=differentialTorques(this.engineWheelTorque,(this.wheels[0].angularSpeed+this.wheels[1].angularSpeed)/2,(this.wheels[2].angularSpeed+this.wheels[3].angularSpeed)/2,c.wheelInertia*2,c.wheelInertia*2,dt,disengaged?{...c.differential.center,antiSlip:0}:c.differential.center);
- const front=differentialTorques(center.side1,this.wheels[0].angularSpeed,this.wheels[1].angularSpeed,c.wheelInertia,c.wheelInertia,dt,c.differential.front);
- const rear=differentialTorques(center.side2,this.wheels[2].angularSpeed,this.wheels[3].angularSpeed,c.wheelInertia,c.wheelInertia,dt,c.differential.rear);
+ const center=differentialTorques(this.engineWheelTorque,(this.wheels[0].angularSpeed+this.wheels[1].angularSpeed)/2,(this.wheels[2].angularSpeed+this.wheels[3].angularSpeed)/2,c.wheelInertia*2,c.wheelInertia*2,dt,disengaged?{...differential.center,antiSlip:0}:differential.center);
+ const front=differentialTorques(center.side1,this.wheels[0].angularSpeed,this.wheels[1].angularSpeed,c.wheelInertia,c.wheelInertia,dt,differential.front);
+ const rear=differentialTorques(center.side2,this.wheels[2].angularSpeed,this.wheels[3].angularSpeed,c.wheelInertia,c.wheelInertia,dt,differential.rear);
  const torques=[front.side1,front.side2,rear.side1,rear.side2];
  this.diffTransfer={front:front.transfer,rear:rear.transfer,center:center.transfer};
  for(let i=0;i<4;i++){
