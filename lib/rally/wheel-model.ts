@@ -52,9 +52,20 @@ export class RallyWheel {
     this.longitudinal.projectOnPlane(this.normal).normalize();
     this.lateral.crossVectors(this.longitudinal,this.normal).normalize();
     this.ground=hit.collider.parent();this.refreshVelocity();
-    const vertical=this.velocity.dot(this.up),compression=c.suspension-this.suspensionLength;
+    // Rapier/Bullet's raycast suspension projects relative contact velocity
+    // onto the road normal, then resolves it along the suspension axis.
+    // Chassis-up velocity alone misses compression caused by driving into a
+    // rising road, and damps motion tangent to a slope that is not compression.
+    const vertical=this.handlingMode==='rally'
+      ?this.velocity.dot(this.normal)/Math.max(.2,this.normal.dot(this.up))
+      :this.velocity.dot(this.up);
+    const compression=c.suspension-this.suspensionLength;
     const damping=vertical<0?c.compressionDamping:c.reboundDamping;
-    this.force=clamp(c.springRate*compression-damping*vertical+Math.max(0,compression-c.suspensionTravel)*c.springRate*3,0,c.mass*9.81*.85);
+    // Digressive compression damping absorbs sharp inputs without making the
+    // damper effectively rigid. Low-speed body control and rebound are retained.
+    const damperVelocity=this.handlingMode==='rally'&&vertical<-c.damperKneeSpeed
+      ?-c.damperKneeSpeed+(vertical+c.damperKneeSpeed)*c.fastCompressionRatio:vertical;
+    this.force=clamp(c.springRate*compression-damping*damperVelocity+Math.max(0,compression-c.suspensionTravel)*c.springRate*3,0,c.mass*9.81*.85);
     const surface=surfaceAt(this.contactPoint.x,this.contactPoint.z);this.mud=surface.mud;this.friction=surface.grip*c.tireGrip;this.rollingResistance=surface.rollingResistance;this.rollingDrag=surface.rollingDrag;
   }
 

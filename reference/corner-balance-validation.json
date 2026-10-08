@@ -137,42 +137,42 @@
       "wet": false,
       "mode": "rally",
       "maneuver": "coast",
-      "exitSpeed": 51.4694,
-      "exitSlip": 13.5977,
-      "recoverySeconds": 0.7208,
-      "peakSlip": 15.5435,
-      "peakYaw": 0.6155,
-      "entryHeading": 36.0855,
-      "powerHeading": 30.4163,
-      "entryFrontLoad": 0.566,
+      "exitSpeed": 51.4931,
+      "exitSlip": 13.6926,
+      "recoverySeconds": 0.7292,
+      "peakSlip": 15.6373,
+      "peakYaw": 0.6145,
+      "entryHeading": 36.0069,
+      "powerHeading": 30.3604,
+      "entryFrontLoad": 0.5681,
       "snapshots": [
         {
           "t": 0.5,
-          "speed": 69.9862,
-          "slip": 2.0343,
-          "yaw": 0.3723,
-          "center": -74.8146
+          "speed": 69.9927,
+          "slip": 2.0186,
+          "yaw": 0.3679,
+          "center": -74.2205
         },
         {
           "t": 1,
-          "speed": 68.0331,
-          "slip": 8.1139,
-          "yaw": 0.5674,
-          "center": -26.2319
+          "speed": 68.0412,
+          "slip": 8.0498,
+          "yaw": 0.5687,
+          "center": -25.8782
         },
         {
           "t": 1.5,
-          "speed": 63.0844,
-          "slip": 13.2514,
-          "yaw": 0.6154,
-          "center": -33.5798
+          "speed": 63.1224,
+          "slip": 13.2885,
+          "yaw": 0.6144,
+          "center": -29.3895
         },
         {
           "t": 2.5,
-          "speed": 51.4694,
-          "slip": 13.5977,
-          "yaw": 0.4388,
-          "center": -7.7634
+          "speed": 51.4931,
+          "slip": 13.6926,
+          "yaw": 0.4377,
+          "center": -4.4778
         }
       ]
     },
@@ -181,42 +181,42 @@
       "wet": false,
       "mode": "rally",
       "maneuver": "trail",
-      "exitSpeed": 55.799,
-      "exitSlip": 14.3737,
-      "recoverySeconds": 0.7292,
-      "peakSlip": 16.2362,
-      "peakYaw": 0.6891,
-      "entryHeading": 39.6174,
-      "powerHeading": 29.6924,
-      "entryFrontLoad": 0.5621,
+      "exitSpeed": 55.7202,
+      "exitSlip": 14.8132,
+      "recoverySeconds": 0.7542,
+      "peakSlip": 16.4216,
+      "peakYaw": 0.6775,
+      "entryHeading": 39.4769,
+      "powerHeading": 30.2244,
+      "entryFrontLoad": 0.565,
       "snapshots": [
         {
           "t": 0.5,
-          "speed": 69.9862,
-          "slip": 2.0343,
-          "yaw": 0.3723,
-          "center": -74.8146
+          "speed": 69.9927,
+          "slip": 2.0186,
+          "yaw": 0.3679,
+          "center": -74.2205
         },
         {
           "t": 1,
-          "speed": 62.5486,
-          "slip": 9.45,
-          "yaw": 0.6612,
-          "center": 27.372
+          "speed": 62.6214,
+          "slip": 9.6393,
+          "yaw": 0.6601,
+          "center": 18.9353
         },
         {
           "t": 1.5,
-          "speed": 56.2861,
-          "slip": 15.2778,
-          "yaw": 0.6662,
-          "center": -27.7213
+          "speed": 56.3171,
+          "slip": 15.2108,
+          "yaw": 0.6596,
+          "center": -18.3893
         },
         {
           "t": 2.5,
-          "speed": 55.799,
-          "slip": 14.3737,
-          "yaw": 0.4021,
-          "center": 5.1965
+          "speed": 55.7202,
+          "slip": 14.8132,
+          "yaw": 0.4244,
+          "center": 16.1991
         }
       ]
     },
@@ -225,42 +225,42 @@
       "wet": false,
       "mode": "rally",
       "maneuver": "power",
-      "exitSpeed": 80.5885,
-      "exitSlip": 15.6357,
-      "recoverySeconds": 0.85,
-      "peakSlip": 15.6357,
-      "peakYaw": 0.4987,
-      "entryHeading": 30.7068,
-      "powerHeading": 24.9606,
-      "entryFrontLoad": 0.474,
+      "exitSpeed": 80.4459,
+      "exitSlip": 16.3932,
+      "recoverySeconds": 0.8833,
+      "peakSlip": 16.3932,
+      "peakYaw": 0.4998,
+      "entryHeading": 30.6094,
+      "powerHeading": 25.7828,
+      "entryFrontLoad": 0.4746,
       "snapshots": [
         {
           "t": 0.5,
-          "speed": 72.2641,
-          "slip": 1.9687,
-          "yaw": 0.3512,
-          "center": -59.0644
+          "speed": 72.2757,
+          "slip": 1.9331,
+          "yaw": 0.3456,
+          "center": -59.2448
         },
         {
           "t": 1,
-          "speed": 75.8737,
-          "slip": 6.9399,
-          "yaw": 0.4547,
-          "center": -44.9873
+          "speed": 75.8856,
+          "slip": 6.8681,
+          "yaw": 0.4551,
+          "center": -44.4588
         },
         {
           "t": 1.5,
-          "speed": 78.1281,
-          "slip": 11.2117,
-          "yaw": 0.4968,
-          "center": -21.9176
+          "speed": 78.1496,
+          "slip": 11.1631,
+          "yaw": 0.4992,
+          "center": -17.3832
         },
         {
           "t": 2.5,
-          "speed": 80.5885,
-          "slip": 15.6357,
-          "yaw": 0.3749,
-          "center": -22.397
+          "speed": 80.4459,
+          "slip": 16.3932,
+          "yaw": 0.4037,
+          "center": -2.669
         }
       ]
     },
@@ -401,42 +401,42 @@
       "wet": true,
       "mode": "rally",
       "maneuver": "coast",
-      "exitSpeed": 31.646,
-      "exitSlip": 12.9133,
-      "recoverySeconds": 0.7125,
-      "peakSlip": 13.1752,
-      "peakYaw": 0.4981,
-      "entryHeading": 26.3214,
-      "powerHeading": 26.1952,
-      "entryFrontLoad": 0.5977,
+      "exitSpeed": 31.5862,
+      "exitSlip": 13.2787,
+      "recoverySeconds": 0.7542,
+      "peakSlip": 13.4073,
+      "peakYaw": 0.5009,
+      "entryHeading": 26.3303,
+      "powerHeading": 26.5565,
+      "entryFrontLoad": 0.6001,
       "snapshots": [
         {
           "t": 0.5,
-          "speed": 52.5836,
-          "slip": 0.9723,
-          "yaw": 0.2503,
-          "center": -75.1893
+          "speed": 52.5891,
+          "slip": 0.9907,
+          "yaw": 0.2478,
+          "center": -74.1726
         },
         {
           "t": 1,
-          "speed": 48.8661,
-          "slip": 5.648,
-          "yaw": 0.4189,
-          "center": -19.0069
+          "speed": 48.8634,
+          "slip": 5.6168,
+          "yaw": 0.4201,
+          "center": -18.8172
         },
         {
           "t": 1.5,
-          "speed": 43.2554,
-          "slip": 10.3093,
-          "yaw": 0.4952,
-          "center": -22.6338
+          "speed": 43.2602,
+          "slip": 10.3638,
+          "yaw": 0.4976,
+          "center": -22.2993
         },
         {
           "t": 2.5,
-          "speed": 31.646,
-          "slip": 12.9133,
-          "yaw": 0.4335,
-          "center": 26.4183
+          "speed": 31.5862,
+          "slip": 13.2787,
+          "yaw": 0.4452,
+          "center": 28.2129
         }
       ]
     },
@@ -445,42 +445,42 @@
       "wet": true,
       "mode": "rally",
       "maneuver": "trail",
-      "exitSpeed": 41.488,
-      "exitSlip": 14.1936,
-      "recoverySeconds": 0.9458,
-      "peakSlip": 14.1936,
-      "peakYaw": 0.4699,
-      "entryHeading": 25.8174,
-      "powerHeading": 22.9519,
-      "entryFrontLoad": 0.5898,
+      "exitSpeed": 41.425,
+      "exitSlip": 14.3953,
+      "recoverySeconds": 0.9542,
+      "peakSlip": 14.3953,
+      "peakYaw": 0.4727,
+      "entryHeading": 25.8953,
+      "powerHeading": 23.2042,
+      "entryFrontLoad": 0.5914,
       "snapshots": [
         {
           "t": 0.5,
-          "speed": 52.5836,
-          "slip": 0.9723,
-          "yaw": 0.2503,
-          "center": -75.1893
+          "speed": 52.5891,
+          "slip": 0.9907,
+          "yaw": 0.2478,
+          "center": -74.1726
         },
         {
           "t": 1,
-          "speed": 43.4466,
-          "slip": 6.0143,
-          "yaw": 0.4173,
-          "center": 10.3584
+          "speed": 43.4574,
+          "slip": 6.0743,
+          "yaw": 0.4179,
+          "center": 21.4659
         },
         {
           "t": 1.5,
-          "speed": 37.4788,
-          "slip": 9.6108,
-          "yaw": 0.4695,
-          "center": -17.2981
+          "speed": 37.4598,
+          "slip": 9.6773,
+          "yaw": 0.4722,
+          "center": -17.2712
         },
         {
           "t": 2.5,
-          "speed": 41.488,
-          "slip": 14.1936,
-          "yaw": 0.3724,
-          "center": -114.2925
+          "speed": 41.425,
+          "slip": 14.3953,
+          "yaw": 0.3757,
+          "center": -115.6615
         }
       ]
     },
@@ -489,42 +489,42 @@
       "wet": true,
       "mode": "rally",
       "maneuver": "power",
-      "exitSpeed": 58.2092,
-      "exitSlip": 34.1284,
-      "recoverySeconds": 2.2292,
-      "peakSlip": 34.1284,
-      "peakYaw": 0.5721,
-      "entryHeading": 27.9039,
-      "powerHeading": 32.3364,
+      "exitSpeed": 58.222,
+      "exitSlip": 34.1485,
+      "recoverySeconds": 2.2458,
+      "peakSlip": 34.1485,
+      "peakYaw": 0.5771,
+      "entryHeading": 27.8292,
+      "powerHeading": 32.4535,
       "entryFrontLoad": 0.5018,
       "snapshots": [
         {
           "t": 0.5,
-          "speed": 55.4658,
-          "slip": 1.1134,
-          "yaw": 0.2579,
-          "center": -30.1313
+          "speed": 55.4747,
+          "slip": 1.1337,
+          "yaw": 0.2547,
+          "center": -22.9826
         },
         {
           "t": 1,
-          "speed": 58.2818,
-          "slip": 6.9538,
-          "yaw": 0.4422,
-          "center": -99.366
+          "speed": 58.2903,
+          "slip": 6.8409,
+          "yaw": 0.4425,
+          "center": -99.8961
         },
         {
           "t": 1.5,
-          "speed": 59.8369,
-          "slip": 15.5295,
-          "yaw": 0.5425,
-          "center": -146.3307
+          "speed": 59.8594,
+          "slip": 15.4246,
+          "yaw": 0.5428,
+          "center": -146.2543
         },
         {
           "t": 2.5,
-          "speed": 58.2092,
-          "slip": 34.1284,
-          "yaw": 0.5721,
-          "center": -158.2922
+          "speed": 58.222,
+          "slip": 34.1485,
+          "yaw": 0.5771,
+          "center": -155.9483
         }
       ]
     },
@@ -665,42 +665,42 @@
       "wet": false,
       "mode": "rally",
       "maneuver": "coast",
-      "exitSpeed": 59.1371,
-      "exitSlip": 8.0324,
-      "recoverySeconds": 0.4167,
-      "peakSlip": 9.985,
-      "peakYaw": 0.3997,
-      "entryHeading": 22.7047,
-      "powerHeading": 17.2229,
-      "entryFrontLoad": 0.5392,
+      "exitSpeed": 59.1309,
+      "exitSlip": 8.146,
+      "recoverySeconds": 0.425,
+      "peakSlip": 10.0694,
+      "peakYaw": 0.3996,
+      "entryHeading": 22.6755,
+      "powerHeading": 17.2679,
+      "entryFrontLoad": 0.5403,
       "snapshots": [
         {
           "t": 0.5,
-          "speed": 69.7002,
-          "slip": 1.0984,
-          "yaw": 0.2252,
-          "center": -53.4066
+          "speed": 69.7028,
+          "slip": 1.1031,
+          "yaw": 0.2238,
+          "center": -53.3539
         },
         {
           "t": 1,
-          "speed": 68.6843,
-          "slip": 5.2417,
+          "speed": 68.6817,
+          "slip": 5.2078,
           "yaw": 0.3633,
-          "center": -3.3825
+          "center": -3.3646
         },
         {
           "t": 1.5,
-          "speed": 65.7922,
-          "slip": 8.7571,
+          "speed": 65.8041,
+          "slip": 8.7831,
           "yaw": 0.3996,
-          "center": -7.7853
+          "center": -7.6863
         },
         {
           "t": 2.5,
-          "speed": 59.1371,
-          "slip": 8.0324,
-          "yaw": 0.2185,
-          "center": -1.9544
+          "speed": 59.1309,
+          "slip": 8.146,
+          "yaw": 0.2189,
+          "center": -1.8992
         }
       ]
     },
@@ -709,42 +709,42 @@
       "wet": false,
       "mode": "rally",
       "maneuver": "trail",
-      "exitSpeed": 63.7356,
-      "exitSlip": 4.7809,
+      "exitSpeed": 63.6913,
+      "exitSlip": 4.8318,
       "recoverySeconds": 0.0042,
-      "peakSlip": 9.2307,
-      "peakYaw": 0.4059,
-      "entryHeading": 23.4877,
-      "powerHeading": 13.2346,
-      "entryFrontLoad": 0.5351,
+      "peakSlip": 9.3038,
+      "peakYaw": 0.4068,
+      "entryHeading": 23.4944,
+      "powerHeading": 13.2787,
+      "entryFrontLoad": 0.5364,
       "snapshots": [
         {
           "t": 0.5,
-          "speed": 69.7002,
-          "slip": 1.0984,
-          "yaw": 0.2252,
-          "center": -53.4066
+          "speed": 69.7028,
+          "slip": 1.1031,
+          "yaw": 0.2238,
+          "center": -53.3539
         },
         {
           "t": 1,
-          "speed": 64.009,
-          "slip": 5.6593,
-          "yaw": 0.3928,
-          "center": -12.7748
+          "speed": 64.0156,
+          "slip": 5.6764,
+          "yaw": 0.3943,
+          "center": -12.0128
         },
         {
           "t": 1.5,
-          "speed": 60.4226,
-          "slip": 8.7773,
-          "yaw": 0.3946,
-          "center": -6.6687
+          "speed": 60.4232,
+          "slip": 8.8568,
+          "yaw": 0.3947,
+          "center": -6.6685
         },
         {
           "t": 2.5,
-          "speed": 63.7356,
-          "slip": 4.7809,
-          "yaw": 0.1085,
-          "center": -202.7235
+          "speed": 63.6913,
+          "slip": 4.8318,
+          "yaw": 0.1074,
+          "center": -203.7855
         }
       ]
     },
@@ -753,42 +753,42 @@
       "wet": false,
       "mode": "rally",
       "maneuver": "power",
-      "exitSpeed": 84.4429,
-      "exitSlip": 5.5495,
-      "recoverySeconds": 0.1833,
-      "peakSlip": 7.6898,
-      "peakYaw": 0.3096,
-      "entryHeading": 19.5215,
-      "powerHeading": 10.5873,
-      "entryFrontLoad": 0.4645,
+      "exitSpeed": 84.4301,
+      "exitSlip": 5.5862,
+      "recoverySeconds": 0.1875,
+      "peakSlip": 7.7247,
+      "peakYaw": 0.3112,
+      "entryHeading": 19.5312,
+      "powerHeading": 10.6325,
+      "entryFrontLoad": 0.4646,
       "snapshots": [
         {
           "t": 0.5,
-          "speed": 71.3903,
-          "slip": 1.0713,
-          "yaw": 0.2197,
-          "center": -145.0966
+          "speed": 71.396,
+          "slip": 1.0705,
+          "yaw": 0.2176,
+          "center": -143.7411
         },
         {
           "t": 1,
-          "speed": 74.9101,
-          "slip": 4.652,
-          "yaw": 0.3093,
-          "center": -194.9562
+          "speed": 74.9108,
+          "slip": 4.6145,
+          "yaw": 0.3107,
+          "center": -203.2688
         },
         {
           "t": 1.5,
-          "speed": 78.1422,
-          "slip": 7.0234,
-          "yaw": 0.2947,
-          "center": -170.928
+          "speed": 78.1444,
+          "slip": 7.0318,
+          "yaw": 0.2957,
+          "center": -171.1504
         },
         {
           "t": 2.5,
-          "speed": 84.4429,
-          "slip": 5.5495,
-          "yaw": 0.1083,
-          "center": -208.214
+          "speed": 84.4301,
+          "slip": 5.5862,
+          "yaw": 0.1076,
+          "center": -207.7088
         }
       ]
     },
@@ -929,42 +929,42 @@
       "wet": true,
       "mode": "rally",
       "maneuver": "coast",
-      "exitSpeed": 37.4502,
-      "exitSlip": 6.7066,
-      "recoverySeconds": 0.425,
-      "peakSlip": 7.9221,
-      "peakYaw": 0.3016,
-      "entryHeading": 15.9336,
-      "powerHeading": 13.6465,
-      "entryFrontLoad": 0.5649,
+      "exitSpeed": 37.4457,
+      "exitSlip": 6.7667,
+      "recoverySeconds": 0.4292,
+      "peakSlip": 7.9655,
+      "peakYaw": 0.3021,
+      "entryHeading": 15.9256,
+      "powerHeading": 13.71,
+      "entryFrontLoad": 0.5661,
       "snapshots": [
         {
           "t": 0.5,
-          "speed": 52.767,
-          "slip": 0.4603,
-          "yaw": 0.1471,
-          "center": -70.1307
+          "speed": 52.769,
+          "slip": 0.4715,
+          "yaw": 0.1463,
+          "center": -70.1616
         },
         {
           "t": 1,
-          "speed": 50.1657,
-          "slip": 3.481,
-          "yaw": 0.2584,
-          "center": -4.4611
+          "speed": 50.1614,
+          "slip": 3.46,
+          "yaw": 0.2585,
+          "center": -4.4859
         },
         {
           "t": 1.5,
-          "speed": 45.967,
-          "slip": 6.495,
-          "yaw": 0.3009,
-          "center": -5.0398
+          "speed": 45.9704,
+          "slip": 6.5106,
+          "yaw": 0.3013,
+          "center": -4.9927
         },
         {
           "t": 2.5,
-          "speed": 37.4502,
-          "slip": 6.7066,
-          "yaw": 0.1764,
-          "center": 1.6589
+          "speed": 37.4457,
+          "slip": 6.7667,
+          "yaw": 0.1776,
+          "center": 1.7133
         }
       ]
     },
@@ -973,42 +973,42 @@
       "wet": true,
       "mode": "rally",
       "maneuver": "trail",
-      "exitSpeed": 46.0876,
-      "exitSlip": 4.9262,
+      "exitSpeed": 46.0816,
+      "exitSlip": 4.9321,
       "recoverySeconds": 0.0042,
-      "peakSlip": 6.0942,
-      "peakYaw": 0.2774,
-      "entryHeading": 15.3206,
-      "powerHeading": 11.592,
-      "entryFrontLoad": 0.5574,
+      "peakSlip": 6.116,
+      "peakYaw": 0.2778,
+      "entryHeading": 15.3348,
+      "powerHeading": 11.6384,
+      "entryFrontLoad": 0.5582,
       "snapshots": [
         {
           "t": 0.5,
-          "speed": 52.767,
-          "slip": 0.4603,
-          "yaw": 0.1471,
-          "center": -70.1307
+          "speed": 52.769,
+          "slip": 0.4715,
+          "yaw": 0.1463,
+          "center": -70.1616
         },
         {
           "t": 1,
-          "speed": 45.1983,
+          "speed": 45.1935,
           "slip": 3.5389,
-          "yaw": 0.2515,
-          "center": -18.8379
+          "yaw": 0.2521,
+          "center": -17.0065
         },
         {
           "t": 1.5,
-          "speed": 40.6289,
-          "slip": 5.7482,
-          "yaw": 0.2773,
-          "center": -3.7312
+          "speed": 40.6277,
+          "slip": 5.7743,
+          "yaw": 0.2776,
+          "center": -3.9073
         },
         {
           "t": 2.5,
-          "speed": 46.0876,
-          "slip": 4.9262,
-          "yaw": 0.1633,
-          "center": -155.2456
+          "speed": 46.0816,
+          "slip": 4.9321,
+          "yaw": 0.1631,
+          "center": -162.7397
         }
       ]
     },
@@ -1017,42 +1017,42 @@
       "wet": true,
       "mode": "rally",
       "maneuver": "power",
-      "exitSpeed": 62.3507,
-      "exitSlip": 10.4628,
+      "exitSpeed": 62.3525,
+      "exitSlip": 10.4456,
       "recoverySeconds": 0.7125,
-      "peakSlip": 10.4628,
-      "peakYaw": 0.3016,
-      "entryHeading": 15.8021,
-      "powerHeading": 15.1082,
+      "peakSlip": 10.4456,
+      "peakYaw": 0.3012,
+      "entryHeading": 15.7766,
+      "powerHeading": 15.0882,
       "entryFrontLoad": 0.485,
       "snapshots": [
         {
           "t": 0.5,
-          "speed": 54.8792,
-          "slip": 0.4861,
-          "yaw": 0.151,
-          "center": -159.3589
+          "speed": 54.878,
+          "slip": 0.4952,
+          "yaw": 0.1498,
+          "center": -157.3835
         },
         {
           "t": 1,
-          "speed": 56.9958,
-          "slip": 3.4242,
-          "yaw": 0.2532,
-          "center": -202.3794
+          "speed": 56.9885,
+          "slip": 3.399,
+          "yaw": 0.2533,
+          "center": -204.7963
         },
         {
           "t": 1.5,
-          "speed": 59.0913,
-          "slip": 6.6364,
-          "yaw": 0.2985,
-          "center": -245.583
+          "speed": 59.0876,
+          "slip": 6.6185,
+          "yaw": 0.2982,
+          "center": -245.1104
         },
         {
           "t": 2.5,
-          "speed": 62.3507,
-          "slip": 10.4628,
-          "yaw": 0.2281,
-          "center": -272.062
+          "speed": 62.3525,
+          "slip": 10.4456,
+          "yaw": 0.2277,
+          "center": -268.5115
         }
       ]
     }
@@ -1069,8 +1069,8 @@
         },
         {
           "mode": "rally",
-          "metres": 26.558,
-          "seconds": 2.4292
+          "metres": 26.4532,
+          "seconds": 2.4167
         }
       ]
     },
@@ -1085,8 +1085,8 @@
         },
         {
           "mode": "rally",
-          "metres": 34.102,
-          "seconds": 3.3042
+          "metres": 34.0562,
+          "seconds": 3.3
         }
       ]
     },
@@ -1101,8 +1101,8 @@
         },
         {
           "mode": "rally",
-          "metres": 27.7015,
-          "seconds": 2.5083
+          "metres": 27.6738,
+          "seconds": 2.5125
         }
       ]
     },
@@ -1117,8 +1117,8 @@
         },
         {
           "mode": "rally",
-          "metres": 38.9035,
-          "seconds": 3.6667
+          "metres": 38.8889,
+          "seconds": 3.6625
         }
       ]
     }
