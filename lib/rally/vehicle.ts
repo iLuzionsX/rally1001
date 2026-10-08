@@ -30,7 +30,7 @@ export class RallyVehicle{
  }
  setHandlingMode(mode:HandlingMode){
   this.handlingMode=mode;
-  for(const wheel of this.wheels){wheel.handlingMode=mode;wheel.relaxedSlipAngle=0;}
+  for(const wheel of this.wheels){wheel.handlingMode=mode;wheel.relaxedSlipAngle=0;wheel.surfaceReady=false;}
  }
  reset(point:CoursePoint){const yaw=Math.atan2(-point.tx,-point.tz);this.body.setTranslation({x:point.x,y:point.y+this.config.radius+this.config.suspension-this.config.mount+.12,z:point.z},true);this.body.setRotation({x:0,y:Math.sin(yaw/2),z:0,w:Math.cos(yaw/2)},true);this.body.setLinvel({x:0,y:0,z:0},true);this.body.setAngvel({x:0,y:0,z:0},true);this.body.resetForces(true);this.body.resetTorques(true);this.steer=this.throttle=this.brake=this.speed=this.forwardSpeed=this.airborne=this.handbrake=this.directionTimer=0;this.driveDirection=1;this.engineWheelTorque=0;this.diffTransfer={front:0,rear:0,center:0};this.driveModel.reset();this.rpm=this.config.powertrain.idleRPM;this.gear=1;for(const wheel of this.wheels)wheel.reset();for(const abs of this.wheelABS)abs.active=false;this.readPose();this.previousPosition={...this.position};this.previousRotation={...this.rotation};}
  beforeStep(input:DriveInput,dt:number,enabled:boolean){
@@ -76,7 +76,7 @@ export class RallyVehicle{
  for(let i=0;i<4;i++){
   const w=this.wheels[i];let angle=0;
   if(i<2&&Math.abs(this.steer)>.0001){const radius=wheelbase/Math.tan(Math.abs(this.steer)),inside=this.steer>0?i===0:i===1;angle=Math.sign(this.steer)*Math.atan(wheelbase/(radius+(inside?-1:1)*c.track/2));}
-  w.steer=angle;w.contactStep();
+  w.steer=angle;w.contactStep(dt);
  }
  // Physical support transfer across each axle; tire forces use the resulting loads.
  for(const [left,right,rate] of [[0,1,c.frontAntiRoll],[2,3,c.rearAntiRoll]]){
@@ -92,7 +92,7 @@ export class RallyVehicle{
  }
 
  private solveDriveline(dt:number,driveDemand:number,reverse:boolean){
- const c=this.config,differential=this.handlingMode==='rally'?c.rallyDifferential:c.differential;
+ const c=this.config,differential=(this.handlingMode==='rally'||this.handlingMode==='rally-legacy')?c.rallyDifferential:c.differential;
  for(const wheel of this.wheels)wheel.refreshVelocity();
  const maxWheelSpeed=Math.max(...this.wheels.map(w=>Math.abs(w.angularSpeed)));
  // One engine curve at driven shaft speed, then the donor's center/front/rear
@@ -111,7 +111,7 @@ export class RallyVehicle{
  for(let i=0;i<4;i++){
   const w=this.wheels[i],hand=i>1?this.handbrake:0;
   const brakeShare=i<2?c.frontBrake/2:(1-c.frontBrake)/2;
-  const absDemand=this.wheelABS[i].update(this.brake,w.longSlip*Math.sign(w.longVelocity),w.force,maxWheelSpeed);
+  const absDemand=this.wheelABS[i].update(this.brake,w.longSlip*Math.sign(w.longVelocity),w.force,maxWheelSpeed,this.handlingMode==='rally'?w.surfaceTire.longSlipScale:1);
   const brakeTorque=absDemand*c.brake*c.radius*brakeShare+hand*c.brake*c.radius*.38;
   const wheelTorque=torques[i];
   w.solve(dt,hand>.02||Math.abs(wheelTorque)<.05?0:wheelTorque,brakeTorque);
@@ -122,7 +122,7 @@ export class RallyVehicle{
   this.forward={x:-2*(q.x*q.z+q.w*q.y),y:-2*(q.y*q.z-q.w*q.x),z:-(1-2*(q.x*q.x+q.y*q.y))};
   this.speed=Math.hypot(vel.x,vel.z);this.forwardSpeed=vel.x*this.forward.x+vel.y*this.forward.y+vel.z*this.forward.z;
   this.airborne=this.wheels.some(w=>w.contact)?0:this.airborne+dt;
-  this.surface=surfaceAt(this.position.x,this.position.z).label;
+  const surface=surfaceAt(this.position.x,this.position.z);this.surface=this.handlingMode==='rally'?(surface.tire?.label??surface.label):surface.label;
   this.gear=this.driveDirection===-1?-1:this.driveModel.gear;this.rpm=damp(this.rpm,this.driveModel.engineRPM,12,dt);
  }
 

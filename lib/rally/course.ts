@@ -46,6 +46,40 @@ const bins=new Map<string,number[]>();COURSE.forEach((p,i)=>{const key=Math.floo
 export function nearestRoad(x:number,z:number){const bx=Math.floor(x/18),bz=Math.floor(z/18);let d=Infinity,index=0;for(let a=-2;a<=2;a++)for(let b=-2;b<=2;b++)for(const i of bins.get((bx+a)+','+(bz+b))??[]){const p=COURSE[i],d2=(p.x-x)**2+(p.z-z)**2;if(d2<d){d=d2;index=i;}}if(d===Infinity)for(let i=0;i<720;i++){const p=COURSE[i],d2=(p.x-x)**2+(p.z-z)**2;if(d2<d){d=d2;index=i;}}const p=COURSE[index];return {point:p,distance:Math.sqrt(d),lateral:(x-p.x)*(-p.tz)+(z-p.z)*p.tx};}
 export function roadHeight(p:CoursePoint,lateral:number){const ruts=Math.exp(-(((Math.abs(lateral)-.72)/.18)**2))*.045;return p.y+.09+Math.max(0,1-Math.abs(lateral)/(p.width/2))*.07-ruts;}
 export function terrainHeight(x:number,z:number,n=nearestRoad(x,z)){const d=n.distance,w=n.point.width/2,h=baseHeight(x,z);if(d<w+3){const blend=clamp((d-w)/3,0,1);return roadHeight(n.point,n.lateral)-.09+(h-roadHeight(n.point,n.lateral)+.09)*blend*blend*(3-2*blend);}const pond=Math.hypot(x-POND_CENTER.x,z-POND_CENTER.z);if(pond<31){const t=clamp((pond-22)/9,0,1);return -3.5+(h+3.5)*t*t*(3-2*t);}return h;}
-export function surfaceAt(x:number,z:number){const n=nearestRoad(x,z),s=n.point.s,off=n.distance>n.point.width/2,mud=!off&&((s>.345&&s<.39)||(s>.64&&s<.682));return {grip:mud?.34:off?.46:.59,rollingResistance:mud?.045:off?.035:.025,rollingDrag:mud?45:off?25:4,mud,label:mud?'WET MUD':off?'FOREST FLOOR':'LOOSE DIRT'};}
+// Surface numbers are game tuning on the retained gravel tire, not measured compounds.
+export type SurfaceTire={grip:number;rollingResistance:number;rollingDrag:number;longSlipScale:number;angleScale:number;relaxation:number;recovery:number;combined:number;label:string};
+export const SURFACE_TIRES:Record<'packed'|'gravel'|'mud'|'shoulder',SurfaceTire>={
+ packed:{grip:.61,rollingResistance:.022,rollingDrag:3,longSlipScale:.95,angleScale:.94,relaxation:.85,recovery:.65,combined:.18,label:'PACKED DIRT'},
+ gravel:{grip:.57,rollingResistance:.029,rollingDrag:7,longSlipScale:1.10,angleScale:.98,relaxation:1.12,recovery:.72,combined:.22,label:'LOOSE GRAVEL'},
+ mud:{grip:.34,rollingResistance:.05,rollingDrag:45,longSlipScale:1.22,angleScale:1.05,relaxation:1.3,recovery:.8,combined:.16,label:'WET MUD'},
+ shoulder:{grip:.46,rollingResistance:.038,rollingDrag:25,longSlipScale:1.15,angleScale:1.05,relaxation:1.2,recovery:.75,combined:.18,label:'FOREST FLOOR'},
+};
+const smooth=(t:number)=>{t=clamp(t,0,1);return t*t*(3-2*t);};
+function blendTire(a:SurfaceTire,b:SurfaceTire,t:number):SurfaceTire{
+ const mix=(key:Exclude<keyof SurfaceTire,'label'>)=>a[key]+(b[key]-a[key])*t;
+ return {grip:mix('grip'),rollingResistance:mix('rollingResistance'),rollingDrag:mix('rollingDrag'),longSlipScale:mix('longSlipScale'),angleScale:mix('angleScale'),relaxation:mix('relaxation'),recovery:mix('recovery'),combined:mix('combined'),label:t>.5?b.label:a.label};
+}
+export function surfaceAt(x:number,z:number){
+ const n=nearestRoad(x,z),s=n.point.s,off=n.distance>n.point.width/2,mud=!off&&((s>.345&&s<.39)||(s>.64&&s<.682));
+ // Project onto both adjacent segments. Nearest sample indices jump every ~2m;
+ // physical surface boundaries must instead vary continuously along the road.
+ let best=Infinity,along=n.point.distance,lateral=Math.abs(n.lateral),width=n.point.width;
+ const index=Math.round(s*720)%720;
+ for(const j of [(index+719)%720,index]){
+  const a=COURSE[j],b=COURSE[j+1],dx=b.x-a.x,dz=b.z-a.z,length=Math.hypot(dx,dz);
+  const t=clamp(((x-a.x)*dx+(z-a.z)*dz)/(length*length),0,1);
+  const distance=Math.hypot(x-a.x-t*dx,z-a.z-t*dz);
+  if(distance<best){best=distance;along=a.distance+t*length;lateral=distance;width=a.width+(b.width-a.width)*t;}
+ }
+ // Central packed lane, loose outer line and a feathered shoulder. Existing
+ // dark mud bands retain their locations, with 2m physical entry/exit ramps.
+ let tire=blendTire(SURFACE_TIRES.packed,SURFACE_TIRES.gravel,smooth((lateral-1.8)/1.7));
+ let wet=0;
+ for(const [a,b] of [[.345,.39],[.64,.682]])wet=Math.max(wet,smooth((along-a*COURSE_LENGTH)/2)*smooth((b*COURSE_LENGTH-along)/2));
+ tire=blendTire(tire,SURFACE_TIRES.mud,wet);
+ tire=blendTire(tire,SURFACE_TIRES.shoulder,smooth((lateral-width/2+.35)/1.1));
+ // Legacy fields deliberately unchanged for Original, Refined and Rally Classic.
+ return {grip:mud?.34:off?.46:.59,rollingResistance:mud?.045:off?.035:.025,rollingDrag:mud?45:off?25:4,mud,label:mud?'WET MUD':off?'FOREST FLOOR':'LOOSE DIRT',tire};
+}
 export function makeTerrainData(){const count=240,step=WORLD_SIZE/count,vertices=new Float32Array((count+1)**2*3),colors=new Float32Array(vertices.length),indices=new Uint32Array(count**2*6);for(let z=0;z<=count;z++)for(let x=0;x<=count;x++){const px=x*step-WORLD_SIZE/2,pz=z*step-WORLD_SIZE/2,i=(z*(count+1)+x)*3,h=terrainHeight(px,pz);vertices.set([px,h,pz],i);const v=(Math.sin(px*.9+pz*1.3)+1)*.04;colors.set([.78+v,.84+v,.72+v*.5],i);}for(let z=0;z<count;z++)for(let x=0;x<count;x++){const a=z*(count+1)+x;indices.set([a,a+count+1,a+1,a+1,a+count+1,a+count+2],(z*count+x)*6);}return {vertices,colors,indices};}
 export function makeRoadData(){const cols=12,vertices=new Float32Array(721*(cols+1)*3),colors=new Float32Array(vertices.length),uvs=new Float32Array(721*(cols+1)*2),indices=new Uint32Array(720*cols*6);for(let i=0;i<=720;i++){const p=COURSE[i];for(let j=0;j<=cols;j++){const lateral=(j/cols-.5)*p.width,k=(i*(cols+1)+j),x=p.x-p.tz*lateral,z=p.z+p.tx*lateral;vertices.set([x,roadHeight(p,lateral),z],k*3);const mud=surfaceAt(x,z).mud,edge=Math.abs(lateral)/(p.width/2),v=.93+.035*Math.sin(p.distance*.06)+.025*Math.sin(x*.5+z*.33)-Math.pow(edge,5)*.09;colors.set(mud?[.66*v,.63*v,.58*v]:[v,v*.98,v*.94],k*3);uvs.set([lateral/3,p.distance/3],k*2);if(i<720&&j<cols){const a=k;indices.set([a,a+1,a+cols+1,a+1,a+cols+2,a+cols+1],(i*cols+j)*6);}}}return {vertices,colors,uvs,indices};}
