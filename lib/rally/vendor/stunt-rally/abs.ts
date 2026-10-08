@@ -7,9 +7,9 @@
 import {optimumGravelSlip} from './pacejka';
 export class GravelABS {
   active=false;
-  update(demand:number,slip:number,load:number,maxWheelSpeed:number){
+  update(demand:number,slip:number,load:number,maxWheelSpeed:number,slipScale=1){
     if(demand>.1&&maxWheelSpeed>6){
-      const {sigmaHat}=optimumGravelSlip(load),error=-slip-sigmaHat;
+      const sigmaHat=optimumGravelSlip(load).sigmaHat*slipScale,error=-slip-sigmaHat;
       if(error>0&&!this.active)this.active=true;
       if(error<-sigmaHat/2&&this.active)this.active=false;
     }else this.active=false;

@@ -9,7 +9,7 @@
 import RAPIER from '@dimforge/rapier3d-compat';
 import {Vector3,Quaternion} from 'three';
 import {gravelForce} from './vendor/stunt-rally/pacejka';
-import {clamp,surfaceAt} from './course';
+import {clamp,surfaceAt,SURFACE_TIRES,type SurfaceTire} from './course';
 import {VEHICLES,type VehicleKind,type HandlingMode} from './vehicle-config';
 
 const localUp=new Vector3(0,1,0);
@@ -20,6 +20,7 @@ export class RallyWheel {
   suspensionLength=0;longVelocity=0;sideVelocity=0;friction=0;loadMass=0;inertia=0;
   handlingMode:HandlingMode='refined';
   relaxedSlipAngle=0;
+  surfaceTire:SurfaceTire={...SURFACE_TIRES.gravel};surfaceReady=false;longForce=0;sideForce=0;
   private config;private frontWheel:boolean;
   rollingResistance=.025;rollingDrag=0;
   private origin=new Vector3();private direction=new Vector3();private longitudinal=new Vector3();private lateral=new Vector3();
@@ -30,9 +31,9 @@ export class RallyWheel {
     const c=this.config=VEHICLES[kind];this.x=x;this.z=z;this.y=c.mount-c.suspension;this.frontWheel=z===c.front;
     this.inertia=c.wheelInertia;this.reset();
   }
-  reset(){this.relaxedSlipAngle=0;this.steer=this.rotation=this.angularSpeed=this.force=this.slip=this.longSlip=this.slipAngle=this.driveTorque=this.brakeTorque=0;this.contact=false;this.suspensionLength=this.config.suspension;this.y=this.config.mount-this.suspensionLength;}
+  reset(){this.surfaceReady=false;this.longForce=this.sideForce=0;this.relaxedSlipAngle=0;this.steer=this.rotation=this.angularSpeed=this.force=this.slip=this.longSlip=this.slipAngle=this.driveTorque=this.brakeTorque=0;this.contact=false;this.suspensionLength=this.config.suspension;this.y=this.config.mount-this.suspensionLength;}
 
-  contactStep(){
+  contactStep(dt=1/240){
     const c=this.config;this.q.copy(this.body.rotation());
     this.origin.set(this.x,c.mount,this.z).applyQuaternion(this.q).add(this.body.translation());
     this.up.set(0,1,0).applyQuaternion(this.q);this.direction.copy(this.up).negate();
@@ -41,11 +42,11 @@ export class RallyWheel {
     // Ecctrl's supported rayCast mode is stable across the narrow road triangle seams.
     const hit=this.world.castRayAndGetNormal(new RAPIER.Ray(this.origin,this.direction),c.suspension+c.radius,false,RAPIER.QueryFilterFlags.EXCLUDE_SENSORS,undefined,undefined,this.body);
     this.contact=!!hit;this.force=0;
-    if(!hit){this.relaxedSlipAngle=0;this.suspensionLength=c.suspension;this.y=c.mount-c.suspension;this.slip=this.longSlip=this.slipAngle=0;return;}
+    if(!hit){this.surfaceReady=false;this.relaxedSlipAngle=0;this.suspensionLength=c.suspension;this.y=c.mount-c.suspension;this.slip=this.longSlip=this.slipAngle=0;return;}
     this.suspensionLength=clamp(hit.timeOfImpact-c.radius,0,c.suspension);this.y=c.mount-this.suspensionLength;
     this.normal.copy(hit.normal).normalize();
     // Only road-facing support can suspend the wheel; obstacle sides collide with the chassis.
-    if(this.normal.dot(this.up)<.2){this.contact=false;this.relaxedSlipAngle=0;return;}
+    if(this.normal.dot(this.up)<.2){this.contact=false;this.surfaceReady=false;this.relaxedSlipAngle=0;return;}
     this.supportPoint.copy(this.origin).addScaledVector(this.direction,this.suspensionLength);
     this.contactPoint.copy(this.origin).addScaledVector(this.direction,hit.timeOfImpact);
     this.lateral.crossVectors(this.longitudinal,this.up).normalize();
@@ -56,17 +57,28 @@ export class RallyWheel {
     // onto the road normal, then resolves it along the suspension axis.
     // Chassis-up velocity alone misses compression caused by driving into a
     // rising road, and damps motion tangent to a slope that is not compression.
-    const vertical=this.handlingMode==='rally'
+    const vertical=(this.handlingMode==='rally'||this.handlingMode==='rally-legacy')
       ?this.velocity.dot(this.normal)/Math.max(.2,this.normal.dot(this.up))
       :this.velocity.dot(this.up);
     const compression=c.suspension-this.suspensionLength;
     const damping=vertical<0?c.compressionDamping:c.reboundDamping;
     // Digressive compression damping absorbs sharp inputs without making the
     // damper effectively rigid. Low-speed body control and rebound are retained.
-    const damperVelocity=this.handlingMode==='rally'&&vertical<-c.damperKneeSpeed
+    const damperVelocity=(this.handlingMode==='rally'||this.handlingMode==='rally-legacy')&&vertical<-c.damperKneeSpeed
       ?-c.damperKneeSpeed+(vertical+c.damperKneeSpeed)*c.fastCompressionRatio:vertical;
     this.force=clamp(c.springRate*compression-damping*damperVelocity+Math.max(0,compression-c.suspensionTravel)*c.springRate*3,0,c.mass*9.81*.85);
-    const surface=surfaceAt(this.contactPoint.x,this.contactPoint.z);this.mud=surface.mud;this.friction=surface.grip*c.tireGrip;this.rollingResistance=surface.rollingResistance;this.rollingDrag=surface.rollingDrag;
+    const surface=surfaceAt(this.contactPoint.x,this.contactPoint.z);
+    if(this.handlingMode==='rally'){
+      const target=surface.tire??{...(surface.mud?SURFACE_TIRES.mud:SURFACE_TIRES.gravel),grip:surface.grip,rollingResistance:surface.rollingResistance,rollingDrag:surface.rollingDrag};
+      // A short distance-based patch transition; a lower-grip surface sets an
+      // immediate ceiling so smoothing never lends dry traction to mud.
+      const blend=this.surfaceReady?1-Math.exp(-dt*Math.max(2,Math.hypot(this.longVelocity,this.sideVelocity))/.22):1;
+      for(const key of ['grip','rollingResistance','rollingDrag','longSlipScale','angleScale','relaxation','recovery','combined'] as const)this.surfaceTire[key]+=(target[key]-this.surfaceTire[key])*blend;
+      this.surfaceTire.label=target.label;this.surfaceReady=true;
+      this.friction=Math.min(target.grip,this.surfaceTire.grip)*c.tireGrip;
+      this.rollingResistance=this.surfaceTire.rollingResistance;this.rollingDrag=this.surfaceTire.rollingDrag;
+      this.mud=target.label==='WET MUD';
+    }else{this.mud=surface.mud;this.friction=surface.grip*c.tireGrip;this.rollingResistance=surface.rollingResistance;this.rollingDrag=surface.rollingDrag;}
   }
 
   refreshVelocity(){
@@ -77,7 +89,7 @@ export class RallyWheel {
   }
 
   solve(dt:number,driveTorque:number,brakeTorque:number){
-    const c=this.config,r=c.radius;this.driveTorque=driveTorque;this.brakeTorque=brakeTorque;
+    const c=this.config,r=c.radius;this.longForce=this.sideForce=0;this.driveTorque=driveTorque;this.brakeTorque=brakeTorque;
     this.loadMass=this.contact?this.force/9.81:20;
     // CARWHEEL's configured rotational inertia is independent of normal load.
     // The finer production simulation resolves tire/drive/brake reaction torques.
@@ -91,12 +103,17 @@ export class RallyWheel {
       const speed=Math.abs(this.longVelocity);
       const rawAngle=-Math.atan2(this.sideVelocity,Math.max(speed,.01));
       // Fade into the rolling model to avoid a force discontinuity near rest.
-      const relaxationTime=Math.min(.05,c.tireRelaxationLength/Math.max(speed,.01))*clamp((speed-2)/4,0,1);
+      const terrain=this.handlingMode==='rally'?this.surfaceTire:undefined;
+      // Unwind contact deformation faster when slip decreases or reverses.
+      // Throttle/lift/braking still act only through tire forces and axle loads.
+      const recovering=rawAngle*this.relaxedSlipAngle<=0||Math.abs(rawAngle)<Math.abs(this.relaxedSlipAngle);
+      const length=c.tireRelaxationLength*(terrain?terrain.relaxation*(recovering?terrain.recovery:1):1);
+      const relaxationTime=Math.min(.05,length/Math.max(speed,.01))*clamp((speed-2)/4,0,1);
       const blend=this.handlingMode==='baseline'||relaxationTime===0?1:
         1-Math.exp(-dt/relaxationTime);
       this.relaxedSlipAngle+=(rawAngle-this.relaxedSlipAngle)*blend;
       const tire=gravelForce(this.force,this.friction,this.longVelocity,this.sideVelocity,this.angularSpeed*r,response,
-        this.handlingMode==='baseline'?undefined:this.relaxedSlipAngle);
+        this.handlingMode==='baseline'?undefined:this.relaxedSlipAngle,terrain);
       let long=tire.long,side=tire.side;
       // Only use the Ecctrl static rolling bound near rest, where a slip-ratio
       // tire formula is singular. At road speed the downloaded tire supplies Fx.
@@ -110,6 +127,7 @@ export class RallyWheel {
       side=side*(1-staticWeight)-this.sideVelocity*this.loadMass/dt*staticWeight;
       const cap=this.force*this.friction*1.75,magnitude=Math.hypot(long,side);
       if(magnitude>cap){long*=cap/magnitude;side*=cap/magnitude;}
+      this.longForce=long;this.sideForce=side;
       this.body.applyImpulseAtPoint(this.impulse.copy(this.longitudinal).multiplyScalar(long*dt).addScaledVector(this.lateral,side*dt),this.contactPoint,true);
       // CARDYNAMICS::ApplyTireForce adds separate loose-ground contact drag in
       // both tangent directions. This dissipates motion, without aligning it.

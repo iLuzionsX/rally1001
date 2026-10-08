@@ -1,4 +1,4 @@
-export type HandlingMode = 'rally' | 'refined' | 'baseline';
+export type HandlingMode = 'rally' | 'rally-legacy' | 'refined' | 'baseline';
 export type VehicleKind = 'suv' | 'truck';
 export type DriveInput = {steer:number; throttle:number; brake:number; handbrake:number};
 export type V3 = {x:number; y:number; z:number};
