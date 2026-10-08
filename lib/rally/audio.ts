@@ -42,11 +42,12 @@ const smooth=(value:number,min:number,max:number)=>{const x=clamp((value-min)/(m
 
 /** Select steady, audible sections by recorded loudness, then splice a short
  * crossfade into each loop. Every output sample is derived from original audio. */
-function makeRecordedLoop(context:AudioContext,recording:AudioBuffer,rank:number,seconds=1.85):AudioBuffer{
+function makeRecordedLoop(context:AudioContext,recording:AudioBuffer,rank:number,seconds=1.85,earlyOnly=false):AudioBuffer{
  const rate=recording.sampleRate,n=Math.max(100,Math.min(recording.length,Math.floor(seconds*rate)));
  const signal=recording.getChannelData(0),candidates:{start:number;level:number;stability:number}[]=[];
  const stride=Math.max(1,Math.floor(rate*.42)),sampleStride=101;
- for(let start=0;start+n<=recording.length;start+=stride){
+ const lastStart=earlyOnly?Math.min(recording.length-n,Math.floor(rate*Math.min(20,recording.duration*.4))):recording.length-n;
+ for(let start=0;start<=lastStart;start+=stride){
   let energy=0,a=0,b=0,first=0,last=0;
   for(let i=0;i<n;i+=sampleStride){
    const x=signal[start+i],power=x*x;energy+=power;
@@ -72,6 +73,17 @@ function makeRecordedLoop(context:AudioContext,recording:AudioBuffer,rank:number
     output[i]=input[position+i]*Math.sin(t*Math.PI/2)+input[position+size+i]*Math.cos(t*Math.PI/2);
    }else output[i]=input[position+i];
   }
+ }
+ // Normalize different microphone levels without introducing generated sound.
+ let sum=0,peak=0,count=0;
+ for(let channel=0;channel<buffer.numberOfChannels;channel++){
+  const data=buffer.getChannelData(channel);
+  for(let i=0;i<data.length;i+=61){sum+=data[i]*data[i];peak=Math.max(peak,Math.abs(data[i]));count++;}
+ }
+ const rms=Math.sqrt(sum/Math.max(1,count));
+ const gain=Math.min(12,.82/Math.max(peak,.0001),.18/Math.max(rms,.0001));
+ for(let channel=0;channel<buffer.numberOfChannels;channel++){
+  const data=buffer.getChannelData(channel);for(let i=0;i<data.length;i++)data[i]*=gain;
  }
  return buffer;
 }
@@ -139,8 +151,7 @@ export class RallyAudio{
   if(context.state==='closed')return;
   for(const layer of ENGINE_LAYERS){
    const take=layer.role==='idle'?idle:motion;
-   const rank=layer.role==='idle'?layer.rank:layer.rank;
-   const buffer=makeRecordedLoop(context,take,rank);
+   const buffer=makeRecordedLoop(context,take,layer.rank,1.85,layer.role==='idle');
    const {source,gain}=this.playLoop(buffer,0,'lowpass',layer.role==='idle'?2500:5500);
    this.voices.push({...layer,kind,source,gain});
   }
@@ -150,7 +161,7 @@ export class RallyAudio{
   const context=this.context!;
   const decoded=await this.getRecording([SURFACE_RECORDINGS[name]]);
   if(context.state==='closed')return;
-  const looped=makeRecordedLoop(context,decoded,name==='ambience'?.48:.65,name==='ambience'?Math.min(decoded.duration,20):3.5);
+  const looped=name==='ambience'?decoded:makeRecordedLoop(context,decoded,.65,3.5);
   const voice=this.playLoop(looped,0,name==='scrub'?'highpass':'lowpass',name==='scrub'?320:3700);
   this.surface.set(name,voice);
   this.mix();
@@ -202,7 +213,7 @@ export class RallyAudio{
   master.gain.setTargetAtTime(this.enabled&&this.active?.78:0,t,.13);
   const rpm=clamp(this.lastRPM,700,7300),throttle=clamp(this.lastThrottle,0,1);
   const brake=clamp(this.lastBrake,0,1),speed=Math.max(0,this.lastSpeed);
-  const idle=smooth(1900,950,1900)-smooth(rpm,950,1900);
+  const idle=1-smooth(rpm,950,1900);
   const on=clamp(.06+throttle*.94,0,1),off=clamp((1-throttle)*(.65+brake*.25),0,1);
   for(const voice of this.voices){
    const selected=voice.kind===this.kind?1:0;
