@@ -37,8 +37,16 @@ jobs:
           node --input-type=module <<'JS'
           import fs from 'node:fs';
           const info=JSON.parse(fs.readFileSync('netlify-deployment.json','utf8'));
-          const url=info.deploy_url||info.ssl_url||info.url;
-          if(!url)throw Error('Netlify returned no deployment URL');
+          const keys=Object.keys(info);
+          console.log('Netlify response keys:', keys.join(', '));
+          const candidateUrls=[info.deploy_url,info.deployUrl,info.site_url,info.siteUrl,info.ssl_url,info.url,info.deploy?.url,info.site?.url];
+          const nested=(JSON.stringify(info).match(/https?:\\/\\/[^"\\s]+?\\.netlify\\.app\\/?/g)||[]);
+          const url=[...candidateUrls,...nested].find(x=>typeof x==='string'&&x.includes('.netlify.app'));
+          if(!url){
+            const safeStatus={success:info.success,status:info.status,error:typeof info.error==='string'?info.error.slice(0,200):undefined};
+            console.error('Netlify deployment returned no site URL',safeStatus);
+            throw Error('Netlify returned no deployment URL');
+          }
           console.log('Preview: '+url);
-          fs.appendFileSync(process.env.GITHUB_STEP_SUMMARY,'## Anonymous Netlify preview\n\n'+url+'\n\nThis unclaimed preview expires after one hour.\n');
+          fs.appendFileSync(process.env.GITHUB_STEP_SUMMARY,'## Anonymous Netlify preview\\n\\n'+url+'\\n\\nThis unclaimed preview expires after one hour.\\n');
           JS
