@@ -59,58 +59,58 @@
     {
       "kind": "suv",
       "surface": "packed",
-      "metres": 25.7487,
-      "seconds": 2.3583,
-      "peakYaw": 0.0004
+      "metres": 26.1545,
+      "seconds": 2.4,
+      "peakYaw": 0.0029
     },
     {
       "kind": "suv",
       "surface": "gravel",
-      "metres": 26.9256,
-      "seconds": 2.4542,
-      "peakYaw": 0.0002
+      "metres": 27.0897,
+      "seconds": 2.4708,
+      "peakYaw": 0.0001
     },
     {
       "kind": "suv",
       "surface": "mud",
-      "metres": 33.6855,
-      "seconds": 3.2458,
+      "metres": 33.8466,
+      "seconds": 3.2583,
       "peakYaw": 0
     },
     {
       "kind": "suv",
       "surface": "shoulder",
-      "metres": 29.7053,
-      "seconds": 2.7625,
+      "metres": 29.8614,
+      "seconds": 2.775,
       "peakYaw": 0
     },
     {
       "kind": "truck",
       "surface": "packed",
-      "metres": 27.0825,
-      "seconds": 2.4583,
-      "peakYaw": 0.0317
+      "metres": 27.2153,
+      "seconds": 2.4708,
+      "peakYaw": 0.0316
     },
     {
       "kind": "truck",
       "surface": "gravel",
-      "metres": 28.2573,
-      "seconds": 2.5542,
-      "peakYaw": 0.0457
+      "metres": 28.3657,
+      "seconds": 2.5667,
+      "peakYaw": 0.0462
     },
     {
       "kind": "truck",
       "surface": "mud",
-      "metres": 38.7575,
-      "seconds": 3.6375,
-      "peakYaw": 0.0195
+      "metres": 38.8728,
+      "seconds": 3.6542,
+      "peakYaw": 0.0191
     },
     {
       "kind": "truck",
       "surface": "shoulder",
-      "metres": 32.3253,
-      "seconds": 2.9625,
-      "peakYaw": 0.0328
+      "metres": 32.4953,
+      "seconds": 2.9792,
+      "peakYaw": 0.0333
     }
   ],
   "slides": [
@@ -118,288 +118,288 @@
       "kind": "suv",
       "surface": "packed",
       "maneuver": "coast",
-      "peakSlip": 6.4351,
-      "exitSlip": 6.3181,
-      "heading": 39.8167,
-      "frontShare": 0.5645,
-      "meanWheelSlip": 0.0079,
-      "exitKmh": 47.8996,
-      "recoverySeconds": 0.3583
+      "peakSlip": 6.3383,
+      "exitSlip": 6.1724,
+      "heading": 39.9454,
+      "frontShare": 0.5683,
+      "meanWheelSlip": 0.0083,
+      "exitKmh": 47.3716,
+      "recoverySeconds": 0.3542
     },
     {
       "kind": "suv",
       "surface": "packed",
       "maneuver": "trail",
-      "peakSlip": 5.5974,
+      "peakSlip": 5.6087,
       "exitSlip": 3.1767,
-      "heading": 36.673,
-      "frontShare": 0.5914,
-      "meanWheelSlip": 0.0249,
-      "exitKmh": 50.7881,
+      "heading": 36.7067,
+      "frontShare": 0.5917,
+      "meanWheelSlip": 0.025,
+      "exitKmh": 50.7337,
       "recoverySeconds": 0.0625
     },
     {
       "kind": "suv",
       "surface": "packed",
       "maneuver": "power",
-      "peakSlip": 6.4989,
-      "exitSlip": 6.4989,
-      "heading": 30.9691,
+      "peakSlip": 6.5058,
+      "exitSlip": 6.5058,
+      "heading": 30.9765,
       "frontShare": 0.4394,
-      "meanWheelSlip": 0.0541,
-      "exitKmh": 76.0801,
-      "recoverySeconds": 0.3583
+      "meanWheelSlip": 0.054,
+      "exitKmh": 76.105,
+      "recoverySeconds": 0.3667
     },
     {
       "kind": "suv",
       "surface": "gravel",
       "maneuver": "coast",
-      "peakSlip": 7.0412,
-      "exitSlip": 6.9689,
-      "heading": 38.4682,
-      "frontShare": 0.5694,
-      "meanWheelSlip": 0.0099,
-      "exitKmh": 46.5607,
-      "recoverySeconds": 0.4083
+      "peakSlip": 6.9312,
+      "exitSlip": 6.8189,
+      "heading": 38.5774,
+      "frontShare": 0.5732,
+      "meanWheelSlip": 0.0104,
+      "exitKmh": 46.0388,
+      "recoverySeconds": 0.4
     },
     {
       "kind": "suv",
       "surface": "gravel",
       "maneuver": "trail",
-      "peakSlip": 5.9313,
-      "exitSlip": 3.6812,
-      "heading": 35.3229,
-      "frontShare": 0.5963,
+      "peakSlip": 5.9433,
+      "exitSlip": 3.6818,
+      "heading": 35.3534,
+      "frontShare": 0.5965,
       "meanWheelSlip": 0.0301,
-      "exitKmh": 49.4689,
+      "exitKmh": 49.4155,
       "recoverySeconds": 0.0625
     },
     {
       "kind": "suv",
       "surface": "gravel",
       "maneuver": "power",
-      "peakSlip": 7.6079,
-      "exitSlip": 7.6079,
-      "heading": 31.4571,
+      "peakSlip": 7.6155,
+      "exitSlip": 7.6155,
+      "heading": 31.4652,
       "frontShare": 0.4454,
       "meanWheelSlip": 0.066,
-      "exitKmh": 74.2123,
-      "recoverySeconds": 0.4292
+      "exitKmh": 74.2364,
+      "recoverySeconds": 0.4375
     },
     {
       "kind": "suv",
       "surface": "mud",
       "maneuver": "coast",
-      "peakSlip": 9.384,
-      "exitSlip": 9.384,
-      "heading": 30.5506,
-      "frontShare": 0.6045,
-      "meanWheelSlip": 0.0186,
-      "exitKmh": 37.9451,
-      "recoverySeconds": 0.65
+      "peakSlip": 9.2218,
+      "exitSlip": 9.2218,
+      "heading": 30.532,
+      "frontShare": 0.6082,
+      "meanWheelSlip": 0.0197,
+      "exitKmh": 37.4831,
+      "recoverySeconds": 0.6417
     },
     {
       "kind": "suv",
       "surface": "mud",
       "maneuver": "trail",
-      "peakSlip": 6.6165,
-      "exitSlip": 6.5531,
-      "heading": 28.0416,
-      "frontShare": 0.6302,
-      "meanWheelSlip": 0.0572,
-      "exitKmh": 40.9102,
-      "recoverySeconds": 0.5042
+      "peakSlip": 6.6251,
+      "exitSlip": 6.5514,
+      "heading": 28.05,
+      "frontShare": 0.6304,
+      "meanWheelSlip": 0.0574,
+      "exitKmh": 40.8637,
+      "recoverySeconds": 0.5167
     },
     {
       "kind": "suv",
       "surface": "mud",
       "maneuver": "power",
-      "peakSlip": 18.1486,
-      "exitSlip": 18.1486,
-      "heading": 35.2661,
+      "peakSlip": 18.1605,
+      "exitSlip": 18.1605,
+      "heading": 35.276,
       "frontShare": 0.4893,
-      "meanWheelSlip": 0.1878,
-      "exitKmh": 61.4863,
+      "meanWheelSlip": 0.1877,
+      "exitKmh": 61.5059,
       "recoverySeconds": 1.2917
     },
     {
       "kind": "suv",
       "surface": "shoulder",
       "maneuver": "coast",
-      "peakSlip": 8.4654,
-      "exitSlip": 8.4654,
-      "heading": 35.1206,
-      "frontShare": 0.5865,
-      "meanWheelSlip": 0.0126,
-      "exitKmh": 42.2176,
-      "recoverySeconds": 0.525
+      "peakSlip": 8.3097,
+      "exitSlip": 8.3062,
+      "heading": 35.1707,
+      "frontShare": 0.5902,
+      "meanWheelSlip": 0.0133,
+      "exitKmh": 41.725,
+      "recoverySeconds": 0.5167
     },
     {
       "kind": "suv",
       "surface": "shoulder",
       "maneuver": "trail",
-      "peakSlip": 6.4397,
-      "exitSlip": 5.0861,
-      "heading": 31.9805,
-      "frontShare": 0.6122,
+      "peakSlip": 6.4524,
+      "exitSlip": 5.0877,
+      "heading": 32.0018,
+      "frontShare": 0.6124,
       "meanWheelSlip": 0.0385,
-      "exitKmh": 45.2406,
-      "recoverySeconds": 0.2542
+      "exitKmh": 45.1901,
+      "recoverySeconds": 0.2667
     },
     {
       "kind": "suv",
       "surface": "shoulder",
       "maneuver": "power",
-      "peakSlip": 11.6843,
-      "exitSlip": 11.6843,
-      "heading": 33.2789,
+      "peakSlip": 11.6956,
+      "exitSlip": 11.6956,
+      "heading": 33.2892,
       "frontShare": 0.4662,
       "meanWheelSlip": 0.0957,
-      "exitKmh": 68.2467,
-      "recoverySeconds": 0.9125
+      "exitKmh": 68.2684,
+      "recoverySeconds": 0.9167
     },
     {
       "kind": "truck",
       "surface": "packed",
       "maneuver": "coast",
-      "peakSlip": 4.3042,
-      "exitSlip": 4.2494,
-      "heading": 24.8675,
-      "frontShare": 0.5415,
-      "meanWheelSlip": 0.0114,
-      "exitKmh": 48.2361,
+      "peakSlip": 4.2255,
+      "exitSlip": 4.1405,
+      "heading": 24.8455,
+      "frontShare": 0.548,
+      "meanWheelSlip": 0.0124,
+      "exitKmh": 47.5976,
       "recoverySeconds": 0.0667
     },
     {
       "kind": "truck",
       "surface": "packed",
       "maneuver": "trail",
-      "peakSlip": 3.3588,
-      "exitSlip": 2.6122,
-      "heading": 22.8482,
-      "frontShare": 0.5688,
-      "meanWheelSlip": 0.0239,
-      "exitKmh": 50.8568,
+      "peakSlip": 3.3804,
+      "exitSlip": 2.6133,
+      "heading": 22.8844,
+      "frontShare": 0.5693,
+      "meanWheelSlip": 0.0238,
+      "exitKmh": 50.7114,
       "recoverySeconds": 0.0042
     },
     {
       "kind": "truck",
       "surface": "packed",
       "maneuver": "power",
-      "peakSlip": 4.1997,
-      "exitSlip": 4.1997,
-      "heading": 21.4372,
-      "frontShare": 0.4571,
-      "meanWheelSlip": 0.0408,
-      "exitKmh": 70.2355,
+      "peakSlip": 4.1212,
+      "exitSlip": 4.1212,
+      "heading": 21.4747,
+      "frontShare": 0.4489,
+      "meanWheelSlip": 0.0392,
+      "exitKmh": 69.5959,
       "recoverySeconds": 0.0042
     },
     {
       "kind": "truck",
       "surface": "gravel",
       "maneuver": "coast",
-      "peakSlip": 4.6474,
-      "exitSlip": 4.6124,
-      "heading": 23.6378,
-      "frontShare": 0.5447,
-      "meanWheelSlip": 0.0148,
-      "exitKmh": 47.1569,
-      "recoverySeconds": 0.0625
+      "peakSlip": 4.5681,
+      "exitSlip": 4.5055,
+      "heading": 23.6547,
+      "frontShare": 0.5513,
+      "meanWheelSlip": 0.0161,
+      "exitKmh": 46.5111,
+      "recoverySeconds": 0.0583
     },
     {
       "kind": "truck",
       "surface": "gravel",
       "maneuver": "trail",
-      "peakSlip": 3.7039,
-      "exitSlip": 2.9111,
-      "heading": 21.9096,
-      "frontShare": 0.5722,
-      "meanWheelSlip": 0.0303,
-      "exitKmh": 49.7415,
+      "peakSlip": 3.7313,
+      "exitSlip": 2.9137,
+      "heading": 21.9694,
+      "frontShare": 0.5728,
+      "meanWheelSlip": 0.0301,
+      "exitKmh": 49.5917,
       "recoverySeconds": 0.0042
     },
     {
       "kind": "truck",
       "surface": "gravel",
       "maneuver": "power",
-      "peakSlip": 4.5502,
-      "exitSlip": 4.5502,
-      "heading": 20.5004,
-      "frontShare": 0.4607,
-      "meanWheelSlip": 0.0495,
-      "exitKmh": 68.9138,
+      "peakSlip": 4.4689,
+      "exitSlip": 4.4689,
+      "heading": 20.56,
+      "frontShare": 0.4523,
+      "meanWheelSlip": 0.0475,
+      "exitKmh": 68.2801,
       "recoverySeconds": 0.0042
     },
     {
       "kind": "truck",
       "surface": "mud",
       "maneuver": "coast",
-      "peakSlip": 5.9297,
-      "exitSlip": 5.9297,
-      "heading": 17.7956,
-      "frontShare": 0.5653,
-      "meanWheelSlip": 0.0283,
-      "exitKmh": 41.2751,
-      "recoverySeconds": 0.5542
+      "peakSlip": 5.8083,
+      "exitSlip": 5.8083,
+      "heading": 17.6916,
+      "frontShare": 0.572,
+      "meanWheelSlip": 0.0309,
+      "exitKmh": 40.6586,
+      "recoverySeconds": 0.5375
     },
     {
       "kind": "truck",
       "surface": "mud",
       "maneuver": "trail",
-      "peakSlip": 4.1043,
-      "exitSlip": 4.1043,
-      "heading": 16.084,
-      "frontShare": 0.5925,
-      "meanWheelSlip": 0.0551,
-      "exitKmh": 43.9003,
+      "peakSlip": 4.1026,
+      "exitSlip": 4.1026,
+      "heading": 16.0814,
+      "frontShare": 0.593,
+      "meanWheelSlip": 0.0549,
+      "exitKmh": 43.7581,
       "recoverySeconds": 0.0042
     },
     {
       "kind": "truck",
       "surface": "mud",
       "maneuver": "power",
-      "peakSlip": 6.6247,
-      "exitSlip": 6.6247,
-      "heading": 17.9981,
-      "frontShare": 0.4853,
-      "meanWheelSlip": 0.0893,
-      "exitKmh": 61.3315,
-      "recoverySeconds": 0.6542
+      "peakSlip": 6.5005,
+      "exitSlip": 6.5005,
+      "heading": 17.8904,
+      "frontShare": 0.4768,
+      "meanWheelSlip": 0.0857,
+      "exitKmh": 60.7607,
+      "recoverySeconds": 0.6667
     },
     {
       "kind": "truck",
       "surface": "shoulder",
       "maneuver": "coast",
-      "peakSlip": 5.4925,
-      "exitSlip": 5.4925,
-      "heading": 21.024,
-      "frontShare": 0.5546,
-      "meanWheelSlip": 0.0193,
-      "exitKmh": 44.2365,
-      "recoverySeconds": 0.4083
+      "peakSlip": 5.3866,
+      "exitSlip": 5.3853,
+      "heading": 21.0106,
+      "frontShare": 0.5612,
+      "meanWheelSlip": 0.021,
+      "exitKmh": 43.6005,
+      "recoverySeconds": 0.3917
     },
     {
       "kind": "truck",
       "surface": "shoulder",
       "maneuver": "trail",
-      "peakSlip": 4.1226,
-      "exitSlip": 3.659,
-      "heading": 19.3502,
-      "frontShare": 0.5818,
-      "meanWheelSlip": 0.0391,
-      "exitKmh": 46.8673,
+      "peakSlip": 4.1513,
+      "exitSlip": 3.6641,
+      "heading": 19.3954,
+      "frontShare": 0.5824,
+      "meanWheelSlip": 0.0389,
+      "exitKmh": 46.717,
       "recoverySeconds": 0.0042
     },
     {
       "kind": "truck",
       "surface": "shoulder",
       "maneuver": "power",
-      "peakSlip": 5.4658,
-      "exitSlip": 5.4658,
-      "heading": 19.0874,
-      "frontShare": 0.4724,
-      "meanWheelSlip": 0.0626,
-      "exitKmh": 65.2663,
+      "peakSlip": 5.3788,
+      "exitSlip": 5.3788,
+      "heading": 19.1047,
+      "frontShare": 0.464,
+      "meanWheelSlip": 0.0601,
+      "exitKmh": 64.6586,
       "recoverySeconds": 0.4292
     }
   ],
@@ -408,12 +408,12 @@
       "kind": "suv",
       "shape": "mud-entry",
       "peakYaw": 0.0009,
-      "peakSlip": 0.021,
-      "peakYawStep": 0.001,
+      "peakSlip": 0.0039,
+      "peakYawStep": 0.0009,
       "firstFront": 0.7458,
-      "firstRear": 0.9875,
+      "firstRear": 0.9833,
       "maxWheelGripDifference": 0.27,
-      "heading": 0
+      "heading": 0.0001
     },
     {
       "kind": "suv",
@@ -429,112 +429,112 @@
     {
       "kind": "suv",
       "shape": "mud-corner",
-      "peakYaw": 0.2622,
-      "peakSlip": 8.1381,
+      "peakYaw": 0.2624,
+      "peakSlip": 8.1529,
       "peakYawStep": 0.0023,
       "firstFront": 0,
       "firstRear": 0,
       "maxWheelGripDifference": 0.27,
-      "heading": 0.8959
+      "heading": 0.8964
     },
     {
       "kind": "suv",
       "shape": "split-left",
-      "peakYaw": 0.1062,
-      "peakSlip": 6.0239,
+      "peakYaw": 0.0981,
+      "peakSlip": 6.3158,
       "peakYawStep": 0.0078,
       "firstFront": 0,
       "firstRear": 0,
       "maxWheelGripDifference": 0.27,
-      "heading": -0.1114
+      "heading": -0.1025
     },
     {
       "kind": "suv",
       "shape": "split-right",
-      "peakYaw": 0.1062,
-      "peakSlip": 6.0246,
+      "peakYaw": 0.0981,
+      "peakSlip": 6.3164,
       "peakYawStep": 0.0078,
       "firstFront": 0,
       "firstRear": 0,
       "maxWheelGripDifference": 0.27,
-      "heading": 0.1115
+      "heading": 0.1026
     },
     {
       "kind": "suv",
       "shape": "shoulder-corner",
-      "peakYaw": 0.3184,
-      "peakSlip": 6.1201,
+      "peakYaw": 0.3185,
+      "peakSlip": 6.13,
       "peakYawStep": 0.0026,
       "firstFront": 0,
       "firstRear": 0,
       "maxWheelGripDifference": 0.15,
-      "heading": 0.9537
+      "heading": 0.9541
     },
     {
       "kind": "truck",
       "shape": "mud-entry",
-      "peakYaw": 0.0045,
-      "peakSlip": 0.7178,
-      "peakYawStep": 0.0011,
+      "peakYaw": 0.0046,
+      "peakSlip": 0.718,
+      "peakYawStep": 0.0013,
       "firstFront": 0.675,
-      "firstRear": 0.975,
+      "firstRear": 0.9708,
       "maxWheelGripDifference": 0.27,
-      "heading": 0
+      "heading": 0.0004
     },
     {
       "kind": "truck",
       "shape": "mud-exit",
-      "peakYaw": 0.0094,
-      "peakSlip": 0.6051,
-      "peakYawStep": 0.0013,
+      "peakYaw": 0.0096,
+      "peakSlip": 0.6057,
+      "peakYawStep": 0.0016,
       "firstFront": 0,
       "firstRear": 0,
       "maxWheelGripDifference": 0.27,
-      "heading": -0.0063
+      "heading": -0.0065
     },
     {
       "kind": "truck",
       "shape": "mud-corner",
       "peakYaw": 0.1568,
-      "peakSlip": 5.5266,
+      "peakSlip": 5.5298,
       "peakYawStep": 0.0014,
       "firstFront": 0,
       "firstRear": 0,
       "maxWheelGripDifference": 0.27,
-      "heading": 0.5422
+      "heading": 0.5423
     },
     {
       "kind": "truck",
       "shape": "split-left",
-      "peakYaw": 0.0723,
-      "peakSlip": 1.8417,
-      "peakYawStep": 0.0021,
+      "peakYaw": 0.0584,
+      "peakSlip": 1.3315,
+      "peakYawStep": 0.002,
       "firstFront": 0,
       "firstRear": 0,
       "maxWheelGripDifference": 0.27,
-      "heading": -0.0947
+      "heading": -0.0738
     },
     {
       "kind": "truck",
       "shape": "split-right",
-      "peakYaw": 0.0747,
-      "peakSlip": 1.9901,
-      "peakYawStep": 0.0021,
+      "peakYaw": 0.0616,
+      "peakSlip": 1.4545,
+      "peakYawStep": 0.002,
       "firstFront": 0,
       "firstRear": 0,
       "maxWheelGripDifference": 0.27,
-      "heading": 0.0987
+      "heading": 0.078
     },
     {
       "kind": "truck",
       "shape": "shoulder-corner",
       "peakYaw": 0.2094,
-      "peakSlip": 4.4811,
+      "peakSlip": 4.4837,
       "peakYawStep": 0.0014,
       "firstFront": 0,
       "firstRear": 0,
       "maxWheelGripDifference": 0.15,
-      "heading": 0.6137
+      "heading": 0.6138
     }
   ],
   "cadence": [
@@ -543,21 +543,21 @@
       "runs": [
         {
           "hz": 30,
-          "x": -7.731719493865967,
-          "z": -64.96736907958984,
-          "speed": 15.181169476590922
+          "x": -7.7283806800842285,
+          "z": -65.00090026855469,
+          "speed": 15.186046855163566
         },
         {
           "hz": 60,
-          "x": -7.731719493865967,
-          "z": -64.96736907958984,
-          "speed": 15.181169476590922
+          "x": -7.7283806800842285,
+          "z": -65.00090026855469,
+          "speed": 15.186046855163566
         },
         {
           "hz": 120,
-          "x": -7.731719493865967,
-          "z": -64.96736907958984,
-          "speed": 15.181169476590922
+          "x": -7.7283806800842285,
+          "z": -65.00090026855469,
+          "speed": 15.186046855163566
         }
       ]
     },
@@ -566,21 +566,21 @@
       "runs": [
         {
           "hz": 30,
-          "x": -5.168647289276123,
-          "z": -65.5872573852539,
-          "speed": 15.738330993400302
+          "x": -5.168849945068359,
+          "z": -65.60749816894531,
+          "speed": 15.742307427888305
         },
         {
           "hz": 60,
-          "x": -5.168647289276123,
-          "z": -65.5872573852539,
-          "speed": 15.738330993400302
+          "x": -5.168849945068359,
+          "z": -65.60749816894531,
+          "speed": 15.742307427888305
         },
         {
           "hz": 120,
-          "x": -5.168647289276123,
-          "z": -65.5872573852539,
-          "speed": 15.738330993400302
+          "x": -5.168849945068359,
+          "z": -65.60749816894531,
+          "speed": 15.742307427888305
         }
       ]
     }

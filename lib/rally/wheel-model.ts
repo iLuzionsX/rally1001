@@ -57,18 +57,18 @@ export class RallyWheel {
     // onto the road normal, then resolves it along the suspension axis.
     // Chassis-up velocity alone misses compression caused by driving into a
     // rising road, and damps motion tangent to a slope that is not compression.
-    const vertical=(this.handlingMode==='rally'||this.handlingMode==='rally-legacy')
+    const vertical=(this.handlingMode==='rally'||this.handlingMode==='rally-surface'||this.handlingMode==='rally-legacy')
       ?this.velocity.dot(this.normal)/Math.max(.2,this.normal.dot(this.up))
       :this.velocity.dot(this.up);
     const compression=c.suspension-this.suspensionLength;
     const damping=vertical<0?c.compressionDamping:c.reboundDamping;
     // Digressive compression damping absorbs sharp inputs without making the
     // damper effectively rigid. Low-speed body control and rebound are retained.
-    const damperVelocity=(this.handlingMode==='rally'||this.handlingMode==='rally-legacy')&&vertical<-c.damperKneeSpeed
+    const damperVelocity=(this.handlingMode==='rally'||this.handlingMode==='rally-surface'||this.handlingMode==='rally-legacy')&&vertical<-c.damperKneeSpeed
       ?-c.damperKneeSpeed+(vertical+c.damperKneeSpeed)*c.fastCompressionRatio:vertical;
     this.force=clamp(c.springRate*compression-damping*damperVelocity+Math.max(0,compression-c.suspensionTravel)*c.springRate*3,0,c.mass*9.81*.85);
     const surface=surfaceAt(this.contactPoint.x,this.contactPoint.z);
-    if(this.handlingMode==='rally'){
+    if(this.handlingMode==='rally'||this.handlingMode==='rally-surface'){
       const target=surface.tire??{...(surface.mud?SURFACE_TIRES.mud:SURFACE_TIRES.gravel),grip:surface.grip,rollingResistance:surface.rollingResistance,rollingDrag:surface.rollingDrag};
       // A short distance-based patch transition; a lower-grip surface sets an
       // immediate ceiling so smoothing never lends dry traction to mud.
@@ -103,7 +103,7 @@ export class RallyWheel {
       const speed=Math.abs(this.longVelocity);
       const rawAngle=-Math.atan2(this.sideVelocity,Math.max(speed,.01));
       // Fade into the rolling model to avoid a force discontinuity near rest.
-      const terrain=this.handlingMode==='rally'?this.surfaceTire:undefined;
+      const terrain=(this.handlingMode==='rally'||this.handlingMode==='rally-surface')?this.surfaceTire:undefined;
       // Unwind contact deformation faster when slip decreases or reverses.
       // Throttle/lift/braking still act only through tire forces and axle loads.
       const recovering=rawAngle*this.relaxedSlipAngle<=0||Math.abs(rawAngle)<Math.abs(this.relaxedSlipAngle);
