@@ -17,7 +17,10 @@
     "check:grip": "node scripts/check-grip.mjs",
     "check:rally": "node scripts/check-rally-dynamics.mjs",
     "check:exposure": "node scripts/check-exposure.mjs",
-    "check:corner-balance": "node scripts/check-corner-balance.mjs"
+    "check:corner-balance": "node scripts/check-corner-balance.mjs",
+    "check:rough-road": "node scripts/check-rough-road.mjs",
+    "check:surfaces": "node scripts/check-surfaces.mjs",
+    "check:drivetrain": "node scripts/check-drivetrain.mjs"
   },
   "dependencies": {
     "@base-ui/react": "^1.7.0",

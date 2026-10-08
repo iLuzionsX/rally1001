@@ -1,0 +1,589 @@
+{
+  "curves": [
+    {
+      "surface": "packed",
+      "peakX": 4473.9098,
+      "peakY": 4178.4578,
+      "peakSlip": 0.232
+    },
+    {
+      "surface": "gravel",
+      "peakX": 4180.5375,
+      "peakY": 3895.6167,
+      "peakSlip": 0.268
+    },
+    {
+      "surface": "mud",
+      "peakX": 2493.6543,
+      "peakY": 2311.6383,
+      "peakSlip": 0.298
+    },
+    {
+      "surface": "shoulder",
+      "peakX": 3373.7652,
+      "peakY": 3127.5106,
+      "peakSlip": 0.28
+    }
+  ],
+  "mapping": [
+    {
+      "s": 0,
+      "maxGripStep": 0.003
+    },
+    {
+      "s": 0.1,
+      "maxGripStep": 0.003
+    },
+    {
+      "s": 0.345,
+      "maxGripStep": 0.003
+    },
+    {
+      "s": 0.39,
+      "maxGripStep": 0.003
+    },
+    {
+      "s": 0.64,
+      "maxGripStep": 0.003
+    },
+    {
+      "s": 0.682,
+      "maxGripStep": 0.003
+    },
+    {
+      "s": 0.9999,
+      "maxGripStep": 0.003
+    }
+  ],
+  "braking": [
+    {
+      "kind": "suv",
+      "surface": "packed",
+      "metres": 26.1545,
+      "seconds": 2.4,
+      "peakYaw": 0.0029
+    },
+    {
+      "kind": "suv",
+      "surface": "gravel",
+      "metres": 27.0897,
+      "seconds": 2.4708,
+      "peakYaw": 0.0001
+    },
+    {
+      "kind": "suv",
+      "surface": "mud",
+      "metres": 33.8466,
+      "seconds": 3.2583,
+      "peakYaw": 0
+    },
+    {
+      "kind": "suv",
+      "surface": "shoulder",
+      "metres": 29.8614,
+      "seconds": 2.775,
+      "peakYaw": 0
+    },
+    {
+      "kind": "truck",
+      "surface": "packed",
+      "metres": 27.2153,
+      "seconds": 2.4708,
+      "peakYaw": 0.0316
+    },
+    {
+      "kind": "truck",
+      "surface": "gravel",
+      "metres": 28.3657,
+      "seconds": 2.5667,
+      "peakYaw": 0.0462
+    },
+    {
+      "kind": "truck",
+      "surface": "mud",
+      "metres": 38.8728,
+      "seconds": 3.6542,
+      "peakYaw": 0.0191
+    },
+    {
+      "kind": "truck",
+      "surface": "shoulder",
+      "metres": 32.4953,
+      "seconds": 2.9792,
+      "peakYaw": 0.0333
+    }
+  ],
+  "slides": [
+    {
+      "kind": "suv",
+      "surface": "packed",
+      "maneuver": "coast",
+      "peakSlip": 6.3383,
+      "exitSlip": 6.1724,
+      "heading": 39.9454,
+      "frontShare": 0.5683,
+      "meanWheelSlip": 0.0083,
+      "exitKmh": 47.3716,
+      "recoverySeconds": 0.3542
+    },
+    {
+      "kind": "suv",
+      "surface": "packed",
+      "maneuver": "trail",
+      "peakSlip": 5.6087,
+      "exitSlip": 3.1767,
+      "heading": 36.7067,
+      "frontShare": 0.5917,
+      "meanWheelSlip": 0.025,
+      "exitKmh": 50.7337,
+      "recoverySeconds": 0.0625
+    },
+    {
+      "kind": "suv",
+      "surface": "packed",
+      "maneuver": "power",
+      "peakSlip": 6.5058,
+      "exitSlip": 6.5058,
+      "heading": 30.9765,
+      "frontShare": 0.4394,
+      "meanWheelSlip": 0.054,
+      "exitKmh": 76.105,
+      "recoverySeconds": 0.3667
+    },
+    {
+      "kind": "suv",
+      "surface": "gravel",
+      "maneuver": "coast",
+      "peakSlip": 6.9312,
+      "exitSlip": 6.8189,
+      "heading": 38.5774,
+      "frontShare": 0.5732,
+      "meanWheelSlip": 0.0104,
+      "exitKmh": 46.0388,
+      "recoverySeconds": 0.4
+    },
+    {
+      "kind": "suv",
+      "surface": "gravel",
+      "maneuver": "trail",
+      "peakSlip": 5.9433,
+      "exitSlip": 3.6818,
+      "heading": 35.3534,
+      "frontShare": 0.5965,
+      "meanWheelSlip": 0.0301,
+      "exitKmh": 49.4155,
+      "recoverySeconds": 0.0625
+    },
+    {
+      "kind": "suv",
+      "surface": "gravel",
+      "maneuver": "power",
+      "peakSlip": 7.6155,
+      "exitSlip": 7.6155,
+      "heading": 31.4652,
+      "frontShare": 0.4454,
+      "meanWheelSlip": 0.066,
+      "exitKmh": 74.2364,
+      "recoverySeconds": 0.4375
+    },
+    {
+      "kind": "suv",
+      "surface": "mud",
+      "maneuver": "coast",
+      "peakSlip": 9.2218,
+      "exitSlip": 9.2218,
+      "heading": 30.532,
+      "frontShare": 0.6082,
+      "meanWheelSlip": 0.0197,
+      "exitKmh": 37.4831,
+      "recoverySeconds": 0.6417
+    },
+    {
+      "kind": "suv",
+      "surface": "mud",
+      "maneuver": "trail",
+      "peakSlip": 6.6251,
+      "exitSlip": 6.5514,
+      "heading": 28.05,
+      "frontShare": 0.6304,
+      "meanWheelSlip": 0.0574,
+      "exitKmh": 40.8637,
+      "recoverySeconds": 0.5167
+    },
+    {
+      "kind": "suv",
+      "surface": "mud",
+      "maneuver": "power",
+      "peakSlip": 18.1605,
+      "exitSlip": 18.1605,
+      "heading": 35.276,
+      "frontShare": 0.4893,
+      "meanWheelSlip": 0.1877,
+      "exitKmh": 61.5059,
+      "recoverySeconds": 1.2917
+    },
+    {
+      "kind": "suv",
+      "surface": "shoulder",
+      "maneuver": "coast",
+      "peakSlip": 8.3097,
+      "exitSlip": 8.3062,
+      "heading": 35.1707,
+      "frontShare": 0.5902,
+      "meanWheelSlip": 0.0133,
+      "exitKmh": 41.725,
+      "recoverySeconds": 0.5167
+    },
+    {
+      "kind": "suv",
+      "surface": "shoulder",
+      "maneuver": "trail",
+      "peakSlip": 6.4524,
+      "exitSlip": 5.0877,
+      "heading": 32.0018,
+      "frontShare": 0.6124,
+      "meanWheelSlip": 0.0385,
+      "exitKmh": 45.1901,
+      "recoverySeconds": 0.2667
+    },
+    {
+      "kind": "suv",
+      "surface": "shoulder",
+      "maneuver": "power",
+      "peakSlip": 11.6956,
+      "exitSlip": 11.6956,
+      "heading": 33.2892,
+      "frontShare": 0.4662,
+      "meanWheelSlip": 0.0957,
+      "exitKmh": 68.2684,
+      "recoverySeconds": 0.9167
+    },
+    {
+      "kind": "truck",
+      "surface": "packed",
+      "maneuver": "coast",
+      "peakSlip": 4.2255,
+      "exitSlip": 4.1405,
+      "heading": 24.8455,
+      "frontShare": 0.548,
+      "meanWheelSlip": 0.0124,
+      "exitKmh": 47.5976,
+      "recoverySeconds": 0.0667
+    },
+    {
+      "kind": "truck",
+      "surface": "packed",
+      "maneuver": "trail",
+      "peakSlip": 3.3804,
+      "exitSlip": 2.6133,
+      "heading": 22.8844,
+      "frontShare": 0.5693,
+      "meanWheelSlip": 0.0238,
+      "exitKmh": 50.7114,
+      "recoverySeconds": 0.0042
+    },
+    {
+      "kind": "truck",
+      "surface": "packed",
+      "maneuver": "power",
+      "peakSlip": 4.1212,
+      "exitSlip": 4.1212,
+      "heading": 21.4747,
+      "frontShare": 0.4489,
+      "meanWheelSlip": 0.0392,
+      "exitKmh": 69.5959,
+      "recoverySeconds": 0.0042
+    },
+    {
+      "kind": "truck",
+      "surface": "gravel",
+      "maneuver": "coast",
+      "peakSlip": 4.5681,
+      "exitSlip": 4.5055,
+      "heading": 23.6547,
+      "frontShare": 0.5513,
+      "meanWheelSlip": 0.0161,
+      "exitKmh": 46.5111,
+      "recoverySeconds": 0.0583
+    },
+    {
+      "kind": "truck",
+      "surface": "gravel",
+      "maneuver": "trail",
+      "peakSlip": 3.7313,
+      "exitSlip": 2.9137,
+      "heading": 21.9694,
+      "frontShare": 0.5728,
+      "meanWheelSlip": 0.0301,
+      "exitKmh": 49.5917,
+      "recoverySeconds": 0.0042
+    },
+    {
+      "kind": "truck",
+      "surface": "gravel",
+      "maneuver": "power",
+      "peakSlip": 4.4689,
+      "exitSlip": 4.4689,
+      "heading": 20.56,
+      "frontShare": 0.4523,
+      "meanWheelSlip": 0.0475,
+      "exitKmh": 68.2801,
+      "recoverySeconds": 0.0042
+    },
+    {
+      "kind": "truck",
+      "surface": "mud",
+      "maneuver": "coast",
+      "peakSlip": 5.8083,
+      "exitSlip": 5.8083,
+      "heading": 17.6916,
+      "frontShare": 0.572,
+      "meanWheelSlip": 0.0309,
+      "exitKmh": 40.6586,
+      "recoverySeconds": 0.5375
+    },
+    {
+      "kind": "truck",
+      "surface": "mud",
+      "maneuver": "trail",
+      "peakSlip": 4.1026,
+      "exitSlip": 4.1026,
+      "heading": 16.0814,
+      "frontShare": 0.593,
+      "meanWheelSlip": 0.0549,
+      "exitKmh": 43.7581,
+      "recoverySeconds": 0.0042
+    },
+    {
+      "kind": "truck",
+      "surface": "mud",
+      "maneuver": "power",
+      "peakSlip": 6.5005,
+      "exitSlip": 6.5005,
+      "heading": 17.8904,
+      "frontShare": 0.4768,
+      "meanWheelSlip": 0.0857,
+      "exitKmh": 60.7607,
+      "recoverySeconds": 0.6667
+    },
+    {
+      "kind": "truck",
+      "surface": "shoulder",
+      "maneuver": "coast",
+      "peakSlip": 5.3866,
+      "exitSlip": 5.3853,
+      "heading": 21.0106,
+      "frontShare": 0.5612,
+      "meanWheelSlip": 0.021,
+      "exitKmh": 43.6005,
+      "recoverySeconds": 0.3917
+    },
+    {
+      "kind": "truck",
+      "surface": "shoulder",
+      "maneuver": "trail",
+      "peakSlip": 4.1513,
+      "exitSlip": 3.6641,
+      "heading": 19.3954,
+      "frontShare": 0.5824,
+      "meanWheelSlip": 0.0389,
+      "exitKmh": 46.717,
+      "recoverySeconds": 0.0042
+    },
+    {
+      "kind": "truck",
+      "surface": "shoulder",
+      "maneuver": "power",
+      "peakSlip": 5.3788,
+      "exitSlip": 5.3788,
+      "heading": 19.1047,
+      "frontShare": 0.464,
+      "meanWheelSlip": 0.0601,
+      "exitKmh": 64.6586,
+      "recoverySeconds": 0.4292
+    }
+  ],
+  "transitions": [
+    {
+      "kind": "suv",
+      "shape": "mud-entry",
+      "peakYaw": 0.0009,
+      "peakSlip": 0.0039,
+      "peakYawStep": 0.0009,
+      "firstFront": 0.7458,
+      "firstRear": 0.9833,
+      "maxWheelGripDifference": 0.27,
+      "heading": 0.0001
+    },
+    {
+      "kind": "suv",
+      "shape": "mud-exit",
+      "peakYaw": 0,
+      "peakSlip": 0.0006,
+      "peakYawStep": 0,
+      "firstFront": 0,
+      "firstRear": 0,
+      "maxWheelGripDifference": 0.27,
+      "heading": 0
+    },
+    {
+      "kind": "suv",
+      "shape": "mud-corner",
+      "peakYaw": 0.2624,
+      "peakSlip": 8.1529,
+      "peakYawStep": 0.0023,
+      "firstFront": 0,
+      "firstRear": 0,
+      "maxWheelGripDifference": 0.27,
+      "heading": 0.8964
+    },
+    {
+      "kind": "suv",
+      "shape": "split-left",
+      "peakYaw": 0.0981,
+      "peakSlip": 6.3158,
+      "peakYawStep": 0.0078,
+      "firstFront": 0,
+      "firstRear": 0,
+      "maxWheelGripDifference": 0.27,
+      "heading": -0.1025
+    },
+    {
+      "kind": "suv",
+      "shape": "split-right",
+      "peakYaw": 0.0981,
+      "peakSlip": 6.3164,
+      "peakYawStep": 0.0078,
+      "firstFront": 0,
+      "firstRear": 0,
+      "maxWheelGripDifference": 0.27,
+      "heading": 0.1026
+    },
+    {
+      "kind": "suv",
+      "shape": "shoulder-corner",
+      "peakYaw": 0.3185,
+      "peakSlip": 6.13,
+      "peakYawStep": 0.0026,
+      "firstFront": 0,
+      "firstRear": 0,
+      "maxWheelGripDifference": 0.15,
+      "heading": 0.9541
+    },
+    {
+      "kind": "truck",
+      "shape": "mud-entry",
+      "peakYaw": 0.0046,
+      "peakSlip": 0.718,
+      "peakYawStep": 0.0013,
+      "firstFront": 0.675,
+      "firstRear": 0.9708,
+      "maxWheelGripDifference": 0.27,
+      "heading": 0.0004
+    },
+    {
+      "kind": "truck",
+      "shape": "mud-exit",
+      "peakYaw": 0.0096,
+      "peakSlip": 0.6057,
+      "peakYawStep": 0.0016,
+      "firstFront": 0,
+      "firstRear": 0,
+      "maxWheelGripDifference": 0.27,
+      "heading": -0.0065
+    },
+    {
+      "kind": "truck",
+      "shape": "mud-corner",
+      "peakYaw": 0.1568,
+      "peakSlip": 5.5298,
+      "peakYawStep": 0.0014,
+      "firstFront": 0,
+      "firstRear": 0,
+      "maxWheelGripDifference": 0.27,
+      "heading": 0.5423
+    },
+    {
+      "kind": "truck",
+      "shape": "split-left",
+      "peakYaw": 0.0584,
+      "peakSlip": 1.3315,
+      "peakYawStep": 0.002,
+      "firstFront": 0,
+      "firstRear": 0,
+      "maxWheelGripDifference": 0.27,
+      "heading": -0.0738
+    },
+    {
+      "kind": "truck",
+      "shape": "split-right",
+      "peakYaw": 0.0616,
+      "peakSlip": 1.4545,
+      "peakYawStep": 0.002,
+      "firstFront": 0,
+      "firstRear": 0,
+      "maxWheelGripDifference": 0.27,
+      "heading": 0.078
+    },
+    {
+      "kind": "truck",
+      "shape": "shoulder-corner",
+      "peakYaw": 0.2094,
+      "peakSlip": 4.4837,
+      "peakYawStep": 0.0014,
+      "firstFront": 0,
+      "firstRear": 0,
+      "maxWheelGripDifference": 0.15,
+      "heading": 0.6138
+    }
+  ],
+  "cadence": [
+    {
+      "kind": "suv",
+      "runs": [
+        {
+          "hz": 30,
+          "x": -7.7283806800842285,
+          "z": -65.00090026855469,
+          "speed": 15.186046855163566
+        },
+        {
+          "hz": 60,
+          "x": -7.7283806800842285,
+          "z": -65.00090026855469,
+          "speed": 15.186046855163566
+        },
+        {
+          "hz": 120,
+          "x": -7.7283806800842285,
+          "z": -65.00090026855469,
+          "speed": 15.186046855163566
+        }
+      ]
+    },
+    {
+      "kind": "truck",
+      "runs": [
+        {
+          "hz": 30,
+          "x": -5.168849945068359,
+          "z": -65.60749816894531,
+          "speed": 15.742307427888305
+        },
+        {
+          "hz": 60,
+          "x": -5.168849945068359,
+          "z": -65.60749816894531,
+          "speed": 15.742307427888305
+        },
+        {
+          "hz": 120,
+          "x": -5.168849945068359,
+          "z": -65.60749816894531,
+          "speed": 15.742307427888305
+        }
+      ]
+    }
+  ],
+  "limitations": "Production solver and synthetic surface fixtures; game tuning, no measured DiRT Rally telemetry or hands-on/browser comparison."
+}

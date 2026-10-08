@@ -16,6 +16,7 @@ export class RallyVehicle{
  steer=0;throttle=0;brake=0;speed=0;forwardSpeed=0;rpm=900;gear=1;surface='LOOSE DIRT';airborne=0;
  driveModel:EcctrlDriveModel;driveDirection:1|-1=1;directionTimer=0;handbrake=0;engineWheelTorque=0;diffTransfer={front:0,rear:0,center:0};
  wheels:WheelPose[]=[];position:V3={x:0,y:0,z:0};rotation={x:0,y:0,z:0,w:1};velocity:V3={x:0,y:0,z:0};forward:V3={x:0,y:0,z:-1};previousPosition:V3={x:0,y:0,z:0};previousRotation={x:0,y:0,z:0,w:1};
+ handbrakeClutch=1;engineDragTorque=0;
  private wheelABS=Array.from({length:4},()=>new GravelABS());
  constructor(public world:RAPIER.World,public kind:VehicleKind,public handlingMode:HandlingMode='rally'){
  const c=this.config=VEHICLES[kind];this.driveModel=new EcctrlDriveModel(c.powertrain,c.radius);this.body=world.createRigidBody(RAPIER.RigidBodyDesc.dynamic().setCcdEnabled(true).setCanSleep(false).setLinearDamping(0).setAngularDamping(.08).setAdditionalSolverIterations(4));
@@ -29,10 +30,10 @@ export class RallyVehicle{
  this.reset(courseAt(0));
  }
  setHandlingMode(mode:HandlingMode){
-  this.handlingMode=mode;
-  for(const wheel of this.wheels){wheel.handlingMode=mode;wheel.relaxedSlipAngle=0;}
+  this.handlingMode=mode;this.driveModel.clearShift();this.handbrakeClutch=1;this.engineDragTorque=0;
+  for(const wheel of this.wheels){wheel.handlingMode=mode;wheel.relaxedSlipAngle=0;wheel.surfaceReady=false;}
  }
- reset(point:CoursePoint){const yaw=Math.atan2(-point.tx,-point.tz);this.body.setTranslation({x:point.x,y:point.y+this.config.radius+this.config.suspension-this.config.mount+.12,z:point.z},true);this.body.setRotation({x:0,y:Math.sin(yaw/2),z:0,w:Math.cos(yaw/2)},true);this.body.setLinvel({x:0,y:0,z:0},true);this.body.setAngvel({x:0,y:0,z:0},true);this.body.resetForces(true);this.body.resetTorques(true);this.steer=this.throttle=this.brake=this.speed=this.forwardSpeed=this.airborne=this.handbrake=this.directionTimer=0;this.driveDirection=1;this.engineWheelTorque=0;this.diffTransfer={front:0,rear:0,center:0};this.driveModel.reset();this.rpm=this.config.powertrain.idleRPM;this.gear=1;for(const wheel of this.wheels)wheel.reset();for(const abs of this.wheelABS)abs.active=false;this.readPose();this.previousPosition={...this.position};this.previousRotation={...this.rotation};}
+ reset(point:CoursePoint){const yaw=Math.atan2(-point.tx,-point.tz);this.body.setTranslation({x:point.x,y:point.y+this.config.radius+this.config.suspension-this.config.mount+.12,z:point.z},true);this.body.setRotation({x:0,y:Math.sin(yaw/2),z:0,w:Math.cos(yaw/2)},true);this.body.setLinvel({x:0,y:0,z:0},true);this.body.setAngvel({x:0,y:0,z:0},true);this.body.resetForces(true);this.body.resetTorques(true);this.steer=this.throttle=this.brake=this.speed=this.forwardSpeed=this.airborne=this.handbrake=this.directionTimer=0;this.driveDirection=1;this.handbrakeClutch=1;this.engineDragTorque=0;this.engineWheelTorque=0;this.diffTransfer={front:0,rear:0,center:0};this.driveModel.reset();this.rpm=this.config.powertrain.idleRPM;this.gear=1;for(const wheel of this.wheels)wheel.reset();for(const abs of this.wheelABS)abs.active=false;this.readPose();this.previousPosition={...this.position};this.previousRotation={...this.rotation};}
  beforeStep(input:DriveInput,dt:number,enabled:boolean){
  const c=this.config,vel=this.body.linvel(),q=this.body.rotation();
  this.body.resetForces(false);this.body.resetTorques(false);
@@ -49,7 +50,8 @@ export class RallyVehicle{
  if(enabled&&this.driveDirection===-1&&gas>.1&&stopped){this.driveDirection=1;this.throttle=0;}
  const drivePedal=enabled?(this.driveDirection===1?gas:pedal):0;
  const stopPedal=enabled?(this.driveDirection===1?pedal:gas):1;
- this.throttle=damp(this.throttle,drivePedal,c.throttleRate,dt);
+ const throttleRate=this.handlingMode==='rally'&&drivePedal<this.throttle?c.throttleRate*1.65:c.throttleRate;
+ this.throttle=damp(this.throttle,drivePedal,throttleRate,dt);
  // Preserve the original brake response in baseline mode. Brake overrides gas.
  if(this.handlingMode==='baseline')this.brake=stopPedal>this.brake?stopPedal:damp(this.brake,stopPedal,20,dt);
  else{
@@ -58,9 +60,14 @@ export class RallyVehicle{
   const pressure=stopPedal**1.15;
   this.brake=enabled?damp(this.brake,pressure,pressure>this.brake?35:14,dt):1;
  }
- this.handbrake=damp(this.handbrake,enabled?clamp(input.handbrake,0,1):0,12,dt);
+ const handbrakeCommand=enabled?clamp(input.handbrake,0,1):0;
+ this.handbrake=damp(this.handbrake,handbrakeCommand,this.handlingMode==='rally'&&handbrakeCommand<this.handbrake?20:12,dt);
+ if(this.handlingMode==='rally'){
+  if(handbrakeCommand>.02||this.handbrake>.02)this.handbrakeClutch=0;
+  else this.handbrakeClutch=Math.min(1,this.handbrakeClutch+dt/c.powertrain.clutchRecovery);
+ }
  const wheelbase=c.back-c.front;
- this.driveModel.updateTransmission(this.wheels.map((w,i)=>({angularSpeed:w.angularSpeed,longSlip:w.longSlip,weight:i<2?c.frontDrive/2:(1-c.frontDrive)/2})),dt,this.driveDirection===-1);
+ this.driveModel.updateTransmission(this.wheels.map((w,i)=>({angularSpeed:w.angularSpeed,longSlip:w.longSlip,weight:i<2?c.frontDrive/2:(1-c.frontDrive)/2})),dt,this.driveDirection===-1,this.handlingMode==='rally'?{roadSpeed:this.forwardSpeed,grounded:this.wheels.filter(w=>w.contact&&w.force>1).length,handbrake:Math.max(handbrakeCommand,this.handbrake)}:undefined);
  // Ecctrl speed-based steering curve retains low-speed lock and fades at speed.
  const maxSteer=this.driveModel.steeringLimit(this.speed,c.maxSpeed,c.steering);
  const command=enabled?clamp(input.steer,-1,1):0;
@@ -76,7 +83,7 @@ export class RallyVehicle{
  for(let i=0;i<4;i++){
   const w=this.wheels[i];let angle=0;
   if(i<2&&Math.abs(this.steer)>.0001){const radius=wheelbase/Math.tan(Math.abs(this.steer)),inside=this.steer>0?i===0:i===1;angle=Math.sign(this.steer)*Math.atan(wheelbase/(radius+(inside?-1:1)*c.track/2));}
-  w.steer=angle;w.contactStep();
+  w.steer=angle;w.contactStep(dt);
  }
  // Physical support transfer across each axle; tire forces use the resulting loads.
  for(const [left,right,rate] of [[0,1,c.frontAntiRoll],[2,3,c.rearAntiRoll]]){
@@ -92,7 +99,7 @@ export class RallyVehicle{
  }
 
  private solveDriveline(dt:number,driveDemand:number,reverse:boolean){
- const c=this.config,differential=this.handlingMode==='rally'?c.rallyDifferential:c.differential;
+ const c=this.config,differential=(this.handlingMode==='rally'||this.handlingMode==='rally-surface'||this.handlingMode==='rally-legacy')?c.rallyDifferential:c.differential;
  for(const wheel of this.wheels)wheel.refreshVelocity();
  const maxWheelSpeed=Math.max(...this.wheels.map(w=>Math.abs(w.angularSpeed)));
  // One engine curve at driven shaft speed, then the donor's center/front/rear
@@ -101,9 +108,17 @@ export class RallyVehicle{
  const ratio=reverse?c.powertrain.reverseRatio*c.powertrain.finalDriveRatio:this.driveModel.driveRatio;
  const driveTorque=this.driveModel.wheelForce(driveDemand,shaftSpeed,1,reverse)*c.radius*this.driveDirection;
  const friction=engineFrictionTorque(shaftSpeed,ratio,c.powertrain.engineMaxRPM,c.powertrain.idleRPM,c.powertrain.engineHorsepower*7022/c.powertrain.engineMaxRPM,this.throttle,c.engineBraking);
- const disengaged=this.handbrake>.02;
- this.engineWheelTorque=disengaged?0:driveTorque+friction;
- const center=differentialTorques(this.engineWheelTorque,(this.wheels[0].angularSpeed+this.wheels[1].angularSpeed)/2,(this.wheels[2].angularSpeed+this.wheels[3].angularSpeed)/2,c.wheelInertia*2,c.wheelInertia*2,dt,disengaged?{...differential.center,antiSlip:0}:differential.center);
+ const advanced=this.handlingMode==='rally',disengaged=this.handbrake>.02;
+ // Preserve the donor's gear-dependent dissipative engine torque, but slew its
+ // buildup/release to avoid a downshift or lift producing a one-step torque hit.
+ if(advanced){
+  const rate=c.mass*c.radius*12;
+  this.engineDragTorque+=clamp(friction-this.engineDragTorque,-rate*dt,rate*dt);
+  if(this.engineDragTorque*shaftSpeed>0)this.engineDragTorque=0;
+ }
+ const clutch=advanced?this.driveModel.shiftClutch*this.handbrakeClutch:1;
+ this.engineWheelTorque=disengaged?0:(driveTorque+(advanced?this.engineDragTorque:friction))*clutch;
+ const center=differentialTorques(this.engineWheelTorque,(this.wheels[0].angularSpeed+this.wheels[1].angularSpeed)/2,(this.wheels[2].angularSpeed+this.wheels[3].angularSpeed)/2,c.wheelInertia*2,c.wheelInertia*2,dt,disengaged?{...differential.center,antiSlip:0}:advanced&&this.handbrakeClutch<1?{...differential.center,antiSlip:differential.center.antiSlip*this.handbrakeClutch,torqueSensitivity:differential.center.torqueSensitivity*this.handbrakeClutch}:differential.center);
  const front=differentialTorques(center.side1,this.wheels[0].angularSpeed,this.wheels[1].angularSpeed,c.wheelInertia,c.wheelInertia,dt,differential.front);
  const rear=differentialTorques(center.side2,this.wheels[2].angularSpeed,this.wheels[3].angularSpeed,c.wheelInertia,c.wheelInertia,dt,differential.rear);
  const torques=[front.side1,front.side2,rear.side1,rear.side2];
@@ -111,7 +126,7 @@ export class RallyVehicle{
  for(let i=0;i<4;i++){
   const w=this.wheels[i],hand=i>1?this.handbrake:0;
   const brakeShare=i<2?c.frontBrake/2:(1-c.frontBrake)/2;
-  const absDemand=this.wheelABS[i].update(this.brake,w.longSlip*Math.sign(w.longVelocity),w.force,maxWheelSpeed);
+  const absDemand=this.wheelABS[i].update(this.brake,w.longSlip*Math.sign(w.longVelocity),w.force,maxWheelSpeed,(this.handlingMode==='rally'||this.handlingMode==='rally-surface')?w.surfaceTire.longSlipScale:1);
   const brakeTorque=absDemand*c.brake*c.radius*brakeShare+hand*c.brake*c.radius*.38;
   const wheelTorque=torques[i];
   w.solve(dt,hand>.02||Math.abs(wheelTorque)<.05?0:wheelTorque,brakeTorque);
@@ -122,7 +137,7 @@ export class RallyVehicle{
   this.forward={x:-2*(q.x*q.z+q.w*q.y),y:-2*(q.y*q.z-q.w*q.x),z:-(1-2*(q.x*q.x+q.y*q.y))};
   this.speed=Math.hypot(vel.x,vel.z);this.forwardSpeed=vel.x*this.forward.x+vel.y*this.forward.y+vel.z*this.forward.z;
   this.airborne=this.wheels.some(w=>w.contact)?0:this.airborne+dt;
-  this.surface=surfaceAt(this.position.x,this.position.z).label;
+  const surface=surfaceAt(this.position.x,this.position.z);this.surface=(this.handlingMode==='rally'||this.handlingMode==='rally-surface')?(surface.tire?.label??surface.label):surface.label;
   this.gear=this.driveDirection===-1?-1:this.driveModel.gear;this.rpm=damp(this.rpm,this.driveModel.engineRPM,12,dt);
  }
 
