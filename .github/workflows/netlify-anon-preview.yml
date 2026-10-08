@@ -1,0 +1,46 @@
+name: Anonymous Netlify UI Preview
+
+on:
+  push:
+    branches:
+      - preview-netlify-ui
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  deploy:
+    name: Build and publish temporary preview
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    steps:
+      - name: Check out UI preview branch
+        uses: actions/checkout@v4
+      - name: Set up Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+      - name: Set up pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: "11.25.0"
+          run_install: false
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+      - name: Build static rally game
+        run: |
+          cat > next.config.ts <<'EOF'
+          import type { NextConfig } from "next";
+          const nextConfig: NextConfig = { output: "export", images: { unoptimized: true } };
+          export default nextConfig;
+          EOF
+          pnpm exec next build
+          test -s out/index.html
+          test -s out/assets/models/subaru-rally.glb
+          test -s out/assets/models/ford-rally.glb
+      - name: Publish to temporary anonymous Netlify site
+        run: |
+          npx --yes netlify-cli@latest deploy --allow-anonymous --prod --dir out --no-build --json | tee netlify-deploy.json
+          echo "## Anonymous Netlify deploy" >> "$GITHUB_STEP_SUMMARY"
+          node -e 'const d=require("./netlify-deploy.json"); console.log("Site: "+(d.ssl_url||d.url||d.deploy_url||"check deployment logs")); console.log("Claim URL: "+(d.claim_url||"check deployment logs"))' | tee -a "$GITHUB_STEP_SUMMARY"
