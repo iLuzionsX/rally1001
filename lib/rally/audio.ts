@@ -91,6 +91,8 @@ function makeRecordedLoop(context:AudioContext,recording:AudioBuffer,rank:number
 export class RallyAudio{
  context:AudioContext|null=null;
  master:GainNode|null=null;
+ /** Dedicated recording-only engine bus; engine is dominant over the roadbed. */
+ private engineBus:GainNode|null=null;
  enabled=true;
  kind:VehicleKind='suv';
  private voices:Voice[]=[];
@@ -131,14 +133,14 @@ export class RallyAudio{
   this.decoded.set(cacheKey,promise);
   return promise;
  }
- private playLoop(buffer:AudioBuffer,volume=0,filterType?:BiquadFilterType,cutoff=0):Loop{
+ private playLoop(buffer:AudioBuffer,volume=0,filterType?:BiquadFilterType,cutoff=0,output?:AudioNode):Loop{
   const ctx=this.context!,source=ctx.createBufferSource(),gain=ctx.createGain();
   source.buffer=buffer;source.loop=true;gain.gain.value=volume;
   if(filterType){
    const filter=ctx.createBiquadFilter();filter.type=filterType;filter.frequency.value=cutoff;
    source.connect(filter);filter.connect(gain);
   }else source.connect(gain);
-  gain.connect(this.master!);
+  gain.connect(output??this.master!);
   source.start();
   return {source,gain};
  }
@@ -152,7 +154,7 @@ export class RallyAudio{
   for(const layer of ENGINE_LAYERS){
    const take=layer.role==='idle'?idle:motion;
    const buffer=makeRecordedLoop(context,take,layer.rank,1.85,layer.role==='idle');
-   const {source,gain}=this.playLoop(buffer,0,'lowpass',layer.role==='idle'?2500:5500);
+   const {source,gain}=this.playLoop(buffer,0,'lowpass',layer.role==='idle'?2500:5500,this.engineBus!);
    this.voices.push({...layer,kind,source,gain});
   }
   this.mix();
@@ -182,10 +184,12 @@ export class RallyAudio{
   if(!this.context){
    const context=this.context=new AudioContext();
    const limiter=context.createDynamicsCompressor();
-   limiter.threshold.value=-7;limiter.ratio.value=5;
+   limiter.threshold.value=-11;limiter.knee.value=9;limiter.ratio.value=4;
    limiter.attack.value=.003;limiter.release.value=.16;
    const master=this.master=context.createGain();
    master.gain.value=0;master.connect(limiter);limiter.connect(context.destination);
+   // +8.6 dB for engines, without turning up ambience/gravel or adding synthesized audio.
+   this.engineBus=context.createGain();this.engineBus.gain.value=2.7;this.engineBus.connect(master);
   }
   if(this.context.state==='suspended')await this.context.resume();
   this.beginLoading();
@@ -210,7 +214,7 @@ export class RallyAudio{
   const ctx=this.context,master=this.master;
   if(!ctx||!master)return;
   const t=ctx.currentTime;
-  master.gain.setTargetAtTime(this.enabled&&this.active?.78:0,t,.13);
+  master.gain.setTargetAtTime(this.enabled&&this.active?.94:0,t,.13);
   const rpm=clamp(this.lastRPM,700,7300),throttle=clamp(this.lastThrottle,0,1);
   const brake=clamp(this.lastBrake,0,1),speed=Math.max(0,this.lastSpeed);
   const idle=1-smooth(rpm,950,1900);
@@ -218,11 +222,11 @@ export class RallyAudio{
   for(const voice of this.voices){
    const selected=voice.kind===this.kind?1:0;
    let weight=0;
-   if(voice.role==='idle')weight=idle*.65;
+   if(voice.role==='idle')weight=idle*.77;
    else{
     const width=voice.role==='pull-low'?1900:voice.role==='pull-mid'?2200:voice.role==='pull-high'?2200:voice.role==='coast-low'?2400:2900;
     const rWeight=clamp(1-Math.abs(rpm-voice.anchor)/width,0,1);
-    weight=rWeight*(voice.role.startsWith('pull')?on*.33:off*.20)*(1-idle*.7);
+    weight=rWeight*(voice.role.startsWith('pull')?on*.43:off*.25)*(1-idle*.7);
    }
    voice.gain.gain.setTargetAtTime(selected*weight,t,.09);
    voice.source.playbackRate.setTargetAtTime(clamp(rpm/voice.anchor,.68,1.38),t,.085);
@@ -232,11 +236,11 @@ export class RallyAudio{
   const loose=/dirt|gravel|mud|sand|trail/i.test(this.lastSurface);
   const speedGain=smooth(speed,.6,18);
   const slip=clamp(this.lastSlip,0,3);
-  const gravel=speedGain*(loose?.31:.07)*(1+Math.min(1,slip)*.6);
-  const scrub=smooth(slip,.28,1.15)*smooth(speed,1.5,11)*.32;
+  const gravel=speedGain*(loose?.25:.06)*(1+Math.min(1,slip)*.6);
+  const scrub=smooth(slip,.28,1.15)*smooth(speed,1.5,11)*.27;
   this.surface.get('gravel')?.gain.gain.setTargetAtTime(gravel,t,.09);
   this.surface.get('scrub')?.gain.gain.setTargetAtTime(scrub,t,.065);
-  this.surface.get('ambience')?.gain.gain.setTargetAtTime(.19,t,.5);
+  this.surface.get('ambience')?.gain.gain.setTargetAtTime(.11,t,.5);
   const rate=this.surface.get('gravel')?.source.playbackRate;
   rate?.setTargetAtTime(clamp(.7+speed*.026,.78,1.55),t,.12);
  }
@@ -244,6 +248,7 @@ export class RallyAudio{
   for(const voice of this.voices){try{voice.source.stop();}catch{}voice.source.disconnect();voice.gain.disconnect();}
   for(const loop of this.surface.values()){try{loop.source.stop();}catch{}loop.source.disconnect();loop.gain.disconnect();}
   this.voices=[];this.surface.clear();this.decoded.clear();
+  this.engineBus?.disconnect();this.engineBus=null;
   this.master?.disconnect();this.master=null;
   const ctx=this.context;this.context=null;if(ctx)void ctx.close();
  }
