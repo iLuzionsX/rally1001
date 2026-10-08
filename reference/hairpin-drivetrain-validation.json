@@ -1,0 +1,775 @@
+{
+  "transmissions": [
+    {
+      "kind": "suv",
+      "mode": "rally-surface",
+      "ratioChangeClutch": 1,
+      "maxClutchStep": 0,
+      "wheelspinGear": 2,
+      "thresholdShifts": 3
+    },
+    {
+      "kind": "suv",
+      "mode": "rally",
+      "ratioChangeClutch": 0,
+      "maxClutchStep": 0.2212,
+      "wheelspinGear": 1,
+      "thresholdShifts": 0
+    },
+    {
+      "kind": "truck",
+      "mode": "rally-surface",
+      "ratioChangeClutch": 1,
+      "maxClutchStep": 0,
+      "wheelspinGear": 2,
+      "thresholdShifts": 3
+    },
+    {
+      "kind": "truck",
+      "mode": "rally",
+      "ratioChangeClutch": 0,
+      "maxClutchStep": 0.1725,
+      "wheelspinGear": 1,
+      "thresholdShifts": 0
+    }
+  ],
+  "liftOff": [
+    {
+      "kind": "suv",
+      "mode": "rally-surface",
+      "grade": 0,
+      "gear": 2,
+      "exitKmh": 54.3521,
+      "peakFront": 0.567,
+      "minTorque": -248.8046,
+      "maxTorqueStep": 65.4006,
+      "distance": 15.477
+    },
+    {
+      "kind": "suv",
+      "mode": "rally-surface",
+      "grade": 0,
+      "gear": 3,
+      "exitKmh": 54.3771,
+      "peakFront": 0.5605,
+      "minTorque": -133.4646,
+      "maxTorqueStep": 33.396,
+      "distance": 15.4094
+    },
+    {
+      "kind": "suv",
+      "mode": "rally-surface",
+      "grade": 0.08,
+      "gear": 2,
+      "exitKmh": 56.9499,
+      "peakFront": 0.5694,
+      "minTorque": -262.5036,
+      "maxTorqueStep": 66.7658,
+      "distance": 15.8397
+    },
+    {
+      "kind": "suv",
+      "mode": "rally-surface",
+      "grade": 0.08,
+      "gear": 3,
+      "exitKmh": 57.0099,
+      "peakFront": 0.5627,
+      "minTorque": -140.9093,
+      "maxTorqueStep": 33.3869,
+      "distance": 15.7769
+    },
+    {
+      "kind": "suv",
+      "mode": "rally",
+      "grade": 0,
+      "gear": 2,
+      "exitKmh": 53.0293,
+      "peakFront": 0.5749,
+      "minTorque": -262.2465,
+      "maxTorqueStep": 109.7975,
+      "distance": 15.2227
+    },
+    {
+      "kind": "suv",
+      "mode": "rally",
+      "grade": 0,
+      "gear": 3,
+      "exitKmh": 53.3648,
+      "peakFront": 0.5667,
+      "minTorque": -144.8533,
+      "maxTorqueStep": 73.6696,
+      "distance": 15.2149
+    },
+    {
+      "kind": "suv",
+      "mode": "rally",
+      "grade": 0.08,
+      "gear": 2,
+      "exitKmh": 55.6369,
+      "peakFront": 0.5767,
+      "minTorque": -274.7934,
+      "maxTorqueStep": 110.89,
+      "distance": 15.5873
+    },
+    {
+      "kind": "suv",
+      "mode": "rally",
+      "grade": 0.08,
+      "gear": 3,
+      "exitKmh": 55.9991,
+      "peakFront": 0.5683,
+      "minTorque": -152.2885,
+      "maxTorqueStep": 73.8132,
+      "distance": 15.5828
+    },
+    {
+      "kind": "truck",
+      "mode": "rally-surface",
+      "grade": 0,
+      "gear": 2,
+      "exitKmh": 55.695,
+      "peakFront": 0.5323,
+      "minTorque": -240.1679,
+      "maxTorqueStep": 69.1728,
+      "distance": 15.6092
+    },
+    {
+      "kind": "truck",
+      "mode": "rally-surface",
+      "grade": 0,
+      "gear": 3,
+      "exitKmh": 55.2014,
+      "peakFront": 0.5293,
+      "minTorque": -93.7437,
+      "maxTorqueStep": 33.0423,
+      "distance": 15.4697
+    },
+    {
+      "kind": "truck",
+      "mode": "rally-surface",
+      "grade": 0.08,
+      "gear": 2,
+      "exitKmh": 58.3606,
+      "peakFront": 0.5366,
+      "minTorque": -261.7793,
+      "maxTorqueStep": 70.7221,
+      "distance": 15.9812
+    },
+    {
+      "kind": "truck",
+      "mode": "rally-surface",
+      "grade": 0.08,
+      "gear": 3,
+      "exitKmh": 57.893,
+      "peakFront": 0.5366,
+      "minTorque": -103.0171,
+      "maxTorqueStep": 31.6809,
+      "distance": 15.8443
+    },
+    {
+      "kind": "truck",
+      "mode": "rally",
+      "grade": 0,
+      "gear": 2,
+      "exitKmh": 54.315,
+      "peakFront": 0.5391,
+      "minTorque": -378.4742,
+      "maxTorqueStep": 142.8809,
+      "distance": 15.387
+    },
+    {
+      "kind": "truck",
+      "mode": "rally",
+      "grade": 0,
+      "gear": 3,
+      "exitKmh": 54.2277,
+      "peakFront": 0.5342,
+      "minTorque": -192.0805,
+      "maxTorqueStep": 78.6632,
+      "distance": 15.3126
+    },
+    {
+      "kind": "truck",
+      "mode": "rally",
+      "grade": 0.08,
+      "gear": 2,
+      "exitKmh": 56.9822,
+      "peakFront": 0.5406,
+      "minTorque": -399.3105,
+      "maxTorqueStep": 144.0977,
+      "distance": 15.7594
+    },
+    {
+      "kind": "truck",
+      "mode": "rally",
+      "grade": 0.08,
+      "gear": 3,
+      "exitKmh": 56.9171,
+      "peakFront": 0.5366,
+      "minTorque": -202.7319,
+      "maxTorqueStep": 77.7085,
+      "distance": 15.6872
+    }
+  ],
+  "handbrake": [
+    {
+      "kind": "suv",
+      "mode": "rally-surface",
+      "surface": "gravel",
+      "peakSlip": 15.0375,
+      "maxTorqueStep": 2874.1808,
+      "firstTorque": 0.325,
+      "reconnected": 0.325,
+      "exitKmh": 64.6046,
+      "finalSlip": 0.1734
+    },
+    {
+      "kind": "suv",
+      "mode": "rally-surface",
+      "surface": "mud",
+      "peakSlip": 14.9608,
+      "maxTorqueStep": 2839.6493,
+      "firstTorque": 0.325,
+      "reconnected": 0.325,
+      "exitKmh": 51.2352,
+      "finalSlip": -0.7881
+    },
+    {
+      "kind": "suv",
+      "mode": "rally",
+      "surface": "gravel",
+      "peakSlip": 12.3466,
+      "maxTorqueStep": 59.9112,
+      "firstTorque": 0.1917,
+      "reconnected": 0.35,
+      "exitKmh": 61.2827,
+      "finalSlip": 0.0955
+    },
+    {
+      "kind": "suv",
+      "mode": "rally",
+      "surface": "mud",
+      "peakSlip": 12.6821,
+      "maxTorqueStep": 579.7791,
+      "firstTorque": 0.1917,
+      "reconnected": 0.35,
+      "exitKmh": 53.0482,
+      "finalSlip": -1.0402
+    },
+    {
+      "kind": "truck",
+      "mode": "rally-surface",
+      "surface": "gravel",
+      "peakSlip": 6.6961,
+      "maxTorqueStep": 3540.5665,
+      "firstTorque": 0.325,
+      "reconnected": 0.325,
+      "exitKmh": 59.3801,
+      "finalSlip": 0.0747
+    },
+    {
+      "kind": "truck",
+      "mode": "rally-surface",
+      "surface": "mud",
+      "peakSlip": 7.3292,
+      "maxTorqueStep": 3584.628,
+      "firstTorque": 0.325,
+      "reconnected": 0.325,
+      "exitKmh": 53.2685,
+      "finalSlip": -0.5675
+    },
+    {
+      "kind": "truck",
+      "mode": "rally",
+      "surface": "gravel",
+      "peakSlip": 5.9937,
+      "maxTorqueStep": 794.9849,
+      "firstTorque": 0.1917,
+      "reconnected": 0.3875,
+      "exitKmh": 58.5666,
+      "finalSlip": 0.0654
+    },
+    {
+      "kind": "truck",
+      "mode": "rally",
+      "surface": "mud",
+      "peakSlip": 6.7019,
+      "maxTorqueStep": 791.4847,
+      "firstTorque": 0.1917,
+      "reconnected": 0.3875,
+      "exitKmh": 52.7123,
+      "finalSlip": -0.5153
+    }
+  ],
+  "launches": [
+    {
+      "kind": "suv",
+      "mode": "rally-surface",
+      "zeroTo100": 4.5333,
+      "downshifts": 0,
+      "finalGear": 5
+    },
+    {
+      "kind": "suv",
+      "mode": "rally",
+      "zeroTo100": 4.5458,
+      "downshifts": 0,
+      "finalGear": 5
+    },
+    {
+      "kind": "truck",
+      "mode": "rally-surface",
+      "zeroTo100": 5.725,
+      "downshifts": 0,
+      "finalGear": 4
+    },
+    {
+      "kind": "truck",
+      "mode": "rally",
+      "zeroTo100": 5.8958,
+      "downshifts": 0,
+      "finalGear": 4
+    }
+  ],
+  "hairpins": [
+    {
+      "kind": "suv",
+      "mode": "rally-surface",
+      "surface": "gravel",
+      "grade": 0,
+      "useHandbrake": false,
+      "seconds": 11.8583,
+      "maxOffset": 0.5439,
+      "peakSlip": 2.1026,
+      "exitKmh": 43.2459,
+      "shifts": 2
+    },
+    {
+      "kind": "suv",
+      "mode": "rally-surface",
+      "surface": "gravel",
+      "grade": 0,
+      "useHandbrake": true,
+      "seconds": 11.9458,
+      "maxOffset": 0.5456,
+      "peakSlip": 2.5057,
+      "exitKmh": 43.2459,
+      "shifts": 2
+    },
+    {
+      "kind": "suv",
+      "mode": "rally-surface",
+      "surface": "gravel",
+      "grade": 0.08,
+      "useHandbrake": false,
+      "seconds": 11.9167,
+      "maxOffset": 0.5119,
+      "peakSlip": 1.6103,
+      "exitKmh": 43.203,
+      "shifts": 2
+    },
+    {
+      "kind": "suv",
+      "mode": "rally-surface",
+      "surface": "gravel",
+      "grade": 0.08,
+      "useHandbrake": true,
+      "seconds": 11.975,
+      "maxOffset": 0.5114,
+      "peakSlip": 1.9993,
+      "exitKmh": 43.2296,
+      "shifts": 2
+    },
+    {
+      "kind": "suv",
+      "mode": "rally-surface",
+      "surface": "mud",
+      "grade": 0,
+      "useHandbrake": false,
+      "seconds": 13.5708,
+      "maxOffset": 0.8267,
+      "peakSlip": 10.8605,
+      "exitKmh": 43.2295,
+      "shifts": 3
+    },
+    {
+      "kind": "suv",
+      "mode": "rally-surface",
+      "surface": "mud",
+      "grade": 0,
+      "useHandbrake": true,
+      "seconds": 13.6625,
+      "maxOffset": 0.8427,
+      "peakSlip": 10.9374,
+      "exitKmh": 43.2621,
+      "shifts": 3
+    },
+    {
+      "kind": "suv",
+      "mode": "rally-surface",
+      "surface": "mud",
+      "grade": 0.08,
+      "useHandbrake": false,
+      "seconds": 13.7583,
+      "maxOffset": 0.8239,
+      "peakSlip": 10.8101,
+      "exitKmh": 43.2566,
+      "shifts": 3
+    },
+    {
+      "kind": "suv",
+      "mode": "rally-surface",
+      "surface": "mud",
+      "grade": 0.08,
+      "useHandbrake": true,
+      "seconds": 13.8167,
+      "maxOffset": 0.8217,
+      "peakSlip": 10.8172,
+      "exitKmh": 43.245,
+      "shifts": 3
+    },
+    {
+      "kind": "suv",
+      "mode": "rally",
+      "surface": "gravel",
+      "grade": 0,
+      "useHandbrake": false,
+      "seconds": 11.8583,
+      "maxOffset": 0.543,
+      "peakSlip": 2.0945,
+      "exitKmh": 43.2457,
+      "shifts": 2
+    },
+    {
+      "kind": "suv",
+      "mode": "rally",
+      "surface": "gravel",
+      "grade": 0,
+      "useHandbrake": true,
+      "seconds": 11.925,
+      "maxOffset": 0.5447,
+      "peakSlip": 2.344,
+      "exitKmh": 43.2421,
+      "shifts": 2
+    },
+    {
+      "kind": "suv",
+      "mode": "rally",
+      "surface": "gravel",
+      "grade": 0.08,
+      "useHandbrake": false,
+      "seconds": 11.9125,
+      "maxOffset": 0.5148,
+      "peakSlip": 1.6091,
+      "exitKmh": 43.2308,
+      "shifts": 2
+    },
+    {
+      "kind": "suv",
+      "mode": "rally",
+      "surface": "gravel",
+      "grade": 0.08,
+      "useHandbrake": true,
+      "seconds": 11.9583,
+      "maxOffset": 0.5139,
+      "peakSlip": 1.9309,
+      "exitKmh": 43.2708,
+      "shifts": 2
+    },
+    {
+      "kind": "suv",
+      "mode": "rally",
+      "surface": "mud",
+      "grade": 0,
+      "useHandbrake": false,
+      "seconds": 13.5458,
+      "maxOffset": 0.8609,
+      "peakSlip": 12.3517,
+      "exitKmh": 43.1456,
+      "shifts": 2
+    },
+    {
+      "kind": "suv",
+      "mode": "rally",
+      "surface": "mud",
+      "grade": 0,
+      "useHandbrake": true,
+      "seconds": 13.625,
+      "maxOffset": 0.8631,
+      "peakSlip": 12.3644,
+      "exitKmh": 43.1629,
+      "shifts": 2
+    },
+    {
+      "kind": "suv",
+      "mode": "rally",
+      "surface": "mud",
+      "grade": 0.08,
+      "useHandbrake": false,
+      "seconds": 13.6792,
+      "maxOffset": 0.872,
+      "peakSlip": 12.6796,
+      "exitKmh": 43.12,
+      "shifts": 2
+    },
+    {
+      "kind": "suv",
+      "mode": "rally",
+      "surface": "mud",
+      "grade": 0.08,
+      "useHandbrake": true,
+      "seconds": 13.725,
+      "maxOffset": 0.8669,
+      "peakSlip": 12.6456,
+      "exitKmh": 43.2495,
+      "shifts": 2
+    },
+    {
+      "kind": "truck",
+      "mode": "rally-surface",
+      "surface": "gravel",
+      "grade": 0,
+      "useHandbrake": false,
+      "seconds": 11.9417,
+      "maxOffset": 0.328,
+      "peakSlip": 3.0814,
+      "exitKmh": 43.2865,
+      "shifts": 2
+    },
+    {
+      "kind": "truck",
+      "mode": "rally-surface",
+      "surface": "gravel",
+      "grade": 0,
+      "useHandbrake": true,
+      "seconds": 12.0458,
+      "maxOffset": 0.3262,
+      "peakSlip": 3.7615,
+      "exitKmh": 43.2779,
+      "shifts": 2
+    },
+    {
+      "kind": "truck",
+      "mode": "rally-surface",
+      "surface": "gravel",
+      "grade": 0.08,
+      "useHandbrake": false,
+      "seconds": 12.025,
+      "maxOffset": 0.3227,
+      "peakSlip": 2.3442,
+      "exitKmh": 43.2582,
+      "shifts": 2
+    },
+    {
+      "kind": "truck",
+      "mode": "rally-surface",
+      "surface": "gravel",
+      "grade": 0.08,
+      "useHandbrake": true,
+      "seconds": 12.1,
+      "maxOffset": 0.322,
+      "peakSlip": 3.0405,
+      "exitKmh": 43.2494,
+      "shifts": 2
+    },
+    {
+      "kind": "truck",
+      "mode": "rally-surface",
+      "surface": "mud",
+      "grade": 0,
+      "useHandbrake": false,
+      "seconds": 13.5792,
+      "maxOffset": 0.4369,
+      "peakSlip": 3.8479,
+      "exitKmh": 43.2611,
+      "shifts": 2
+    },
+    {
+      "kind": "truck",
+      "mode": "rally-surface",
+      "surface": "mud",
+      "grade": 0,
+      "useHandbrake": true,
+      "seconds": 13.6792,
+      "maxOffset": 0.4472,
+      "peakSlip": 3.9462,
+      "exitKmh": 43.2585,
+      "shifts": 2
+    },
+    {
+      "kind": "truck",
+      "mode": "rally-surface",
+      "surface": "mud",
+      "grade": 0.08,
+      "useHandbrake": false,
+      "seconds": 13.7208,
+      "maxOffset": 0.4891,
+      "peakSlip": 3.1099,
+      "exitKmh": 43.2797,
+      "shifts": 2
+    },
+    {
+      "kind": "truck",
+      "mode": "rally-surface",
+      "surface": "mud",
+      "grade": 0.08,
+      "useHandbrake": true,
+      "seconds": 13.7833,
+      "maxOffset": 0.4893,
+      "peakSlip": 3.098,
+      "exitKmh": 43.2862,
+      "shifts": 2
+    },
+    {
+      "kind": "truck",
+      "mode": "rally",
+      "surface": "gravel",
+      "grade": 0,
+      "useHandbrake": false,
+      "seconds": 11.9417,
+      "maxOffset": 0.3234,
+      "peakSlip": 3.0816,
+      "exitKmh": 43.2788,
+      "shifts": 2
+    },
+    {
+      "kind": "truck",
+      "mode": "rally",
+      "surface": "gravel",
+      "grade": 0,
+      "useHandbrake": true,
+      "seconds": 12.0208,
+      "maxOffset": 0.3278,
+      "peakSlip": 3.5145,
+      "exitKmh": 43.2893,
+      "shifts": 2
+    },
+    {
+      "kind": "truck",
+      "mode": "rally",
+      "surface": "gravel",
+      "grade": 0.08,
+      "useHandbrake": false,
+      "seconds": 12.0375,
+      "maxOffset": 0.3114,
+      "peakSlip": 2.3381,
+      "exitKmh": 43.2625,
+      "shifts": 2
+    },
+    {
+      "kind": "truck",
+      "mode": "rally",
+      "surface": "gravel",
+      "grade": 0.08,
+      "useHandbrake": true,
+      "seconds": 12.0792,
+      "maxOffset": 0.3236,
+      "peakSlip": 2.855,
+      "exitKmh": 43.2143,
+      "shifts": 2
+    },
+    {
+      "kind": "truck",
+      "mode": "rally",
+      "surface": "mud",
+      "grade": 0,
+      "useHandbrake": false,
+      "seconds": 13.6125,
+      "maxOffset": 0.4444,
+      "peakSlip": 3.7623,
+      "exitKmh": 43.1735,
+      "shifts": 2
+    },
+    {
+      "kind": "truck",
+      "mode": "rally",
+      "surface": "mud",
+      "grade": 0,
+      "useHandbrake": true,
+      "seconds": 13.6875,
+      "maxOffset": 0.4403,
+      "peakSlip": 3.9419,
+      "exitKmh": 43.1762,
+      "shifts": 2
+    },
+    {
+      "kind": "truck",
+      "mode": "rally",
+      "surface": "mud",
+      "grade": 0.08,
+      "useHandbrake": false,
+      "seconds": 13.7,
+      "maxOffset": 0.4885,
+      "peakSlip": 3.3585,
+      "exitKmh": 43.1209,
+      "shifts": 2
+    },
+    {
+      "kind": "truck",
+      "mode": "rally",
+      "surface": "mud",
+      "grade": 0.08,
+      "useHandbrake": true,
+      "seconds": 13.7583,
+      "maxOffset": 0.4871,
+      "peakSlip": 3.2467,
+      "exitKmh": 43.1425,
+      "shifts": 2
+    }
+  ],
+  "cadence": [
+    {
+      "kind": "suv",
+      "runs": [
+        {
+          "hz": 30,
+          "x": -0.0022934810258448124,
+          "z": -90.8770980834961,
+          "speed": 24.293987311426715,
+          "gear": 3
+        },
+        {
+          "hz": 60,
+          "x": -0.0022934810258448124,
+          "z": -90.8770980834961,
+          "speed": 24.293987311426715,
+          "gear": 3
+        },
+        {
+          "hz": 120,
+          "x": -0.0022934810258448124,
+          "z": -90.8770980834961,
+          "speed": 24.293987311426715,
+          "gear": 3
+        }
+      ]
+    },
+    {
+      "kind": "truck",
+      "runs": [
+        {
+          "hz": 30,
+          "x": 0.6103324890136719,
+          "z": -80.68419647216797,
+          "speed": 21.365623725451098,
+          "gear": 2
+        },
+        {
+          "hz": 60,
+          "x": 0.6103324890136719,
+          "z": -80.68419647216797,
+          "speed": 21.365623725451098,
+          "gear": 2
+        },
+        {
+          "hz": 120,
+          "x": 0.6103324890136719,
+          "z": -80.68419647216797,
+          "speed": 21.365623725451098,
+          "gear": 2
+        }
+      ]
+    }
+  ],
+  "limitations": "Synthetic 180-degree hairpin and graded collision-plane tests with a deterministic preview driver. No browser/GPU or hands-on DiRT comparison. Clutch is a torque envelope, not an engine-inertia simulation."
+}
