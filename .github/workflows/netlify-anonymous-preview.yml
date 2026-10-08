@@ -40,8 +40,13 @@ jobs:
           const keys=Object.keys(info);
           console.log('Netlify response keys:', keys.join(', '));
           const candidateUrls=[info.deploy_url,info.deployUrl,info.site_url,info.siteUrl,info.ssl_url,info.url,info.deploy?.url,info.site?.url];
-          const nested=(JSON.stringify(info).match(/https?:\\/\\/[^"\\s]+?\\.netlify\\.app\\/?/g)||[]);
-          const url=[...candidateUrls,...nested].find(x=>typeof x==='string'&&x.includes('.netlify.app'));
+          const findUrls=(value,depth=0)=>{
+            if(depth>5||value==null)return [];
+            if(typeof value==='string')return value.includes('.netlify.app')?[value]:[];
+            if(typeof value==='object')return Object.values(value).flatMap(item=>findUrls(item,depth+1));
+            return [];
+          };
+          const url=[...candidateUrls,...findUrls(info)].find(x=>typeof x==='string'&&x.includes('.netlify.app'));
           if(!url){
             const safeStatus={success:info.success,status:info.status,error:typeof info.error==='string'?info.error.slice(0,200):undefined};
             console.error('Netlify deployment returned no site URL',safeStatus);
