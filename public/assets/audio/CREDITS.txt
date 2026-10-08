@@ -1,20 +1,63 @@
-Engine loop
-  File: engine.ogg
-  Source: https://github.com/esensar/bugged-racing/blob/main/assets/engine.wav
-  Original: MarlonHJ, "Firebird_v2", https://freesound.org/people/MarlonHJ/sounds/242740/
-  License: CC0
+RALLY RECORDED-AUDIO SOURCES — 2026-10-08
+===========================================
 
-Tire squeal
-  File: squeal.ogg
-  Source: https://github.com/esensar/bugged-racing/blob/main/assets/tires_squal_loop.wav
-  Original: Tom Haigh (audible-edge), submitted by qubodup
+The engine mixer uses real-world recordings only. It does not synthesize engine
+or tire noise. The looping RPM/throttle segments are crossfaded samples cropped
+from the recordings listed below. All sounds remain their creators' recordings.
+
+SUBARU — genuine 2003 Subaru Impreza WRX, idle / throttle revs:
+  Sound: https://freesound.org/people/ulose2piranha/sounds/273334/
+  Author: ulose2piranha
+  License: CC0 1.0 (public domain dedication)
+  Browser stream: https://cdn.freesound.org/previews/273/273334_4168822-hq.mp3
+  One real recording is split into different RPM and coast engine loop windows.
+  This is a 2003 WRX, not an exact recording of the game's STI model.
+
+TRUCK — genuine Ford pickup engine start / idle:
+  Sound: https://freesound.org/people/rambler52/sounds/332499/
+  Author: rambler52
+  License: CC BY 4.0 — https://creativecommons.org/licenses/by/4.0/
+  Browser stream: https://cdn.freesound.org/previews/332/332499_2291385-hq.mp3
+
+TRUCK — genuine Ford pickup driving away (load / deceleration):
+  Sound: https://freesound.org/people/rambler52/sounds/332503/
+  Author: rambler52
+  License: CC BY 4.0 — https://creativecommons.org/licenses/by/4.0/
+  Browser stream: https://cdn.freesound.org/previews/332/332503_2291385-hq.mp3
+  These are vintage Ford pickup recordings, not an exact F-150 engine.
+  Modifications: trimming, sample-loop crossfades, playback rate and level
+  automation. No generated engine waveform.
+
+GRAVEL — real tires on gravel road:
+  Sound: https://freesound.org/s/251661/
+  Mirror: https://github.com/yashimosh/border-run/blob/main/public/sfx/tires_gravel.mp3
+  License: CC0 1.0, as documented by Border Run CREDITS.md
+  Browser stream: https://raw.githubusercontent.com/yashimosh/border-run/main/public/sfx/tires_gravel.mp3
+  Modifications: loop window, crossfade, playback speed and gain automation.
+
+OUTDOOR AMBIENCE — real tropical jungle soundscape:
+  Sound: https://freesound.org/people/zatar/sounds/654009/
+  Author: zatar
+  License: CC0 1.0 (public domain dedication)
+  Mirror: https://github.com/pbojinov/jungle-sketchbook/blob/main/public/audio/jungle-ambience.mp3
+  Browser stream: https://raw.githubusercontent.com/pbojinov/jungle-sketchbook/main/public/audio/jungle-ambience.mp3
+  Mirror edit: ~65.5-second loop with crossfade and loudness normalization.
+
+TIRE SCRUB — existing local recording:
+  File: /assets/audio/squeal.mp3
+  Original: Tom Haigh (audible-edge), submitted by qubodup.
   https://opengameart.org/content/car-tire-squeal-skid-loop
-  License: CC BY 3.0
+  License: CC BY 3.0 — https://creativecommons.org/licenses/by/3.0/
+  Modifications: MP3 compression, looped sample, filtering, gain automation.
 
-Gravel and asphalt rolls
-  Files: gravel.ogg, asphalt.ogg
-  Source recordings: https://github.com/minetest/minetest_game/tree/master/mods/default/sounds
-  default_gravel_footstep, default_gravel_dig, default_hard_footstep
-  Adapted into short loops for this game (pitch, overlap, filtering).
-  License: CC BY-SA 3.0. These two adapted loops stay under that license.
-  Copyright (C) 2010-2023 Minetest Game contributors. See the upstream license.txt.
+LEGACY SOUNDS (NO LONGER USED BY THE ENGINE):
+  engine.mp3: MarlonHJ, Firebird_v2, CC0
+    https://freesound.org/people/MarlonHJ/sounds/242740/
+  gravel.mp3: adapted from Minetest Game recordings, CC BY-SA 3.0
+    https://github.com/minetest/minetest_game/tree/master/mods/default/sounds
+  Both kept on disk for history; neither is part of the new playing graph.
+
+Technical note: The recorded MP3s above are fetched from their public hosts by
+the browser after the player enables audio. External hosts must remain reachable
+and allow browser CORS. If an engine recording cannot load, the engine stays
+silent rather than imitating it with oscillators.
