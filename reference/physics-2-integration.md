@@ -9,7 +9,7 @@ Built on main `8ccda49`, including the approved terminal UI, iPhone viewport beh
 - Suspension: `node scripts/check-rough-road.mjs` passed 24 vehicle/speed/terrain cases.
 - Surfaces: `node scripts/check-surfaces.mjs` passed 8 braking, 24 recovery and 12 surface-transition runs, material mapping and 30/60/120 Hz checks.
 - Drivetrain: `node scripts/check-drivetrain.mjs` passed 32 hairpins, shift guards/timing, engine-drag, handbrake recovery, launches and cadence checks.
-- Corner balance, full handling and handling comparison suites passed. Both vehicles completed all 12 production-mesh checkpoints (Subaru 128.1 s, truck 135.9 s in the full handling run).
+- Corner balance, Rally dynamics, full Rally v4 handling, Refined handling and handling comparison suites passed. Both vehicles completed all 12 production-mesh checkpoints (Subaru 128.1 s, truck 135.7 s in the Rally v4 handling run).
 - Regenerated tracked fixture reports exactly match the imported reports. Main CSS, layout, audio module and credits remain byte-for-byte unchanged. The race component changes only the handling choices/description.
 
 These are deterministic solver checks. Browser/GPU rendering, actual touch input and human driving feel are unverified; the available environment does not provide the supported browser QA surface. Do not merge on automated evidence alone.
