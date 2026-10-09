@@ -21,11 +21,11 @@
           "stop80Metres": 25.01,
           "stop80Seconds": 2.2375,
           "largestBrakePressureStep": 0.0542,
-          "trailPeakSideslipDegrees": 6.5812,
-          "trailPeakYawRate": 0.464,
+          "trailPeakSideslipDegrees": 5.2891,
+          "trailPeakYawRate": 0.3826,
           "trailPeakFrontLoadShare": 0.7608,
-          "trailExitKmh": 48.9118,
-          "slalomPeakSideslipDegrees": 5.2478,
+          "trailExitKmh": 50.0347,
+          "slalomPeakSideslipDegrees": 4.3423,
           "firstSlipResponseRatio": 0.2513
         }
       ]
@@ -51,11 +51,11 @@
           "stop80Metres": 33.814,
           "stop80Seconds": 3.2667,
           "largestBrakePressureStep": 0.0542,
-          "trailPeakSideslipDegrees": 7.3469,
-          "trailPeakYawRate": 0.3549,
-          "trailPeakFrontLoadShare": 0.7667,
-          "trailExitKmh": 43.4917,
-          "slalomPeakSideslipDegrees": 5.7091,
+          "trailPeakSideslipDegrees": 5.9893,
+          "trailPeakYawRate": 0.3109,
+          "trailPeakFrontLoadShare": 0.7705,
+          "trailExitKmh": 43.7869,
+          "slalomPeakSideslipDegrees": 4.6811,
           "firstSlipResponseRatio": 0.2513
         }
       ]
@@ -81,11 +81,11 @@
           "stop80Metres": 27.6461,
           "stop80Seconds": 2.4667,
           "largestBrakePressureStep": 0.0542,
-          "trailPeakSideslipDegrees": 4.602,
-          "trailPeakYawRate": 0.2728,
-          "trailPeakFrontLoadShare": 0.6762,
-          "trailExitKmh": 54.1644,
-          "slalomPeakSideslipDegrees": 3.6971,
+          "trailPeakSideslipDegrees": 4.2025,
+          "trailPeakYawRate": 0.2489,
+          "trailPeakFrontLoadShare": 0.6761,
+          "trailExitKmh": 54.4583,
+          "slalomPeakSideslipDegrees": 3.4184,
           "firstSlipResponseRatio": 0.2066
         }
       ]
@@ -108,15 +108,15 @@
         },
         {
           "mode": "refined",
-          "stop80Metres": 39.6345,
-          "stop80Seconds": 3.7208,
+          "stop80Metres": 39.4673,
+          "stop80Seconds": 3.7,
           "largestBrakePressureStep": 0.0542,
-          "trailPeakSideslipDegrees": 5.2199,
-          "trailPeakYawRate": 0.2099,
-          "trailPeakFrontLoadShare": 0.6902,
-          "trailExitKmh": 47.7543,
-          "slalomPeakSideslipDegrees": 3.687,
-          "firstSlipResponseRatio": 0.2066
+          "trailPeakSideslipDegrees": 4.8236,
+          "trailPeakYawRate": 0.1935,
+          "trailPeakFrontLoadShare": 0.6903,
+          "trailExitKmh": 47.8198,
+          "slalomPeakSideslipDegrees": 3.432,
+          "firstSlipResponseRatio": 0.2067
         }
       ]
     }

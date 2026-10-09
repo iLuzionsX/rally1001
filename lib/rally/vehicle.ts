@@ -2,16 +2,17 @@ import RAPIER from '@dimforge/rapier3d-compat';
 import {EcctrlDriveModel} from './drive-model';
 import {RallyWheel} from './wheel-model';
 import {GravelABS} from './vendor/stunt-rally/abs';
+import {gravelSlipAtShare} from './vendor/stunt-rally/pacejka';
+import {SteeringRack,steerBounds} from './steering';
 import {differentialTorques} from './vendor/stunt-rally/differential';
 import {DRIVELINE_STEP} from './simulation';
 import {clamp,damp,courseAt,surfaceAt,type CoursePoint} from './course';
 import {VEHICLES,type VehicleKind,type DriveInput,type V3,type HandlingMode} from './vehicle-config';
 export {VEHICLES,type VehicleKind,type DriveInput,type V3,type HandlingMode} from './vehicle-config';
 export type WheelPose=RallyWheel;
-// Slide steering: the rear axle's travel angle at which caster alignment starts
-// and is fully in (rad), the share of the front travel angle it centres on, and
-// the forward speed below which it is off (m/s).
-const SLIDE_START=.05,SLIDE_RANGE=.1,SLIDE_ALIGN=.9,SLIDE_MIN_SPEED=3;
+// Forward speed below which an axle's travel angle is treated as straight, and
+// the span over which it fades in (m/s).
+const TRAVEL_MIN_SPEED=3,TRAVEL_FADE=4;
 const rotateInverse=(q:{x:number;y:number;z:number;w:number},v:V3)=>{
  // Rotate by the conjugate quaternion: world -> body frame.
  const x=-q.x,y=-q.y,z=-q.z,w=q.w,tx=2*(y*v.z-z*v.y),ty=2*(z*v.x-x*v.z),tz=2*(x*v.y-y*v.x);
@@ -21,12 +22,14 @@ const rotateInverse=(q:{x:number;y:number;z:number;w:number},v:V3)=>{
  * Rapier resolves chassis/world collisions. There is no sideways velocity clamp. */
 export class RallyVehicle{
  body:RAPIER.RigidBody;config:typeof VEHICLES[VehicleKind];
- steer=0;steerNeutral=0;slideSteering=false;throttle=0;brake=0;speed=0;forwardSpeed=0;rpm=900;gear=1;surface='LOOSE DIRT';airborne=0;
+ steer=0;steerCommand=0;slideSteering=false;
+ /** Turn-in limits for the current command (rad, magnitudes to the right and left). */
+ steerLimits:[number,number]=[0,0];rack:SteeringRack;throttle=0;brake=0;speed=0;forwardSpeed=0;rpm=900;gear=1;surface='LOOSE DIRT';airborne=0;
  driveModel:EcctrlDriveModel;driveDirection:1|-1=1;directionTimer=0;handbrake=0;engineWheelTorque=0;diffTransfer={front:0,rear:0,center:0};
  wheels:WheelPose[]=[];position:V3={x:0,y:0,z:0};rotation={x:0,y:0,z:0,w:1};velocity:V3={x:0,y:0,z:0};forward:V3={x:0,y:0,z:-1};previousPosition:V3={x:0,y:0,z:0};previousRotation={x:0,y:0,z:0,w:1};
  private wheelABS=Array.from({length:4},()=>new GravelABS());
  constructor(public world:RAPIER.World,public kind:VehicleKind,public handlingMode:HandlingMode='rally'){
- const c=this.config=VEHICLES[kind];this.driveModel=new EcctrlDriveModel(c.powertrain,c.radius,c.engineBraking);this.body=world.createRigidBody(RAPIER.RigidBodyDesc.dynamic().setCcdEnabled(true).setCanSleep(false).setLinearDamping(0).setAngularDamping(.08).setAdditionalSolverIterations(4));
+ const c=this.config=VEHICLES[kind];this.rack=new SteeringRack(c.steeringRack,c.steering);this.driveModel=new EcctrlDriveModel(c.powertrain,c.radius,c.engineBraking);this.body=world.createRigidBody(RAPIER.RigidBodyDesc.dynamic().setCcdEnabled(true).setCanSleep(false).setLinearDamping(0).setAngularDamping(.08).setAdditionalSolverIterations(4));
  world.createCollider(RAPIER.ColliderDesc.cuboid(c.width*.42,.26,c.length*.45).setTranslation(0,-.18,0).setDensity(0).setFriction(.6).setRestitution(.02),this.body);
  world.createCollider(RAPIER.ColliderDesc.cuboid(c.width*.36,.46,kind==='suv'?1.24:.84).setTranslation(0,.48,kind==='suv'?.18:-.58).setDensity(0).setFriction(.5),this.body);
  this.body.setAdditionalMassProperties(c.mass,{x:0,y:c.centerOfMass,z:kind==='suv'?-.08:-.22},{x:c.mass*(c.length*c.length+1.7)/12,y:c.mass*(c.length*c.length+c.width*c.width)/12,z:c.mass*(c.width*c.width+1.7)/12},{x:0,y:0,z:0,w:1},true);
@@ -39,8 +42,9 @@ export class RallyVehicle{
  setHandlingMode(mode:HandlingMode){
   this.handlingMode=mode;
   for(const wheel of this.wheels){wheel.handlingMode=mode;wheel.relaxedSlipAngle=0;}
+  this.rack.angle=this.steerCommand=this.steer;this.rack.rate=0;
  }
- reset(point:CoursePoint){const yaw=Math.atan2(-point.tx,-point.tz);this.body.setTranslation({x:point.x,y:point.y+this.config.radius+this.config.suspension-this.config.mount+.12,z:point.z},true);this.body.setRotation({x:0,y:Math.sin(yaw/2),z:0,w:Math.cos(yaw/2)},true);this.body.setLinvel({x:0,y:0,z:0},true);this.body.setAngvel({x:0,y:0,z:0},true);this.body.resetForces(true);this.body.resetTorques(true);this.steer=this.steerNeutral=this.throttle=this.brake=this.speed=this.forwardSpeed=this.airborne=this.handbrake=this.directionTimer=0;this.driveDirection=1;this.engineWheelTorque=0;this.diffTransfer={front:0,rear:0,center:0};this.driveModel.reset();this.rpm=this.config.powertrain.idleRPM;this.gear=1;for(const wheel of this.wheels)wheel.reset();for(const abs of this.wheelABS)abs.active=false;this.readPose();this.previousPosition={...this.position};this.previousRotation={...this.rotation};}
+ reset(point:CoursePoint){const yaw=Math.atan2(-point.tx,-point.tz);this.body.setTranslation({x:point.x,y:point.y+this.config.radius+this.config.suspension-this.config.mount+.12,z:point.z},true);this.body.setRotation({x:0,y:Math.sin(yaw/2),z:0,w:Math.cos(yaw/2)},true);this.body.setLinvel({x:0,y:0,z:0},true);this.body.setAngvel({x:0,y:0,z:0},true);this.body.resetForces(true);this.body.resetTorques(true);this.rack.reset();this.steer=this.steerCommand=this.throttle=this.brake=this.speed=this.forwardSpeed=this.airborne=this.handbrake=this.directionTimer=0;this.driveDirection=1;this.engineWheelTorque=0;this.diffTransfer={front:0,rear:0,center:0};this.driveModel.reset();this.rpm=this.config.powertrain.idleRPM;this.gear=1;for(const wheel of this.wheels)wheel.reset();for(const abs of this.wheelABS)abs.active=false;this.readPose();this.previousPosition={...this.position};this.previousRotation={...this.rotation};}
  /** Spin the engine up to the current wheel speeds (after placing the car). */
  syncEngine(){const c=this.config;this.driveModel.syncEngine(this.wheels.reduce((sum,w,i)=>sum+w.angularSpeed*(i<2?c.frontDrive/2:(1-c.frontDrive)/2),0),this.driveDirection===-1);this.rpm=this.driveModel.engineRPM;}
  beforeStep(input:DriveInput,dt:number,enabled:boolean){
@@ -71,24 +75,14 @@ export class RallyVehicle{
  this.handbrake=damp(this.handbrake,enabled?clamp(input.handbrake,0,1):0,12,dt);
  const wheelbase=c.back-c.front;
  this.driveModel.updateTransmission(this.wheels.map((w,i)=>({angularSpeed:w.angularSpeed,longSlip:w.longSlip,weight:i<2?c.frontDrive/2:(1-c.frontDrive)/2})),dt,this.driveDirection===-1);
- // Ecctrl speed-based steering curve retains low-speed lock and fades at speed.
- const maxSteer=this.driveModel.steeringLimit(this.speed,c.maxSpeed,c.steering);
- const command=enabled?clamp(input.steer,-1,1):0;
- let target=Math.sign(command)*Math.abs(command)**1.15*maxSteer;
- if(this.slideSteering&&this.handlingMode!=='baseline'){
-  // Caster trails the front wheels toward the front axle's direction of travel,
-  // so in a slide the neutral steer point is the countersteer that points the
-  // wheels down the road, and the driver steers around it. Countersteer may
-  // exceed the speed-faded lock up to the rack's limit; turn-in may not.
-  const front=this.axleTravel(c.front),rear=this.axleTravel(c.back);
-  const sliding=clamp((Math.abs(rear)-SLIDE_START)/SLIDE_RANGE,0,1);
-  this.steerNeutral=clamp(front*sliding*SLIDE_ALIGN,-c.steering,c.steering);
-  const counter=Math.min(c.steering,Math.abs(this.steerNeutral)+maxSteer);
-  const limitLeft=this.steerNeutral>0?counter:maxSteer,limitRight=this.steerNeutral<0?counter:maxSteer;
-  target=clamp(this.steerNeutral+target,-limitRight,limitLeft);
- }else this.steerNeutral=0;
- const returning=Math.abs(target)<Math.abs(this.steer)||target*this.steer<0;
- this.steer=damp(this.steer,target,returning?c.steerReturn:c.steerRate,dt);
+ const command=enabled?clamp(input.steer,-1,1):0,shaped=Math.sign(command)*Math.abs(command)**1.15;
+ if(this.handlingMode==='baseline'){
+  // Ecctrl speed-based steering curve retains low-speed lock and fades at speed.
+  const maxSteer=this.driveModel.steeringLimit(this.speed,c.maxSpeed,c.steering);
+  this.steerLimits=[maxSteer,maxSteer];
+  const target=shaped*maxSteer,returning=Math.abs(target)<Math.abs(this.steer)||target*this.steer<0;
+  this.steer=this.steerCommand=damp(this.steer,target,returning?c.steerReturn:c.steerRate,dt);
+ }else this.steerRack(shaped,dt);
  // Keep Ecctrl's engine/gearing force law instead of fading torque at 100 km/h.
  const reverse=this.driveDirection===-1;
  const governedSpeed=reverse?7:c.maxSpeed;
@@ -146,12 +140,33 @@ export class RallyVehicle{
   this.gear=this.driveDirection===-1?-1:this.driveModel.gear;this.rpm=damp(this.rpm,this.driveModel.engineRPM,12,dt);
  }
 
+ /**
+  * Keyboard/gamepad steering through the physical rack. At speed, full input
+  * asks for the slip angle at which the front tires make `slipShare` of their
+  * peak side force; in a slide countersteer reaches that far past the front
+  * axle's direction of travel. The whole lock is available at low speed.
+  * The driver's hands move toward that at `steerRate`; the rack then settles
+  * where hands and the tires' aligning torque balance. With slide steering the
+  * hands relax as the input centres and the aligning torque trails the wheels.
+  */
+ private steerRack(shaped:number,dt:number){
+  const c=this.config,r=c.steeringRack,front=this.wheels[0],other=this.wheels[1];
+  const load=front.contact||other.contact?(front.force+other.force)/2:c.mass*9.81/4;
+  const slip=gravelSlipAtShare(load,r.slipShare)/c.tireLateralResponse.front;
+  const fade=clamp((this.speed-r.fullLockSpeed)/(r.slipLockSpeed-r.fullLockSpeed),0,1);
+  this.steerLimits=steerBounds(this.axleTravel(c.front),c.steering+(slip-c.steering)*fade,c.steering);
+  const target=shaped*(shaped>0?this.steerLimits[1]:this.steerLimits[0]);
+  const returning=Math.abs(target)<Math.abs(this.steerCommand)||target*this.steerCommand<0;
+  this.steerCommand=damp(this.steerCommand,target,returning?c.steerReturn:c.steerRate,dt);
+  const grip=this.slideSteering?clamp(Math.abs(shaped)/.2,0,1):1;
+  this.steer=this.rack.step(dt,this.steerCommand,front.aligning+other.aligning,grip);
+ }
  /** Direction of travel at an axle, relative to the chassis heading (rad, +left). */
  private axleTravel(z:number){
   const q=this.body.rotation(),v=rotateInverse(q,this.body.linvel()),w=rotateInverse(q,this.body.angvel());
-  const forward=-v.z;if(forward<SLIDE_MIN_SPEED)return 0;
+  const forward=-v.z;if(forward<TRAVEL_MIN_SPEED)return 0;
   // Velocity at (0,0,z) in the body frame: v + w x r, lateral component v.x + w.y*z.
-  return Math.atan2(-(v.x+w.y*z),forward)*clamp((forward-SLIDE_MIN_SPEED)/4,0,1);
+  return Math.atan2(-(v.x+w.y*z),forward)*clamp((forward-TRAVEL_MIN_SPEED)/TRAVEL_FADE,0,1);
  }
  private readPose(){this.body.translation(this.position);this.body.rotation(this.rotation);this.body.linvel(this.velocity);}
  dispose(){this.world.removeRigidBody(this.body);}
