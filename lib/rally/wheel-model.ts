@@ -13,49 +13,64 @@ import {clamp,surfaceAt} from './course';
 import {VEHICLES,type VehicleKind,type HandlingMode} from './vehicle-config';
 
 const localUp=new Vector3(0,1,0);
+// Fore/aft ray positions across the contact patch, as fractions of tire radius.
+const PATCH=[0,-.4,.4,-.75,.75];
+// Ploughing force per unit load per unit surface looseness, at full slide.
+const PLOUGH_SIDE=.34,PLOUGH_LOCK=.2;
 export class RallyWheel {
   x:number;y:number;z:number;steer=0;rotation=0;angularSpeed=0;contact=false;
   contactPoint=new Vector3();normal=new Vector3(0,1,0);supportPoint=new Vector3();
   force=0;slip=0;mud=false;longSlip=0;slipAngle=0;driveTorque=0;brakeTorque=0;
   suspensionLength=0;longVelocity=0;sideVelocity=0;friction=0;loadMass=0;inertia=0;
   handlingMode:HandlingMode='refined';
-  relaxedSlipAngle=0;
+  relaxedSlipAngle=0;loose=0;bump=0;plough=0;
   private config;private frontWheel:boolean;
   rollingResistance=.025;rollingDrag=0;
   private origin=new Vector3();private direction=new Vector3();private longitudinal=new Vector3();private lateral=new Vector3();
-  private up=new Vector3();private q=new Quaternion();private steerQ=new Quaternion();private shapeQ=new Quaternion();
+  private up=new Vector3();private rayOrigin=new Vector3();private rayNormal=new Vector3();private q=new Quaternion();private steerQ=new Quaternion();private shapeQ=new Quaternion();
   private velocity=new Vector3();private impulse=new Vector3();
   private ground:RAPIER.RigidBody|null=null;
   constructor(public world:RAPIER.World,public body:RAPIER.RigidBody,kind:VehicleKind,x:number,z:number){
     const c=this.config=VEHICLES[kind];this.x=x;this.z=z;this.y=c.mount-c.suspension;this.frontWheel=z===c.front;
     this.inertia=c.wheelInertia;this.reset();
   }
-  reset(){this.relaxedSlipAngle=0;this.steer=this.rotation=this.angularSpeed=this.force=this.slip=this.longSlip=this.slipAngle=this.driveTorque=this.brakeTorque=0;this.contact=false;this.suspensionLength=this.config.suspension;this.y=this.config.mount-this.suspensionLength;}
+  reset(){this.relaxedSlipAngle=this.bump=this.plough=0;this.steer=this.rotation=this.angularSpeed=this.force=this.slip=this.longSlip=this.slipAngle=this.driveTorque=this.brakeTorque=0;this.contact=false;this.suspensionLength=this.config.suspension;this.y=this.config.mount-this.suspensionLength;}
 
-  contactStep(){
-    const c=this.config;this.q.copy(this.body.rotation());
+  contactStep(dt:number){
+    const c=this.config,r=c.radius;this.q.copy(this.body.rotation());
     this.origin.set(this.x,c.mount,this.z).applyQuaternion(this.q).add(this.body.translation());
     this.up.set(0,1,0).applyQuaternion(this.q);this.direction.copy(this.up).negate();
     this.steerQ.setFromAxisAngle(localUp,this.steer);this.shapeQ.copy(this.q).multiply(this.steerQ);
     this.longitudinal.set(0,0,-1).applyQuaternion(this.shapeQ);
-    // Ecctrl's supported rayCast mode is stable across the narrow road triangle seams.
-    const hit=this.world.castRayAndGetNormal(new RAPIER.Ray(this.origin,this.direction),c.suspension+c.radius,false,RAPIER.QueryFilterFlags.EXCLUDE_SENSORS,undefined,undefined,this.body);
-    this.contact=!!hit;this.force=0;
-    if(!hit){this.relaxedSlipAngle=0;this.suspensionLength=c.suspension;this.y=c.mount-c.suspension;this.slip=this.longSlip=this.slipAngle=0;return;}
-    this.suspensionLength=clamp(hit.timeOfImpact-c.radius,0,c.suspension);this.y=c.mount-this.suspensionLength;
+    const surface=surfaceAt(this.origin.x,this.origin.z);this.mud=surface.mud;this.friction=surface.grip*c.tireGrip;this.rollingResistance=surface.rollingResistance;this.rollingDrag=surface.rollingDrag;this.loose=surface.loose??0;
+    // The tire carcass envelopes corrugations shorter than its patch: low-pass them.
+    this.bump+=((surface.bump??0)-this.bump)*(1-Math.exp(-dt/.012));
+    // Rays across the patch see a bump before the axle reaches it. Each ray's
+    // hit is converted to the axle height at which the tire circle touches it.
+    // Ecctrl's ray mode stays stable across the road's triangle seams.
+    let best=Infinity,bestHit:RAPIER.RayColliderIntersection|null=null,bestOffset=0;
+    for(const fraction of PATCH){
+      const offset=fraction*r,drop=Math.sqrt(r*r-offset*offset);
+      this.rayOrigin.copy(this.origin).addScaledVector(this.longitudinal,offset);
+      const hit=this.world.castRayAndGetNormal(new RAPIER.Ray(this.rayOrigin,this.direction),c.suspension+drop,false,RAPIER.QueryFilterFlags.EXCLUDE_SENSORS,undefined,undefined,this.body);
+      // Only road-facing support can suspend the wheel; obstacle sides collide with the chassis.
+      if(!hit||this.rayNormal.copy(hit.normal).dot(this.up)<.2)continue;
+      const length=hit.timeOfImpact-this.bump-drop;
+      if(length<best){best=length;bestHit=hit;bestOffset=offset;}
+    }
+    this.contact=!!bestHit;this.force=0;
+    if(!bestHit){this.relaxedSlipAngle=0;this.bump=0;this.suspensionLength=c.suspension;this.y=c.mount-c.suspension;this.slip=this.longSlip=this.slipAngle=0;return;}
+    const hit=bestHit;
+    this.suspensionLength=clamp(best,0,c.suspension);this.y=c.mount-this.suspensionLength;
     this.normal.copy(hit.normal).normalize();
-    // Only road-facing support can suspend the wheel; obstacle sides collide with the chassis.
-    if(this.normal.dot(this.up)<.2){this.contact=false;this.relaxedSlipAngle=0;return;}
     this.supportPoint.copy(this.origin).addScaledVector(this.direction,this.suspensionLength);
-    this.contactPoint.copy(this.origin).addScaledVector(this.direction,hit.timeOfImpact);
-    this.lateral.crossVectors(this.longitudinal,this.up).normalize();
+    this.contactPoint.copy(this.origin).addScaledVector(this.longitudinal,bestOffset).addScaledVector(this.direction,hit.timeOfImpact-this.bump);
     this.longitudinal.projectOnPlane(this.normal).normalize();
     this.lateral.crossVectors(this.longitudinal,this.normal).normalize();
     this.ground=hit.collider.parent();this.refreshVelocity();
     const vertical=this.velocity.dot(this.up),compression=c.suspension-this.suspensionLength;
     const damping=vertical<0?c.compressionDamping:c.reboundDamping;
     this.force=clamp(c.springRate*compression-damping*vertical+Math.max(0,compression-c.suspensionTravel)*c.springRate*3,0,c.mass*9.81*.85);
-    const surface=surfaceAt(this.contactPoint.x,this.contactPoint.z);this.mud=surface.mud;this.friction=surface.grip*c.tireGrip;this.rollingResistance=surface.rollingResistance;this.rollingDrag=surface.rollingDrag;
   }
 
   refreshVelocity(){
@@ -100,6 +115,23 @@ export class RallyWheel {
       const cap=this.force*this.friction*1.75,magnitude=Math.hypot(long,side);
       if(magnitude>cap){long*=cap/magnitude;side*=cap/magnitude;}
       this.body.applyImpulseAtPoint(this.impulse.copy(this.longitudinal).multiplyScalar(long*dt).addScaledVector(this.lateral,side*dt),this.contactPoint,true);
+      // Loose-surface ploughing: a sliding tire bulldozes gravel into a berm and
+      // pushes against it, so side force holds up past the tire's peak instead
+      // of fading, and a slide scrubs speed. A locked tire wedges gravel ahead.
+      // Bounded so it can only stop, never reverse, the sliding velocity.
+      this.plough=0;
+      if(this.handlingMode!=='baseline'&&this.loose>0){
+        const sideBuild=clamp((Math.abs(this.sideVelocity)-2)/6,0,1);
+        if(sideBuild>0){
+          this.plough=Math.min(this.loose*this.force*PLOUGH_SIDE*sideBuild,Math.abs(this.sideVelocity)*this.loadMass/dt);
+          this.body.applyImpulseAtPoint(this.impulse.copy(this.lateral).multiplyScalar(-Math.sign(this.sideVelocity)*this.plough*dt),this.contactPoint,true);
+        }
+        const skid=this.longVelocity-this.angularSpeed*r;
+        if(skid*this.longVelocity>0){
+          const wedge=Math.min(this.loose*this.force*PLOUGH_LOCK*clamp((Math.abs(skid)-2)/6,0,1),Math.abs(this.longVelocity)*this.loadMass/dt);
+          if(wedge>0)this.body.applyImpulseAtPoint(this.impulse.copy(this.longitudinal).multiplyScalar(-Math.sign(this.longVelocity)*wedge*dt),this.contactPoint,true);
+        }
+      }
       // CARDYNAMICS::ApplyTireForce adds separate loose-ground contact drag in
       // both tangent directions. This dissipates motion, without aligning it.
       const drag=Math.min(this.rollingDrag,this.loadMass/dt);

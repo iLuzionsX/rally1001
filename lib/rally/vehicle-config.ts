@@ -8,7 +8,7 @@ export const VEHICLES = {
     front:-1.27495, back:1.30635, track:1.52434, radius:.31424,
     suspension:.42, mount:-.1, springRate:48000, compressionDamping:4000, reboundDamping:4700,
     suspensionTravel:.23, centerOfMass:-.12, frontAntiRoll:4800, rearAntiRoll:5400,
-    powertrain:{engineHorsepower:340,engineMaxRPM:7000,idleRPM:900,gearRatios:[3.636,2.375,1.761,1.346,1.062,.842],finalDriveRatio:3.9,shiftUpRPM:6500,shiftDownRPM:2600,shiftCooldown:.35,reverseRatio:3.545,reverseTorqueScale:.38},
+    powertrain:{engineHorsepower:340,engineMaxRPM:7000,idleRPM:900,gearRatios:[3.636,2.375,1.761,1.346,1.062,.842],finalDriveRatio:3.9,shiftUpRPM:6500,shiftDownRPM:2600,shiftCooldown:.35,reverseRatio:3.545,reverseTorqueScale:.38,engineInertia:.2,clutchTorque:620,launchRPM:4500,shiftTime:.11},
     brake:26000, frontDrive:.43, frontBrake:.6, wheelInertia:1.5,
     differential:{front:{antiSlip:160,torqueSensitivity:.075,coastFactor:.3,split:.5},rear:{antiSlip:250,torqueSensitivity:.15,coastFactor:.55,split:.5},center:{antiSlip:900,torqueSensitivity:0,coastFactor:.25,split:.57}},
     // Corner-balance setup: torque-sensitive center locking releases on coast;
@@ -25,7 +25,7 @@ export const VEHICLES = {
     front:-1.91953, back:1.60088, track:1.73609, radius:.43383,
     suspension:.46, mount:-.1, springRate:50000, compressionDamping:4900, reboundDamping:5600,
     suspensionTravel:.34, centerOfMass:-.10, frontAntiRoll:4200, rearAntiRoll:4600,
-    powertrain:{engineHorsepower:430,engineMaxRPM:6500,idleRPM:800,gearRatios:[4.696,2.985,2.146,1.769,1.52,1.275,1,.854,.689,.636],finalDriveRatio:3.55,shiftUpRPM:5900,shiftDownRPM:2400,shiftCooldown:.4,reverseRatio:4.866,reverseTorqueScale:.32},
+    powertrain:{engineHorsepower:430,engineMaxRPM:6500,idleRPM:800,gearRatios:[4.696,2.985,2.146,1.769,1.52,1.275,1,.854,.689,.636],finalDriveRatio:3.55,shiftUpRPM:5900,shiftDownRPM:2400,shiftCooldown:.4,reverseRatio:4.866,reverseTorqueScale:.32,engineInertia:.38,clutchTorque:880,launchRPM:3300,shiftTime:.22},
     brake:32000, frontDrive:.4, frontBrake:.62, wheelInertia:3.2,
     differential:{front:{antiSlip:120,torqueSensitivity:.065,coastFactor:.25,split:.5},rear:{antiSlip:400,torqueSensitivity:.2,coastFactor:.35,split:.5},center:{antiSlip:400,torqueSensitivity:.11,coastFactor:.2,split:.6}},
     rallyDifferential:{front:{antiSlip:120,torqueSensitivity:.045,coastFactor:.18,split:.5},rear:{antiSlip:400,torqueSensitivity:.2,coastFactor:.25,split:.5},center:{antiSlip:400,torqueSensitivity:.2,coastFactor:.18,split:.6}},

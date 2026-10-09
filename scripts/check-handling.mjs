@@ -81,7 +81,7 @@ try {
     const overlapStart={...v.position};let overlapStopped=false;
     for(let i=0;i<180;i++){
       step({...zero,throttle:1,brake:1});
-      assert(v.engineWheelTorque<=0,'Brake must cut propulsive engine torque immediately; diffs can still transfer it');
+      assert(v.driveModel.demand===0,'Brake must cut the throttle demand immediately; flywheel and diffs can still transfer torque');
       if(v.speed<.15){overlapStopped=true;break;}
     }
     assert(overlapStopped,'Brake and gas held together must stop the car');

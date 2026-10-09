@@ -1,6 +1,6 @@
 import * as THREE from 'three';
 import RAPIER from '@dimforge/rapier3d-compat';
-import {courseAt,nearestRoad,terrainHeight,roadHeight,random} from './course';
+import {courseAt,nearestRoad,terrainHeight,roadHeight,random,roadSample,ROAD_ROWS} from './course';
 import type {Quality} from './world';
 
 type Placement={x:number;y:number;z:number;scale:number;yScale:number;angle:number};
@@ -125,10 +125,10 @@ export function addTrackside(scene:THREE.Scene,physics:RAPIER.World) {
 
   // Subtle worn-in racing lines, following height rather than floating decals.
   const vertices:number[]=[],uvs:number[]=[],indices:number[]=[];
-  for(let i=0;i<=720;i++)for(const side of [-1,1]) {
-    const p=courseAt(i/720),center=side*.8;
+  for(let i=0;i<=ROAD_ROWS;i++)for(const side of [-1,1]) {
+    const p=roadSample(i),center=side*.8;
     for(const edge of [-.13,.13]){const d=center+edge;vertices.push(p.x-p.tz*d,roadHeight(p,d)+.018,p.z+p.tx*d);uvs.push(edge<0?0:1,p.distance*.7);}
-    if(i<720){const a=i*4+(side===-1?0:2);indices.push(a,a+1,a+4,a+1,a+5,a+4);}
+    if(i<ROAD_ROWS){const a=i*4+(side===-1?0:2);indices.push(a,a+1,a+4,a+1,a+5,a+4);}
   }
   const geometry=new THREE.BufferGeometry();geometry.setAttribute('position',new THREE.Float32BufferAttribute(vertices,3));geometry.setAttribute('uv',new THREE.Float32BufferAttribute(uvs,2));geometry.setIndex(indices);geometry.computeVertexNormals();
   scene.add(new THREE.Mesh(geometry,new THREE.MeshStandardMaterial({color:'#514939',roughness:.92,transparent:true,opacity:.12,depthWrite:false,polygonOffset:true,polygonOffsetFactor:-1})));

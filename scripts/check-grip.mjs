@@ -33,7 +33,7 @@ try{
       // Start in a plausible road gear, rather than injecting 80 km/h into first.
       const wheelRPM=kph/3.6/v.config.radius*30/Math.PI,c=v.config.powertrain;
       let gear=0;for(let i=0;i<c.gearRatios.length;i++)if(wheelRPM*c.gearRatios[i]*c.finalDriveRatio>c.shiftDownRPM+1200)gear=i;
-      v.driveModel.gearIndex=gear;v.driveModel.driveRatio=c.gearRatios[gear]*c.finalDriveRatio;
+      v.driveModel.gearIndex=gear;v.driveModel.driveRatio=c.gearRatios[gear]*c.finalDriveRatio;v.syncEngine();
     }
     return {world,v,step,atSpeed};
   }
