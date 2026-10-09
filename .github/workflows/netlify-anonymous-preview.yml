@@ -1,0 +1,59 @@
+name: Anonymous Netlify Rally Physics-Feel Preview
+on:
+  push:
+    branches: [deploy/netlify-physics-feel-preview]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  netlify-preview:
+    runs-on: ubuntu-latest
+    timeout-minutes: 18
+    steps:
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 11.25.0
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: pnpm
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+      - name: Build static rally
+        run: pnpm exec vite build --config vite.netlify.config.ts
+      - name: Check static assets
+        run: |
+          test -s dist-netlify/index.html
+          test -s dist-netlify/assets/models/subaru-rally.glb
+          test -s dist-netlify/assets/models/ford-rally.glb
+      - name: Deploy anonymously to Netlify
+        env:
+          CI: true
+        run: |
+          npx --yes netlify-cli@latest deploy --dir=dist-netlify --no-build --allow-anonymous --json > netlify-deployment.json
+          node --input-type=module <<'JS'
+          import fs from 'node:fs';
+          const info=JSON.parse(fs.readFileSync('netlify-deployment.json','utf8'));
+          const keys=Object.keys(info);
+          console.log('Netlify response keys:', keys.join(', '));
+          const candidateUrls=[info.deploy_url,info.deployUrl,info.site_url,info.siteUrl,info.ssl_url,info.url,info.deploy?.url,info.site?.url];
+          const findUrls=(value,depth=0)=>{
+            if(depth>5||value==null)return [];
+            if(typeof value==='string')return value.includes('.netlify.app')?[value]:[];
+            if(typeof value==='object')return Object.values(value).flatMap(item=>findUrls(item,depth+1));
+            return [];
+          };
+          const url=[...candidateUrls,...findUrls(info)].find(x=>typeof x==='string'&&x.includes('.netlify.app'));
+          if(!url){
+            const safeStatus={success:info.success,status:info.status,error:typeof info.error==='string'?info.error.slice(0,200):undefined};
+            console.error('Netlify deployment returned no site URL',safeStatus);
+            throw Error('Netlify returned no deployment URL');
+          }
+          console.log('Preview: '+url);
+          const password=typeof info.password==='string'?info.password:'';
+          if(password)console.log('Preview password: '+password);
+          fs.appendFileSync(process.env.GITHUB_STEP_SUMMARY,'## Anonymous Netlify preview\n\n'+url+'\n\n'+(password?'Access password: `'+password+'`\n\n':'')+'This unclaimed preview expires after one hour.\n');
+          JS
