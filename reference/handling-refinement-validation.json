@@ -6,27 +6,27 @@
       "profiles": [
         {
           "mode": "baseline",
-          "stop80Metres": 24.8592,
-          "stop80Seconds": 2.2333,
+          "stop80Metres": 22.8669,
+          "stop80Seconds": 2.0417,
           "largestBrakePressureStep": 0.45,
-          "trailPeakSideslipDegrees": 5.8219,
-          "trailPeakYawRate": 0.4515,
-          "trailPeakFrontLoadShare": 0.7881,
-          "trailExitKmh": 47.1476,
-          "slalomPeakSideslipDegrees": 5.1288,
+          "trailPeakSideslipDegrees": 1.2775,
+          "trailPeakYawRate": 0.4257,
+          "trailPeakFrontLoadShare": 0.8356,
+          "trailExitKmh": 47.849,
+          "slalomPeakSideslipDegrees": 3.8215,
           "firstSlipResponseRatio": 1
         },
         {
           "mode": "refined",
-          "stop80Metres": 25.01,
-          "stop80Seconds": 2.2375,
+          "stop80Metres": 22.6697,
+          "stop80Seconds": 2.0167,
           "largestBrakePressureStep": 0.0542,
-          "trailPeakSideslipDegrees": 5.2891,
-          "trailPeakYawRate": 0.3826,
-          "trailPeakFrontLoadShare": 0.7608,
-          "trailExitKmh": 50.0347,
-          "slalomPeakSideslipDegrees": 4.3423,
-          "firstSlipResponseRatio": 0.2513
+          "trailPeakSideslipDegrees": 1.0928,
+          "trailPeakYawRate": 0.369,
+          "trailPeakFrontLoadShare": 0.8127,
+          "trailExitKmh": 51.3387,
+          "slalomPeakSideslipDegrees": 1.4817,
+          "firstSlipResponseRatio": 0.2519
         }
       ]
     },
@@ -36,27 +36,27 @@
       "profiles": [
         {
           "mode": "baseline",
-          "stop80Metres": 33.6441,
-          "stop80Seconds": 3.2583,
+          "stop80Metres": 30.2732,
+          "stop80Seconds": 2.8792,
           "largestBrakePressureStep": 0.45,
-          "trailPeakSideslipDegrees": 6.1899,
-          "trailPeakYawRate": 0.3183,
-          "trailPeakFrontLoadShare": 0.7703,
-          "trailExitKmh": 43.2733,
-          "slalomPeakSideslipDegrees": 5.6181,
+          "trailPeakSideslipDegrees": 1.7819,
+          "trailPeakYawRate": 0.3418,
+          "trailPeakFrontLoadShare": 0.8145,
+          "trailExitKmh": 41.9049,
+          "slalomPeakSideslipDegrees": 5.7151,
           "firstSlipResponseRatio": 1
         },
         {
           "mode": "refined",
-          "stop80Metres": 33.814,
-          "stop80Seconds": 3.2667,
+          "stop80Metres": 29.8342,
+          "stop80Seconds": 2.8292,
           "largestBrakePressureStep": 0.0542,
-          "trailPeakSideslipDegrees": 5.9893,
-          "trailPeakYawRate": 0.3109,
-          "trailPeakFrontLoadShare": 0.7705,
-          "trailExitKmh": 43.7869,
-          "slalomPeakSideslipDegrees": 4.6811,
-          "firstSlipResponseRatio": 0.2513
+          "trailPeakSideslipDegrees": 1.2614,
+          "trailPeakYawRate": 0.308,
+          "trailPeakFrontLoadShare": 0.8263,
+          "trailExitKmh": 43.3659,
+          "slalomPeakSideslipDegrees": 2.8418,
+          "firstSlipResponseRatio": 0.2519
         }
       ]
     },
@@ -66,27 +66,27 @@
       "profiles": [
         {
           "mode": "baseline",
-          "stop80Metres": 27.3108,
-          "stop80Seconds": 2.4542,
+          "stop80Metres": 26.1754,
+          "stop80Seconds": 2.3792,
           "largestBrakePressureStep": 0.45,
-          "trailPeakSideslipDegrees": 4.2095,
-          "trailPeakYawRate": 0.2662,
-          "trailPeakFrontLoadShare": 0.6941,
-          "trailExitKmh": 52.4245,
-          "slalomPeakSideslipDegrees": 3.5947,
+          "trailPeakSideslipDegrees": 2.7112,
+          "trailPeakYawRate": 0.3342,
+          "trailPeakFrontLoadShare": 0.7362,
+          "trailExitKmh": 52.0161,
+          "slalomPeakSideslipDegrees": 3.2691,
           "firstSlipResponseRatio": 1
         },
         {
           "mode": "refined",
-          "stop80Metres": 27.6461,
-          "stop80Seconds": 2.4667,
+          "stop80Metres": 26.0414,
+          "stop80Seconds": 2.3333,
           "largestBrakePressureStep": 0.0542,
-          "trailPeakSideslipDegrees": 4.2025,
-          "trailPeakYawRate": 0.2489,
-          "trailPeakFrontLoadShare": 0.6761,
-          "trailExitKmh": 54.4583,
-          "slalomPeakSideslipDegrees": 3.4184,
-          "firstSlipResponseRatio": 0.2066
+          "trailPeakSideslipDegrees": 1.5769,
+          "trailPeakYawRate": 0.2921,
+          "trailPeakFrontLoadShare": 0.7183,
+          "trailExitKmh": 54.991,
+          "slalomPeakSideslipDegrees": 1.5041,
+          "firstSlipResponseRatio": 0.2072
         }
       ]
     },
@@ -96,27 +96,27 @@
       "profiles": [
         {
           "mode": "baseline",
-          "stop80Metres": 39.3876,
-          "stop80Seconds": 3.7083,
+          "stop80Metres": 33.6617,
+          "stop80Seconds": 3.1333,
           "largestBrakePressureStep": 0.45,
-          "trailPeakSideslipDegrees": 4.755,
-          "trailPeakYawRate": 0.203,
-          "trailPeakFrontLoadShare": 0.7012,
-          "trailExitKmh": 46.463,
-          "slalomPeakSideslipDegrees": 3.6113,
+          "trailPeakSideslipDegrees": 3.1665,
+          "trailPeakYawRate": 0.3017,
+          "trailPeakFrontLoadShare": 0.7469,
+          "trailExitKmh": 45.8708,
+          "slalomPeakSideslipDegrees": 3.2925,
           "firstSlipResponseRatio": 1
         },
         {
           "mode": "refined",
-          "stop80Metres": 39.4673,
-          "stop80Seconds": 3.7,
+          "stop80Metres": 32.2659,
+          "stop80Seconds": 2.975,
           "largestBrakePressureStep": 0.0542,
-          "trailPeakSideslipDegrees": 4.8236,
-          "trailPeakYawRate": 0.1935,
-          "trailPeakFrontLoadShare": 0.6903,
-          "trailExitKmh": 47.8198,
-          "slalomPeakSideslipDegrees": 3.432,
-          "firstSlipResponseRatio": 0.2067
+          "trailPeakSideslipDegrees": 3.1341,
+          "trailPeakYawRate": 0.2725,
+          "trailPeakFrontLoadShare": 0.7376,
+          "trailExitKmh": 47.5291,
+          "slalomPeakSideslipDegrees": 2.3177,
+          "firstSlipResponseRatio": 0.2072
         }
       ]
     }

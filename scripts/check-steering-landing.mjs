@@ -21,7 +21,7 @@ try{
   const course=require(join(temp,'course.cjs'));
   const {RallyVehicle}=require(join(temp,'vehicle.cjs')),{advanceVehicle}=require(join(temp,'simulation.cjs'));
   await RAPIER.init();
-  course.surfaceAt=()=>({grip:.59,rollingResistance:.025,rollingDrag:4,loose:.55,bump:0,mud:false,label:'LOOSE DIRT'});
+  course.surfaceAt=()=>({type:'gravel',grip:.59,rollingResistance:.025,rollingDrag:4,loose:.55,bump:0,mud:false,label:'LOOSE DIRT'});
   // Body slip angle: + when the velocity points left of the heading.
   const beta=v=>Math.atan2(-(v.velocity.x*-v.forward.z+v.velocity.z*v.forward.x),v.forwardSpeed);
   function rig(kind,slideSteering){

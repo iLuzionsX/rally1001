@@ -1,15 +1,16 @@
 /*!
  * Stunt Rally / VDrift CARDYNAMICS::DoABS adapter.
  * Copyright Stunt Rally and VDrift contributors, GPL-3.0-or-later.
- * Modified: C++ -> TypeScript; pass contact slip/rotation and bypass handbrake.
+ * Modified: C++ -> TypeScript; pass contact slip/rotation and bypass handbrake;
+ * the target slip comes from the curve of the surface under the wheel.
  * Pinned original: reference/stunt-rally/cardynamics_simulate.cpp, lines 844-881.
  */
-import {optimumGravelSlip} from './pacejka';
-export class GravelABS {
+import type {TireCurve} from './pacejka';
+export class TireABS {
   active=false;
-  update(demand:number,slip:number,load:number,maxWheelSpeed:number){
+  update(demand:number,slip:number,load:number,maxWheelSpeed:number,tire:TireCurve){
     if(demand>.1&&maxWheelSpeed>6){
-      const {sigmaHat}=optimumGravelSlip(load),error=-slip-sigmaHat;
+      const {sigmaHat}=tire.optimumSlip(load),error=-slip-sigmaHat;
       if(error>0&&!this.active)this.active=true;
       if(error<-sigmaHat/2&&this.active)this.active=false;
     }else this.active=false;
