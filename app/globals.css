@@ -391,3 +391,42 @@ html,body{width:100%;height:100%;margin:0;overflow:hidden;overscroll-behavior:no
 @media (prefers-reduced-motion:reduce){
   .steering-wheel,.course-progress span,.pedal,.vehicle-choice{transition:none}
 }
+
+/* Steering slider: position under the thumb sets the lock; springs to centre. */
+.steering-wheel-body{position:absolute;inset:0;touch-action:none;user-select:none}
+.steering-zone.slider-zone{width:min(260px,44vw);height:66px}
+.steering-zone.slider-zone::before{display:none}
+.steering-slider{position:absolute;inset:0;touch-action:none;user-select:none;
+  border:1px dotted #f4f1e998;background:#10111188;backdrop-filter:blur(5px)}
+.steering-slider .steer-label{bottom:3px}
+.slider-centre{position:absolute;left:50%;top:9px;bottom:9px;width:1px;background:#f4f1e963}
+.slider-arrow{position:absolute;top:50%;transform:translateY(-55%);font:22px var(--mono);color:#f4f1e973;pointer-events:none}
+.slider-arrow.left{left:10px}.slider-arrow.right{right:10px}
+.slider-fill{position:absolute;top:50%;height:2px;margin-top:-1px;background:#ff6056b0;pointer-events:none}
+.slider-thumb{position:absolute;top:50%;width:44px;height:44px;margin:-22px 0 0 -22px;
+  border:1.5px solid #f4f1e9d4;background:#161717d9;box-shadow:0 2px 8px #0009;pointer-events:none;
+  transition:left .12s ease-out}
+.slider-thumb::after{content:"";position:absolute;left:50%;top:9px;bottom:9px;width:2px;margin-left:-1px;background:#ff6056}
+.steering-slider.held .slider-thumb,.steering-slider.held .slider-fill{transition:none}
+.steering-slider:not(.held) .slider-fill{transition:left .12s ease-out,width .12s ease-out}
+@media(prefers-reduced-motion:reduce){.slider-thumb,.steering-slider .slider-fill{transition:none!important}}
+
+/* Layout editing: controls shown on every device, each covered by a drag handle. */
+.touch-controls.editing{display:block;z-index:30;background:#0b0c0c8c;pointer-events:auto}
+.touch-controls.editing .steering-zone,.touch-controls.editing .pedals,.touch-controls.editing .handbrake{outline:1px dashed var(--signal);outline-offset:4px}
+.control-drag{position:absolute;inset:-6px;z-index:2;cursor:grab;touch-action:none;pointer-events:auto}
+.control-drag:active{cursor:grabbing;background:#ff605622}
+.layout-editor{position:absolute;z-index:31;left:50%;top:calc(24px + env(safe-area-inset-top));transform:translateX(-50%);
+  display:flex;flex-wrap:wrap;gap:10px 16px;align-items:center;justify-content:center;max-width:calc(100% - 32px);
+  padding:10px 14px;background:#161717f5;border:1px dotted #f4f1e983;color:#f4f1e9;font:600 11px var(--mono);letter-spacing:.4px}
+.layout-editor>div{display:flex;gap:8px}
+.layout-editor button{display:flex;align-items:center;gap:6px;min-height:36px;padding:6px 12px;border:1px dotted #f4f1e98a;background:#242525;color:#f4f1e9;font:inherit}
+.layout-editor .layout-done{background:var(--signal);color:#111;border-color:transparent}
+.layout-buttons{display:flex;gap:6px}
+.layout-buttons .text-button{min-height:36px;padding:6px 12px;border:1px dotted #f4f1e95a;background:#242525;font:600 12px var(--mono)}
+
+/* Performance readout: small, out of the driving view, readable over the scene. */
+.perf-readout{position:absolute;z-index:6;left:50%;top:calc(8px + env(safe-area-inset-top));transform:translateX(-50%);
+  display:flex;flex-direction:column;align-items:center;gap:2px;padding:5px 9px;pointer-events:none;
+  background:#101111c4;border:1px dotted #f4f1e95a;color:#f4f1e9d9;font:9px var(--mono);letter-spacing:.3px;white-space:nowrap}
+.perf-readout b{font-size:12px;color:#f4f1e9}
