@@ -36,7 +36,8 @@ export async function createWorld(physics:RAPIER.World,progress:(n:number)=>void
  groundMaterial('brown_mud_leaves_01',1.1,.96),groundMaterial('brown_mud_02',1,.92),groundMaterial('brown_mud_02',1,.36),
  ]);
  const terrain=makeTerrainData(),road=makeRoadData(),terrainMesh=new THREE.Mesh(geometry(terrain),forestMaterial),roadGeometry=geometry(road);
- for(let i=0;i<ROAD_ROWS;i++){const p=roadSample(i+.5);roadGeometry.addGroup(i*ROAD_COLS*6,ROAD_COLS*6,surfaceAt(p.x,p.z).mud?1:0);}
+ // One draw group per run of rows sharing a material: each group is a draw call.
+ for(let i=0,start=0,current=-1;i<=ROAD_ROWS;i++){const p=i<ROAD_ROWS?roadSample(i+.5):null,material=p?(surfaceAt(p.x,p.z).mud?1:0):-1;if(material===current)continue;if(current>=0)roadGeometry.addGroup(start*ROAD_COLS*6,(i-start)*ROAD_COLS*6,current);start=i;current=material;}
  const roadMesh=new THREE.Mesh(roadGeometry,[dirtMaterial,mudMaterial]);
  for(const [mesh,data] of [[terrainMesh,terrain],[roadMesh,road]] as const){mesh.receiveShadow=true;scene.add(mesh);physics.createCollider(RAPIER.ColliderDesc.trimesh(data.vertices,data.indices).setFriction(.9));}progress(.18);
  const loader=new GLTFLoader();let loaded=0;

@@ -42,8 +42,11 @@ export const COURSE:CoursePoint[]=path.map((p,i)=>{
 for(let i=1;i<COURSE.length;i++)COURSE[i].distance=COURSE[i-1].distance+Math.hypot(COURSE[i].x-COURSE[i-1].x,COURSE[i].z-COURSE[i-1].z);
 export const COURSE_LENGTH=COURSE[720].distance;
 export function courseAt(s:number):CoursePoint{const u=wrap(s)*720,i=Math.floor(u),t=u-i,a=COURSE[i],b=COURSE[i+1];return {x:a.x+(b.x-a.x)*t,y:a.y+(b.y-a.y)*t,z:a.z+(b.z-a.z)*t,tx:a.tx,tz:a.tz,width:a.width,s:wrap(s),distance:a.distance+(b.distance-a.distance)*t};}
-const bins=new Map<string,number[]>();COURSE.forEach((p,i)=>{const key=Math.floor(p.x/18)+','+Math.floor(p.z/18);const v=bins.get(key)??[];v.push(i);bins.set(key,v);});
-function knotNearest(x:number,z:number){const bx=Math.floor(x/18),bz=Math.floor(z/18);let d=Infinity,index=0;for(let a=-2;a<=2;a++)for(let b=-2;b<=2;b++)for(const i of bins.get((bx+a)+','+(bz+b))??[]){const p=COURSE[i],d2=(p.x-x)**2+(p.z-z)**2;if(d2<d){d=d2;index=i;}}if(d===Infinity)for(let i=0;i<720;i++){const p=COURSE[i],d2=(p.x-x)**2+(p.z-z)**2;if(d2<d){d=d2;index=i;}}return index;}
+// Numeric bin keys: this lookup runs per wheel per physics step, so it must not allocate strings.
+const binKey=(bx:number,bz:number)=>(bx+32768)*65536+(bz+32768);
+const bins=new Map<number,number[]>();COURSE.forEach((p,i)=>{const key=binKey(Math.floor(p.x/18),Math.floor(p.z/18));const v=bins.get(key)??[];v.push(i);bins.set(key,v);});
+const NO_KNOTS:number[]=[];
+function knotNearest(x:number,z:number){const bx=Math.floor(x/18),bz=Math.floor(z/18);let d=Infinity,index=0;for(let a=-2;a<=2;a++)for(let b=-2;b<=2;b++)for(const i of bins.get(binKey(bx+a,bz+b))??NO_KNOTS){const p=COURSE[i],d2=(p.x-x)**2+(p.z-z)**2;if(d2<d){d=d2;index=i;}}if(d===Infinity)for(let i=0;i<720;i++){const p=COURSE[i],d2=(p.x-x)**2+(p.z-z)**2;if(d2<d){d=d2;index=i;}}return index;}
 function lerpPoint(a:CoursePoint,b:CoursePoint,t:number):CoursePoint{const tx=a.tx+(b.tx-a.tx)*t,tz=a.tz+(b.tz-a.tz)*t,l=Math.hypot(tx,tz)||1;return {x:a.x+(b.x-a.x)*t,y:a.y+(b.y-a.y)*t,z:a.z+(b.z-a.z)*t,tx:tx/l,tz:tz/l,width:a.width+(b.width-a.width)*t,s:a.s+(b.s-a.s)*t,distance:a.distance+(b.distance-a.distance)*t};}
 // Project onto the closer neighbouring segment, so distance and lateral offset
 // are continuous. Road detail is keyed on them and must not step at each knot.

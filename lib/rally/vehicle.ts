@@ -8,11 +8,20 @@ import {clamp,damp,courseAt,surfaceAt,type CoursePoint} from './course';
 import {VEHICLES,type VehicleKind,type DriveInput,type V3,type HandlingMode} from './vehicle-config';
 export {VEHICLES,type VehicleKind,type DriveInput,type V3,type HandlingMode} from './vehicle-config';
 export type WheelPose=RallyWheel;
+// Slide steering: the rear axle's travel angle at which caster alignment starts
+// and is fully in (rad), the share of the front travel angle it centres on, and
+// the forward speed below which it is off (m/s).
+const SLIDE_START=.05,SLIDE_RANGE=.1,SLIDE_ALIGN=.9,SLIDE_MIN_SPEED=3;
+const rotateInverse=(q:{x:number;y:number;z:number;w:number},v:V3)=>{
+ // Rotate by the conjugate quaternion: world -> body frame.
+ const x=-q.x,y=-q.y,z=-q.z,w=q.w,tx=2*(y*v.z-z*v.y),ty=2*(z*v.x-x*v.z),tz=2*(x*v.y-y*v.x);
+ return {x:v.x+w*tx+y*tz-z*ty,y:v.y+w*ty+z*tx-x*tz,z:v.z+w*tz+x*ty-y*tx};
+};
 /** Downloaded Stunt Rally gravel tire forces + Ecctrl contact/rotation model.
  * Rapier resolves chassis/world collisions. There is no sideways velocity clamp. */
 export class RallyVehicle{
  body:RAPIER.RigidBody;config:typeof VEHICLES[VehicleKind];
- steer=0;throttle=0;brake=0;speed=0;forwardSpeed=0;rpm=900;gear=1;surface='LOOSE DIRT';airborne=0;
+ steer=0;steerNeutral=0;slideSteering=false;throttle=0;brake=0;speed=0;forwardSpeed=0;rpm=900;gear=1;surface='LOOSE DIRT';airborne=0;
  driveModel:EcctrlDriveModel;driveDirection:1|-1=1;directionTimer=0;handbrake=0;engineWheelTorque=0;diffTransfer={front:0,rear:0,center:0};
  wheels:WheelPose[]=[];position:V3={x:0,y:0,z:0};rotation={x:0,y:0,z:0,w:1};velocity:V3={x:0,y:0,z:0};forward:V3={x:0,y:0,z:-1};previousPosition:V3={x:0,y:0,z:0};previousRotation={x:0,y:0,z:0,w:1};
  private wheelABS=Array.from({length:4},()=>new GravelABS());
@@ -31,7 +40,7 @@ export class RallyVehicle{
   this.handlingMode=mode;
   for(const wheel of this.wheels){wheel.handlingMode=mode;wheel.relaxedSlipAngle=0;}
  }
- reset(point:CoursePoint){const yaw=Math.atan2(-point.tx,-point.tz);this.body.setTranslation({x:point.x,y:point.y+this.config.radius+this.config.suspension-this.config.mount+.12,z:point.z},true);this.body.setRotation({x:0,y:Math.sin(yaw/2),z:0,w:Math.cos(yaw/2)},true);this.body.setLinvel({x:0,y:0,z:0},true);this.body.setAngvel({x:0,y:0,z:0},true);this.body.resetForces(true);this.body.resetTorques(true);this.steer=this.throttle=this.brake=this.speed=this.forwardSpeed=this.airborne=this.handbrake=this.directionTimer=0;this.driveDirection=1;this.engineWheelTorque=0;this.diffTransfer={front:0,rear:0,center:0};this.driveModel.reset();this.rpm=this.config.powertrain.idleRPM;this.gear=1;for(const wheel of this.wheels)wheel.reset();for(const abs of this.wheelABS)abs.active=false;this.readPose();this.previousPosition={...this.position};this.previousRotation={...this.rotation};}
+ reset(point:CoursePoint){const yaw=Math.atan2(-point.tx,-point.tz);this.body.setTranslation({x:point.x,y:point.y+this.config.radius+this.config.suspension-this.config.mount+.12,z:point.z},true);this.body.setRotation({x:0,y:Math.sin(yaw/2),z:0,w:Math.cos(yaw/2)},true);this.body.setLinvel({x:0,y:0,z:0},true);this.body.setAngvel({x:0,y:0,z:0},true);this.body.resetForces(true);this.body.resetTorques(true);this.steer=this.steerNeutral=this.throttle=this.brake=this.speed=this.forwardSpeed=this.airborne=this.handbrake=this.directionTimer=0;this.driveDirection=1;this.engineWheelTorque=0;this.diffTransfer={front:0,rear:0,center:0};this.driveModel.reset();this.rpm=this.config.powertrain.idleRPM;this.gear=1;for(const wheel of this.wheels)wheel.reset();for(const abs of this.wheelABS)abs.active=false;this.readPose();this.previousPosition={...this.position};this.previousRotation={...this.rotation};}
  /** Spin the engine up to the current wheel speeds (after placing the car). */
  syncEngine(){const c=this.config;this.driveModel.syncEngine(this.wheels.reduce((sum,w,i)=>sum+w.angularSpeed*(i<2?c.frontDrive/2:(1-c.frontDrive)/2),0),this.driveDirection===-1);this.rpm=this.driveModel.engineRPM;}
  beforeStep(input:DriveInput,dt:number,enabled:boolean){
@@ -65,7 +74,19 @@ export class RallyVehicle{
  // Ecctrl speed-based steering curve retains low-speed lock and fades at speed.
  const maxSteer=this.driveModel.steeringLimit(this.speed,c.maxSpeed,c.steering);
  const command=enabled?clamp(input.steer,-1,1):0;
- const target=Math.sign(command)*Math.abs(command)**1.15*maxSteer;
+ let target=Math.sign(command)*Math.abs(command)**1.15*maxSteer;
+ if(this.slideSteering&&this.handlingMode!=='baseline'){
+  // Caster trails the front wheels toward the front axle's direction of travel,
+  // so in a slide the neutral steer point is the countersteer that points the
+  // wheels down the road, and the driver steers around it. Countersteer may
+  // exceed the speed-faded lock up to the rack's limit; turn-in may not.
+  const front=this.axleTravel(c.front),rear=this.axleTravel(c.back);
+  const sliding=clamp((Math.abs(rear)-SLIDE_START)/SLIDE_RANGE,0,1);
+  this.steerNeutral=clamp(front*sliding*SLIDE_ALIGN,-c.steering,c.steering);
+  const counter=Math.min(c.steering,Math.abs(this.steerNeutral)+maxSteer);
+  const limitLeft=this.steerNeutral>0?counter:maxSteer,limitRight=this.steerNeutral<0?counter:maxSteer;
+  target=clamp(this.steerNeutral+target,-limitRight,limitLeft);
+ }else this.steerNeutral=0;
  const returning=Math.abs(target)<Math.abs(this.steer)||target*this.steer<0;
  this.steer=damp(this.steer,target,returning?c.steerReturn:c.steerRate,dt);
  // Keep Ecctrl's engine/gearing force law instead of fading torque at 100 km/h.
@@ -125,6 +146,13 @@ export class RallyVehicle{
   this.gear=this.driveDirection===-1?-1:this.driveModel.gear;this.rpm=damp(this.rpm,this.driveModel.engineRPM,12,dt);
  }
 
+ /** Direction of travel at an axle, relative to the chassis heading (rad, +left). */
+ private axleTravel(z:number){
+  const q=this.body.rotation(),v=rotateInverse(q,this.body.linvel()),w=rotateInverse(q,this.body.angvel());
+  const forward=-v.z;if(forward<SLIDE_MIN_SPEED)return 0;
+  // Velocity at (0,0,z) in the body frame: v + w x r, lateral component v.x + w.y*z.
+  return Math.atan2(-(v.x+w.y*z),forward)*clamp((forward-SLIDE_MIN_SPEED)/4,0,1);
+ }
  private readPose(){this.body.translation(this.position);this.body.rotation(this.rotation);this.body.linvel(this.velocity);}
  dispose(){this.world.removeRigidBody(this.body);}
 }

@@ -17,6 +17,10 @@ const localUp=new Vector3(0,1,0);
 const PATCH=[0,-.4,.4,-.75,.75];
 // Ploughing force per unit load per unit surface looseness, at full slide.
 const PLOUGH_SIDE=.34,PLOUGH_LOCK=.2;
+// Bump stop: linear and cubic stiffness (x spring rate) across the stop's depth,
+// extra compression damping at full depth (x damper), and the per-wheel force
+// bound in multiples of the car's weight.
+const BUMP_LINEAR=3,BUMP_PROGRESSIVE=14,BUMP_DAMPING=3,BUMP_LIMIT=4.5;
 export class RallyWheel {
   x:number;y:number;z:number;steer=0;rotation=0;angularSpeed=0;contact=false;
   contactPoint=new Vector3();normal=new Vector3(0,1,0);supportPoint=new Vector3();
@@ -70,7 +74,12 @@ export class RallyWheel {
     this.ground=hit.collider.parent();this.refreshVelocity();
     const vertical=this.velocity.dot(this.up),compression=c.suspension-this.suspensionLength;
     const damping=vertical<0?c.compressionDamping:c.reboundDamping;
-    this.force=clamp(c.springRate*compression-damping*vertical+Math.max(0,compression-c.suspensionTravel)*c.springRate*3,0,c.mass*9.81*.85);
+    // Progressive rubber bump stop over the last of the travel: stiffens with
+    // depth and damps the closing speed, so a landing is caught by the
+    // suspension rather than the chassis collider. Bounded only for stability.
+    const stopRange=c.suspension-c.suspensionTravel,depth=clamp(Math.max(0,compression-c.suspensionTravel)/stopRange,0,1.5);
+    const bumpStop=c.springRate*stopRange*depth*(BUMP_LINEAR+BUMP_PROGRESSIVE*depth*depth)-(vertical<0?c.compressionDamping*BUMP_DAMPING*depth*vertical:0);
+    this.force=clamp(c.springRate*compression-damping*vertical+bumpStop,0,c.mass*9.81*BUMP_LIMIT);
   }
 
   refreshVelocity(){
