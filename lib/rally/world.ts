@@ -83,6 +83,8 @@ export function makeVisualVehicle(kind:VehicleKind,model:THREE.Group):VisualVehi
   if(wheelIndex!==undefined&&ancestor){
    // Centre on the wheel's geometry, not its node origin: the Subaru's wheel vertices sit ~1.5 m from their node, which swung them out when steering.
    const center=new THREE.Box3().setFromObject(ancestor).getCenter(new THREE.Vector3());g.translate(-center.x,-center.y,-center.z);
+   // Pick the side from where the mesh sits: the Subaru tags its left/right wheels the wrong way round, which put the spokes facing inward.
+   wheelIndex=(wheelIndex&2)|(center.x>0?1:0);
    if(!wheels[wheelIndex]){const pivot=new THREE.Group();pivot.position.set(wheelIndex%2?config.track/2:-config.track/2,config.mount-config.suspension,wheelIndex<2?config.front:config.back);root.add(pivot);wheels[wheelIndex]=pivot;}
    wheels[wheelIndex].add(mesh);
   }else{
