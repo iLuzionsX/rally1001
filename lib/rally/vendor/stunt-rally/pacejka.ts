@@ -7,7 +7,8 @@
  * Modified: C++ -> TypeScript; omit visual outputs and steering-wheel FFB;
  * symmetric zero-camber forces avoid the donor's small alignment bias;
  * configurable cornering stiffness preserves the donor's force ceiling;
- * optional relaxed lateral slip feeds combined forces; telemetry stays raw.
+ * optional relaxed lateral slip feeds combined forces; telemetry stays raw;
+ * peak-force and slip-at-force-share lookups for the steering rack.
  */
 import {lateral as a,longitudinal as b} from './gravel';
 
@@ -33,6 +34,33 @@ const hats=Array.from({length:60},(_,i)=>{
   }
   return {sigma,alpha};
 });
+
+// Pure lateral slip (deg, before the lateral response scale) at which the side
+// force reaches a share of its peak, per half-kN load. The curve's shape is
+// independent of friction, so one table serves every surface.
+const SHARE_STEPS=[.5,.6,.7,.8,.85,.9,.95,.97,.99];
+const shares=Array.from({length:60},(_,i)=>{
+  const fz=(i+1)*.5,peak=(a[1]*fz+a[2])*fz;
+  return SHARE_STEPS.map(share=>{let angle=0;while(angle<90&&fy(angle,fz,1)<share*peak)angle+=.05;return angle;});
+});
+
+/** Slip angle (rad, before the lateral response scale) at which the pure side
+ * force reaches `share` (.5-.99) of its peak at this load. */
+export function gravelSlipAtShare(load:number,share:number){
+  const fz=Math.min(30,Math.max(0,load)*.001);
+  const index=Math.max(0,Math.min(shares.length-1,fz/.5-1)),lo=Math.floor(index),hi=Math.min(lo+1,shares.length-1),t=index-lo;
+  const target=Math.max(SHARE_STEPS[0],Math.min(SHARE_STEPS[SHARE_STEPS.length-1],share));
+  let k=0;while(k<SHARE_STEPS.length-2&&target>SHARE_STEPS[k+1])k++;
+  const u=(target-SHARE_STEPS[k])/(SHARE_STEPS[k+1]-SHARE_STEPS[k]);
+  const at=(row:number[])=>row[k]*(1-u)+row[k+1]*u;
+  return (at(shares[lo])*(1-t)+at(shares[hi])*t)*Math.PI/180;
+}
+
+/** Peak pure side force (N) the tire can make at this load and friction. */
+export function gravelLateralPeak(load:number,mu:number){
+  const fz=Math.min(30,Math.max(0,load)*.001);
+  return Math.abs((a[1]*fz+a[2])*fz*mu);
+}
 
 export function optimumGravelSlip(load:number){
   const fz=Math.min(30,Math.max(0,load)*.001);

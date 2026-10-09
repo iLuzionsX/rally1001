@@ -5,14 +5,15 @@ import {dirname,join} from 'node:path';
 import {fileURLToPath} from 'node:url';
 import ts from 'typescript';
 
-// Slide steering (caster alignment, countersteer lock) and bump-stop landings
+// Steering rack (aligning torque, relaxed-hands countersteer, tire-derived
+// lock) and bump-stop landings
 // on the shipped physics. Internal acceptance checks, not a hands-on benchmark.
 const root=dirname(dirname(fileURLToPath(import.meta.url))),cache=join(root,'node_modules/.cache');
 mkdirSync(cache,{recursive:true});const temp=mkdtempSync(join(cache,'rally-steering-'));
 const require=createRequire(import.meta.url),RAPIER=require('@dimforge/rapier3d-compat');
 const zero={steer:0,throttle:0,brake:0,handbrake:0},dt=1/60;
 try{
-  for(const name of ['course','vehicle-config','vehicle','simulation','drive-model','wheel-model','vendor/ecctrl/CurveLUT','vendor/stunt-rally/gravel','vendor/stunt-rally/pacejka','vendor/stunt-rally/abs','vendor/stunt-rally/engine-friction','vendor/stunt-rally/differential']){
+  for(const name of ['course','vehicle-config','vehicle','steering','simulation','drive-model','wheel-model','vendor/ecctrl/CurveLUT','vendor/stunt-rally/gravel','vendor/stunt-rally/pacejka','vendor/stunt-rally/abs','vendor/stunt-rally/engine-friction','vendor/stunt-rally/differential']){
     const {outputText}=ts.transpileModule(readFileSync(join(root,'lib/rally',name+'.ts'),'utf8'),{compilerOptions:{module:ts.ModuleKind.CommonJS,target:ts.ScriptTarget.ES2022,esModuleInterop:true}});
     mkdirSync(dirname(join(temp,name+'.cjs')),{recursive:true});
     writeFileSync(join(temp,name+'.cjs'),outputText.replace(/require\("\.\/(.*?)"\)/g,'require("./$1.cjs")'));
@@ -43,8 +44,9 @@ try{
   }
   const report={steering:[],landing:[]};
   for(const kind of ['suv','truck']){
-    // Hands off in a slide: wheels trail toward travel (countersteer) only with
-    // slide steering, and the slide recovers sooner than with the wheels centred.
+    // Hands off in a slide: the tires' aligning torque trails the wheels toward
+    // travel (countersteer) only with relaxed hands, and the slide recovers
+    // sooner than with the wheels held centred.
     const recovery={};
     for(const assist of [false,true]){
       const {world,v,step,slide}=rig(kind,assist);
@@ -54,24 +56,25 @@ try{
       for(let i=0;i<150;i++){step({...zero,throttle:.3});const b=Math.abs(beta(v));worst=Math.max(worst,b);if(settled===null&&b<.08)settled=(i+1)*dt;}
       recovery[assist?'slide':'centred']={steerAfterTenthSecond:+early.toFixed(3),peakSlip:+worst.toFixed(3),recoveredIn:settled,finalSlip:+Math.abs(beta(v)).toFixed(3)};
       if(assist)assert(early<-.05,`${kind}: hands-off wheels must trail into countersteer in a slide (${early})`);
-      else assert(Math.abs(early)<.01,`${kind}: without slide steering a centred input keeps the wheels centred (${early})`);
+      else assert(Math.abs(early)<.02,`${kind}: firm hands hold a centred wheel against the aligning torque (${early})`);
       world.free();
     }
     assert(recovery.slide.peakSlip<=recovery.centred.peakSlip+.01,`${kind}: caster alignment must not deepen the slide`);
     assert(recovery.slide.finalSlip<recovery.centred.finalSlip||recovery.slide.recoveredIn!==null&&(recovery.centred.recoveredIn===null||recovery.slide.recoveredIn<=recovery.centred.recoveredIn),`${kind}: hands-off recovery must be no worse with slide steering`);
 
-    // Countersteer may exceed the speed-faded lock; turn-in may not.
+    // The lock is measured from the front axle's travel: in a slide full
+    // countersteer reaches past the turn-in limit on grip; turn-in may not.
     const {world,v,step,slide}=rig(kind,true);
-    slide(140,.4,.4);let counter=0,speedLock=0;
-    for(let i=0;i<20;i++){
-      step({...zero,steer:-1});const lock=v.driveModel.steeringLimit(v.speed,v.config.maxSpeed,v.config.steering);
-      if(-v.steer-lock>counter-speedLock){counter=-v.steer;speedLock=lock;}
-    }
-    assert(counter>speedLock*1.05&&counter<=v.config.steering+1e-6,`${kind}: full countersteer must reach past the speed-faded lock (${counter} vs ${speedLock})`);
     slide(100,0,0);for(let i=0;i<20;i++)step({...zero,steer:1});
-    const gripLock=v.driveModel.steeringLimit(v.speed,v.config.maxSpeed,v.config.steering);
-    assert(v.steer<=gripLock*1.05,`${kind}: turn-in on grip keeps the speed-faded lock (${v.steer} vs ${gripLock})`);
-    report.steering.push({kind,...recovery,countersteerLock:+counter.toFixed(3),speedFadedLock:+speedLock.toFixed(3)});
+    const gripLock=v.steerLimits[1];
+    assert(v.steer<=gripLock*1.05+.01,`${kind}: turn-in on grip keeps the tire-derived lock (${v.steer} vs ${gripLock})`);
+    slide(140,0,0);step();const straightLock=v.steerLimits[0];
+    assert(straightLock<v.config.steering*.95,`${kind}: at speed the lock is bounded by the tires' slip (${straightLock})`);
+    slide(140,.4,.4);let counter=0,counterLock=0;
+    for(let i=0;i<20;i++){step({...zero,steer:-1});counter=Math.max(counter,-v.steer);counterLock=Math.max(counterLock,v.steerLimits[0]);}
+    assert(counterLock>straightLock*1.1&&counterLock<=v.config.steering+1e-6,`${kind}: the countersteer lock must open past the straight-line lock (${counterLock} vs ${straightLock})`);
+    assert(counter>straightLock*.95,`${kind}: full countersteer input must use the opened lock (${counter})`);
+    report.steering.push({kind,...recovery,countersteer:+counter.toFixed(3),countersteerLock:+counterLock.toFixed(3),straightLock:+straightLock.toFixed(3),cornerLock:+gripLock.toFixed(3)});
     world.free();
 
     // Landings: drop the parked car flat from a height. The bump stop, not the

@@ -8,7 +8,7 @@
  */
 import RAPIER from '@dimforge/rapier3d-compat';
 import {Vector3,Quaternion} from 'three';
-import {gravelForce} from './vendor/stunt-rally/pacejka';
+import {gravelForce,gravelLateralPeak} from './vendor/stunt-rally/pacejka';
 import {clamp,surfaceAt} from './course';
 import {VEHICLES,type VehicleKind,type HandlingMode} from './vehicle-config';
 
@@ -28,6 +28,9 @@ export class RallyWheel {
   suspensionLength=0;longVelocity=0;sideVelocity=0;friction=0;loadMass=0;inertia=0;
   handlingMode:HandlingMode='refined';
   relaxedSlipAngle=0;loose=0;bump=0;plough=0;
+  /** Torque about the kingpin from the tire's side force acting behind the
+   * patch centre (N·m, + steers left), and the trail it acts at (m). */
+  aligning=0;trail=0;
   private config;private frontWheel:boolean;
   rollingResistance=.025;rollingDrag=0;
   private origin=new Vector3();private direction=new Vector3();private longitudinal=new Vector3();private lateral=new Vector3();
@@ -38,7 +41,7 @@ export class RallyWheel {
     const c=this.config=VEHICLES[kind];this.x=x;this.z=z;this.y=c.mount-c.suspension;this.frontWheel=z===c.front;
     this.inertia=c.wheelInertia;this.reset();
   }
-  reset(){this.relaxedSlipAngle=this.bump=this.plough=0;this.steer=this.rotation=this.angularSpeed=this.force=this.slip=this.longSlip=this.slipAngle=this.driveTorque=this.brakeTorque=0;this.contact=false;this.suspensionLength=this.config.suspension;this.y=this.config.mount-this.suspensionLength;}
+  reset(){this.relaxedSlipAngle=this.bump=this.plough=this.aligning=this.trail=0;this.steer=this.rotation=this.angularSpeed=this.force=this.slip=this.longSlip=this.slipAngle=this.driveTorque=this.brakeTorque=0;this.contact=false;this.suspensionLength=this.config.suspension;this.y=this.config.mount-this.suspensionLength;}
 
   contactStep(dt:number){
     const c=this.config,r=c.radius;this.q.copy(this.body.rotation());
@@ -63,7 +66,7 @@ export class RallyWheel {
       if(length<best){best=length;bestHit=hit;bestOffset=offset;}
     }
     this.contact=!!bestHit;this.force=0;
-    if(!bestHit){this.relaxedSlipAngle=0;this.bump=0;this.suspensionLength=c.suspension;this.y=c.mount-c.suspension;this.slip=this.longSlip=this.slipAngle=0;return;}
+    if(!bestHit){this.relaxedSlipAngle=this.aligning=this.trail=0;this.bump=0;this.suspensionLength=c.suspension;this.y=c.mount-c.suspension;this.slip=this.longSlip=this.slipAngle=0;return;}
     const hit=bestHit;
     this.suspensionLength=clamp(best,0,c.suspension);this.y=c.mount-this.suspensionLength;
     this.normal.copy(hit.normal).normalize();
@@ -124,6 +127,16 @@ export class RallyWheel {
       const cap=this.force*this.friction*1.75,magnitude=Math.hypot(long,side);
       if(magnitude>cap){long*=cap/magnitude;side*=cap/magnitude;}
       this.body.applyImpulseAtPoint(this.impulse.copy(this.longitudinal).multiplyScalar(long*dt).addScaledVector(this.lateral,side*dt),this.contactPoint,true);
+      if(this.frontWheel){
+        // Brush-model pneumatic trail: a third of the half patch with the patch
+        // fully adhered, shrinking to nothing as the sliding zone spreads
+        // forward. The adhered share follows from the force utilisation, so
+        // braking and drive force lighten the steering as they use up grip.
+        const used=clamp(Math.hypot(long,side)/Math.max(1,gravelLateralPeak(this.force,this.friction)),0,1);
+        const sliding=1-Math.cbrt(1-used);
+        const pneumatic=used<1e-4?c.tirePatch/3:c.tirePatch*sliding*(1-sliding)**3/used;
+        this.trail=pneumatic+c.casterTrail;this.aligning=this.trail*side;
+      }
       // Loose-surface ploughing: a sliding tire bulldozes gravel into a berm and
       // pushes against it, so side force holds up past the tire's peak instead
       // of fading, and a slide scrubs speed. A locked tire wedges gravel ahead.
@@ -149,7 +162,7 @@ export class RallyWheel {
       this.longSlip=tire.slipRatio;this.slipAngle=tire.slipAngle;
       this.slip=clamp(Math.max(Math.abs(this.longSlip)*.6,Math.abs(this.slipAngle)/.35),0,1);
     }
-    if(!this.contact||this.force<=0)this.relaxedSlipAngle=0;
+    if(!this.contact||this.force<=0)this.relaxedSlipAngle=this.aligning=this.trail=0;
     // CARDYNAMICS::ApplyWheelTorque combines tire reaction and shaft torque
     // before applying the brake's lock-up bound. Differential coupling remains
     // active while braking; it is not a propulsive engine-throttle command.

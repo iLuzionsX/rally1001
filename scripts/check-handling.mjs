@@ -15,7 +15,7 @@ const RAPIER = require('@dimforge/rapier3d-compat');
 const zero = {steer:0, throttle:0, brake:0, handbrake:0};
 const dt = 1/60;
 try {
-  for (const name of ['course', 'vehicle-config', 'vehicle', 'simulation', 'camera', 'drive-model', 'wheel-model', 'vendor/ecctrl/CurveLUT', 'vendor/stunt-rally/gravel', 'vendor/stunt-rally/pacejka', 'vendor/stunt-rally/abs', 'vendor/stunt-rally/engine-friction', 'vendor/stunt-rally/differential']) {
+  for (const name of ['course', 'vehicle-config', 'vehicle', 'steering', 'simulation', 'camera', 'drive-model', 'wheel-model', 'vendor/ecctrl/CurveLUT', 'vendor/stunt-rally/gravel', 'vendor/stunt-rally/pacejka', 'vendor/stunt-rally/abs', 'vendor/stunt-rally/engine-friction', 'vendor/stunt-rally/differential']) {
     const source = readFileSync(join(root, 'lib/rally', name+'.ts'), 'utf8');
     const {outputText} = ts.transpileModule(source, {compilerOptions:{module:ts.ModuleKind.CommonJS, target:ts.ScriptTarget.ES2022, esModuleInterop:true}});
     mkdirSync(dirname(join(temp,name+'.cjs')),{recursive:true});
@@ -192,7 +192,7 @@ try {
       const left=v.forward.z*dx-v.forward.x*dz;
       const demand=Math.atan((c.back-c.front)*2*left/Math.max(1,dx*dx+dz*dz));
       const surf=course.surfaceAt(v.position.x,v.position.z);
-      const limit=v.driveModel.steeringLimit(v.speed,c.maxSpeed,c.steering);
+      const limit=Math.max(.05,demand>0?v.steerLimits[1]:v.steerLimits[0]);
       const steering=Math.sign(demand)*Math.min(1,Math.abs(demand/limit))**(1/1.15);
       let desired=c.maxSpeed*.72;
       for(let distance=4;distance<32;distance+=4){
