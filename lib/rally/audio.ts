@@ -39,6 +39,9 @@ const ENGINE_LAYERS:{role:EngineRole;anchor:number;rank:number}[]=[
  {role:'coast-high',anchor:5000,rank:.62},
 ];
 const smooth=(value:number,min:number,max:number)=>{const x=clamp((value-min)/(max-min),0,1);return x*x*(3-2*x);};
+// Independent recording buses retain the engine-forward mix without lifting road noise.
+const ENGINE_BUS_GAIN=4.3;
+const ENVIRONMENT_BUS_GAIN=.85;
 
 /** Select steady, audible sections by recorded loudness, then splice a short
  * crossfade into each loop. Every output sample is derived from original audio. */
@@ -93,7 +96,10 @@ export class RallyAudio{
  master:GainNode|null=null;
  /** Dedicated recording-only engine bus; engine is dominant over the roadbed. */
  private engineBus:GainNode|null=null;
+ private environmentBus:GainNode|null=null;
  enabled=true;
+ engineVolume=1;
+ environmentVolume=.7;
  kind:VehicleKind='suv';
  private voices:Voice[]=[];
  private surface=new Map<keyof typeof SURFACE_RECORDINGS,Loop>();
@@ -111,6 +117,16 @@ export class RallyAudio{
  get unavailableRecordings(){return this.failureCount;}
  /** The engine remains silent rather than substituting fake synthesized engine audio. */
  get recordedEngineReady(){return this.voices.some(v=>v.kind===this.kind);}
+ /** Live engine control; a zero value silences only the engine. */
+ setEngineVolume(value:number){
+  this.engineVolume=clamp(Number.isFinite(value)?value:1,0,1);
+  if(this.context&&this.engineBus)this.engineBus.gain.setTargetAtTime(ENGINE_BUS_GAIN*this.engineVolume,this.context.currentTime,.045);
+ }
+ /** Controls recorded gravel, tire scrubbing and outdoor ambience. */
+ setEnvironmentVolume(value:number){
+  this.environmentVolume=clamp(Number.isFinite(value)?value:.7,0,1);
+  if(this.context&&this.environmentBus)this.environmentBus.gain.setTargetAtTime(ENVIRONMENT_BUS_GAIN*this.environmentVolume,this.context.currentTime,.045);
+ }
  private async getRecording(urls:string[]):Promise<AudioBuffer>{
   const context=this.context;
   if(!context)throw new Error('Audio context not initialized');
@@ -164,7 +180,7 @@ export class RallyAudio{
   const decoded=await this.getRecording([SURFACE_RECORDINGS[name]]);
   if(context.state==='closed')return;
   const looped=name==='ambience'?decoded:makeRecordedLoop(context,decoded,.65,3.5);
-  const voice=this.playLoop(looped,0,name==='scrub'?'highpass':'lowpass',name==='scrub'?320:3700);
+  const voice=this.playLoop(looped,0,name==='scrub'?'highpass':'lowpass',name==='scrub'?320:3700,this.environmentBus!);
   this.surface.set(name,voice);
   this.mix();
  }
@@ -188,8 +204,9 @@ export class RallyAudio{
    limiter.attack.value=.003;limiter.release.value=.16;
    const master=this.master=context.createGain();
    master.gain.value=0;master.connect(limiter);limiter.connect(context.destination);
-   // +8.6 dB for engines, without turning up ambience/gravel or adding synthesized audio.
-   this.engineBus=context.createGain();this.engineBus.gain.value=2.7;this.engineBus.connect(master);
+   // Louder default engine mix, routed independently from the environment.
+   this.engineBus=context.createGain();this.engineBus.gain.value=ENGINE_BUS_GAIN*this.engineVolume;this.engineBus.connect(master);
+   this.environmentBus=context.createGain();this.environmentBus.gain.value=ENVIRONMENT_BUS_GAIN*this.environmentVolume;this.environmentBus.connect(master);
   }
   if(this.context.state==='suspended')await this.context.resume();
   this.beginLoading();
@@ -222,11 +239,11 @@ export class RallyAudio{
   for(const voice of this.voices){
    const selected=voice.kind===this.kind?1:0;
    let weight=0;
-   if(voice.role==='idle')weight=idle*.77;
+   if(voice.role==='idle')weight=idle*.88;
    else{
     const width=voice.role==='pull-low'?1900:voice.role==='pull-mid'?2200:voice.role==='pull-high'?2200:voice.role==='coast-low'?2400:2900;
     const rWeight=clamp(1-Math.abs(rpm-voice.anchor)/width,0,1);
-    weight=rWeight*(voice.role.startsWith('pull')?on*.43:off*.25)*(1-idle*.7);
+    weight=rWeight*(voice.role.startsWith('pull')?on*.62:off*.34)*(1-idle*.7);
    }
    voice.gain.gain.setTargetAtTime(selected*weight,t,.09);
    voice.source.playbackRate.setTargetAtTime(clamp(rpm/voice.anchor,.68,1.38),t,.085);
@@ -249,6 +266,7 @@ export class RallyAudio{
   for(const loop of this.surface.values()){try{loop.source.stop();}catch{}loop.source.disconnect();loop.gain.disconnect();}
   this.voices=[];this.surface.clear();this.decoded.clear();
   this.engineBus?.disconnect();this.engineBus=null;
+  this.environmentBus?.disconnect();this.environmentBus=null;
   this.master?.disconnect();this.master=null;
   const ctx=this.context;this.context=null;if(ctx)void ctx.close();
  }
