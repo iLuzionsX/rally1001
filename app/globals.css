@@ -391,3 +391,14 @@ html,body{width:100%;height:100%;margin:0;overflow:hidden;overscroll-behavior:no
 @media (prefers-reduced-motion:reduce){
   .steering-wheel,.course-progress span,.pedal,.vehicle-choice{transition:none}
 }
+
+/* Independent audio mix, styled for the dotted terminal settings panel. */
+.volume-row{padding:14px 0 8px;border-bottom:1px dotted #f4f1e942}
+.volume-heading{display:flex;align-items:center;justify-content:space-between;margin-bottom:13px;gap:12px}
+.volume-heading label{font-size:13px;font-weight:600;color:#f4f1e9}
+.volume-heading output{font:600 12px var(--mono);color:#f4f1e9c9;font-variant-numeric:tabular-nums}
+.volume-row [data-slot="slider"]{min-height:28px;cursor:pointer}
+.volume-row [data-slot="slider-track"]{height:3px;border-radius:0;background:#f4f1e941}
+.volume-row [data-slot="slider-range"]{background:var(--signal)}
+.volume-row [data-slot="slider-thumb"]{width:14px;height:14px;border-radius:2px;border:1px solid var(--signal);background:#161717;box-shadow:none}
+.volume-row>small{display:block;margin:6px 0 4px;color:#d5d0c4ab;font:10px var(--mono);letter-spacing:.15px}
