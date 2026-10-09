@@ -53,5 +53,7 @@ jobs:
             throw Error('Netlify returned no deployment URL');
           }
           console.log('Preview: '+url);
-          fs.appendFileSync(process.env.GITHUB_STEP_SUMMARY,'## Anonymous Netlify preview\\n\\n'+url+'\\n\\nThis unclaimed preview expires after one hour.\\n');
+          const password=typeof info.password==='string'?info.password:'';
+          if(password)console.log('Preview password: '+password);
+          fs.appendFileSync(process.env.GITHUB_STEP_SUMMARY,'## Anonymous Netlify preview\n\n'+url+'\n\n'+(password?'Access password: `'+password+'`\n\n':'')+'This unclaimed preview expires after one hour.\n');
           JS
