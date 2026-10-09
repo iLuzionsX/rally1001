@@ -81,7 +81,8 @@ export function makeVisualVehicle(kind:VehicleKind,model:THREE.Group):VisualVehi
   });
   const mesh=new THREE.Mesh(g,materials.length===1?materials[0]:materials);mesh.castShadow=mesh.receiveShadow=true;
   if(wheelIndex!==undefined&&ancestor){
-   const center=new THREE.Vector3().setFromMatrixPosition(ancestor.matrixWorld);g.translate(-center.x,-center.y,-center.z);
+   // Centre on the wheel's geometry, not its node origin: the Subaru's wheel vertices sit ~1.5 m from their node, which swung them out when steering.
+   const center=new THREE.Box3().setFromObject(ancestor).getCenter(new THREE.Vector3());g.translate(-center.x,-center.y,-center.z);
    if(!wheels[wheelIndex]){const pivot=new THREE.Group();pivot.position.set(wheelIndex%2?config.track/2:-config.track/2,config.mount-config.suspension,wheelIndex<2?config.front:config.back);root.add(pivot);wheels[wheelIndex]=pivot;}
    wheels[wheelIndex].add(mesh);
   }else{
