@@ -5,7 +5,7 @@ import {DAYLIGHT,makeSkybox} from './lighting';
 import {createScenery,addTrackside,type Scenery} from './scenery';
 import {Reflector} from 'three/addons/objects/Reflector.js';
 import RAPIER from '@dimforge/rapier3d-compat';
-import {random,courseAt,nearestRoad,terrainHeight,roadHeight,makeTerrainData,makeRoadData,GATE_COUNT,POND_CENTER,surfaceAt} from './course';
+import {random,courseAt,nearestRoad,terrainHeight,roadHeight,makeTerrainData,makeRoadData,GATE_COUNT,POND_CENTER,surfaceAt,ROAD_ROWS,ROAD_COLS,roadSample} from './course';
 import {VEHICLES,type VehicleKind,type WheelPose} from './vehicle';
 export type Quality='balanced'|'high'|'battery';
 export type VisualVehicle={root:THREE.Group;wheels:THREE.Group[];brakeLights:THREE.Mesh[];dispose:()=>void};
@@ -36,7 +36,7 @@ export async function createWorld(physics:RAPIER.World,progress:(n:number)=>void
  groundMaterial('brown_mud_leaves_01',1.1,.96),groundMaterial('brown_mud_02',1,.92),groundMaterial('brown_mud_02',1,.36),
  ]);
  const terrain=makeTerrainData(),road=makeRoadData(),terrainMesh=new THREE.Mesh(geometry(terrain),forestMaterial),roadGeometry=geometry(road);
- for(let i=0;i<720;i++){const p=courseAt((i+.5)/720);roadGeometry.addGroup(i*12*6,12*6,surfaceAt(p.x,p.z).mud?1:0);}
+ for(let i=0;i<ROAD_ROWS;i++){const p=roadSample(i+.5);roadGeometry.addGroup(i*ROAD_COLS*6,ROAD_COLS*6,surfaceAt(p.x,p.z).mud?1:0);}
  const roadMesh=new THREE.Mesh(roadGeometry,[dirtMaterial,mudMaterial]);
  for(const [mesh,data] of [[terrainMesh,terrain],[roadMesh,road]] as const){mesh.receiveShadow=true;scene.add(mesh);physics.createCollider(RAPIER.ColliderDesc.trimesh(data.vertices,data.indices).setFriction(.9));}progress(.18);
  const loader=new GLTFLoader();let loaded=0;
@@ -81,7 +81,10 @@ export function makeVisualVehicle(kind:VehicleKind,model:THREE.Group):VisualVehi
   });
   const mesh=new THREE.Mesh(g,materials.length===1?materials[0]:materials);mesh.castShadow=mesh.receiveShadow=true;
   if(wheelIndex!==undefined&&ancestor){
-   const center=new THREE.Vector3().setFromMatrixPosition(ancestor.matrixWorld);g.translate(-center.x,-center.y,-center.z);
+   // Centre on the wheel's geometry, not its node origin: the Subaru's wheel vertices sit ~1.5 m from their node, which swung them out when steering.
+   const center=new THREE.Box3().setFromObject(ancestor).getCenter(new THREE.Vector3());g.translate(-center.x,-center.y,-center.z);
+   // Pick the side from where the mesh sits: the Subaru tags its left/right wheels the wrong way round, which put the spokes facing inward.
+   wheelIndex=(wheelIndex&2)|(center.x>0?1:0);
    if(!wheels[wheelIndex]){const pivot=new THREE.Group();pivot.position.set(wheelIndex%2?config.track/2:-config.track/2,config.mount-config.suspension,wheelIndex<2?config.front:config.back);root.add(pivot);wheels[wheelIndex]=pivot;}
    wheels[wheelIndex].add(mesh);
   }else{

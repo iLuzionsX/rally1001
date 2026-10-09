@@ -24,6 +24,10 @@ export function obstructedEye(world:RAPIER.World, anchor:THREE.Vector3, desired:
   return anchor.clone().addScaledVector(direction,safeDistance);
 }
 
+const wrapAngle=(a:number)=>Math.atan2(Math.sin(a),Math.cos(a));
+// Chase yaw lag (1/s), share of slide angle shown, and the limit on both (rad).
+const CHASE_YAW_RATE=6,SLIDE_FOLLOW=.4,CHASE_MAX_OFFSET=.42;
+
 /** Horizon-stable camera with separate horizontal, suspension and heading response. */
 export class RallyDrivingCamera {
   initialized=false;
@@ -40,12 +44,23 @@ export class RallyDrivingCamera {
       const motion=new THREE.Vector3(f.velocity.x,0,f.velocity.z);
       if(motion.lengthSq()>4)follow.lerp(motion.normalize(),clamp(f.speed/25,0,1)*.12).normalize();
     }
-    const desiredHeading=Math.atan2(-follow.x,-follow.z);
+    const bodyHeading=Math.atan2(-follow.x,-follow.z);
+    let desiredHeading=bodyHeading;
+    // Standard chase leans toward the direction of travel in a slide, so the
+    // car's angle to the road is visible, as in DiRT's chase view.
+    if(!snap&&f.mode==='chase'&&!dynamic&&f.forwardSpeed>3){
+      const motionHeading=Math.atan2(-f.velocity.x,-f.velocity.z);
+      desiredHeading+=wrapAngle(motionHeading-bodyHeading)*clamp((f.speed-3)/12,0,1)*SLIDE_FOLLOW;
+    }
     if(snap){this.heading=desiredHeading;this.height=f.position.y;this.pitch=desiredPitch;}
     else{
       const angle=Math.atan2(Math.sin(desiredHeading-this.heading),Math.cos(desiredHeading-this.heading));
-      // Standard chase stays aligned with the chassis instead of orbiting in turns.
-      if(f.mode==='chase'&&!dynamic)this.heading+=angle;
+      // Standard chase trails the chassis yaw slightly and never lets the car
+      // rotate more than CHASE_MAX_OFFSET out of frame.
+      if(f.mode==='chase'&&!dynamic){
+        this.heading+=angle*(1-Math.exp(-CHASE_YAW_RATE*dt));
+        this.heading=bodyHeading+clamp(wrapAngle(this.heading-bodyHeading),-CHASE_MAX_OFFSET,CHASE_MAX_OFFSET);
+      }
       else this.heading+=angle*(1-Math.exp(-(f.mode==='hood'?18:c.camera.headingRate)*dt));
       this.height=damp(this.height,f.position.y,f.mode==='hood'?14:c.camera.heightRate,dt);
       this.pitch=damp(this.pitch,desiredPitch,5,dt);

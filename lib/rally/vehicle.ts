@@ -2,7 +2,6 @@ import RAPIER from '@dimforge/rapier3d-compat';
 import {EcctrlDriveModel} from './drive-model';
 import {RallyWheel} from './wheel-model';
 import {GravelABS} from './vendor/stunt-rally/abs';
-import {engineFrictionTorque} from './vendor/stunt-rally/engine-friction';
 import {differentialTorques} from './vendor/stunt-rally/differential';
 import {DRIVELINE_STEP} from './simulation';
 import {clamp,damp,courseAt,surfaceAt,type CoursePoint} from './course';
@@ -18,7 +17,7 @@ export class RallyVehicle{
  wheels:WheelPose[]=[];position:V3={x:0,y:0,z:0};rotation={x:0,y:0,z:0,w:1};velocity:V3={x:0,y:0,z:0};forward:V3={x:0,y:0,z:-1};previousPosition:V3={x:0,y:0,z:0};previousRotation={x:0,y:0,z:0,w:1};
  private wheelABS=Array.from({length:4},()=>new GravelABS());
  constructor(public world:RAPIER.World,public kind:VehicleKind,public handlingMode:HandlingMode='rally'){
- const c=this.config=VEHICLES[kind];this.driveModel=new EcctrlDriveModel(c.powertrain,c.radius);this.body=world.createRigidBody(RAPIER.RigidBodyDesc.dynamic().setCcdEnabled(true).setCanSleep(false).setLinearDamping(0).setAngularDamping(.08).setAdditionalSolverIterations(4));
+ const c=this.config=VEHICLES[kind];this.driveModel=new EcctrlDriveModel(c.powertrain,c.radius,c.engineBraking);this.body=world.createRigidBody(RAPIER.RigidBodyDesc.dynamic().setCcdEnabled(true).setCanSleep(false).setLinearDamping(0).setAngularDamping(.08).setAdditionalSolverIterations(4));
  world.createCollider(RAPIER.ColliderDesc.cuboid(c.width*.42,.26,c.length*.45).setTranslation(0,-.18,0).setDensity(0).setFriction(.6).setRestitution(.02),this.body);
  world.createCollider(RAPIER.ColliderDesc.cuboid(c.width*.36,.46,kind==='suv'?1.24:.84).setTranslation(0,.48,kind==='suv'?.18:-.58).setDensity(0).setFriction(.5),this.body);
  this.body.setAdditionalMassProperties(c.mass,{x:0,y:c.centerOfMass,z:kind==='suv'?-.08:-.22},{x:c.mass*(c.length*c.length+1.7)/12,y:c.mass*(c.length*c.length+c.width*c.width)/12,z:c.mass*(c.width*c.width+1.7)/12},{x:0,y:0,z:0,w:1},true);
@@ -33,6 +32,8 @@ export class RallyVehicle{
   for(const wheel of this.wheels){wheel.handlingMode=mode;wheel.relaxedSlipAngle=0;}
  }
  reset(point:CoursePoint){const yaw=Math.atan2(-point.tx,-point.tz);this.body.setTranslation({x:point.x,y:point.y+this.config.radius+this.config.suspension-this.config.mount+.12,z:point.z},true);this.body.setRotation({x:0,y:Math.sin(yaw/2),z:0,w:Math.cos(yaw/2)},true);this.body.setLinvel({x:0,y:0,z:0},true);this.body.setAngvel({x:0,y:0,z:0},true);this.body.resetForces(true);this.body.resetTorques(true);this.steer=this.throttle=this.brake=this.speed=this.forwardSpeed=this.airborne=this.handbrake=this.directionTimer=0;this.driveDirection=1;this.engineWheelTorque=0;this.diffTransfer={front:0,rear:0,center:0};this.driveModel.reset();this.rpm=this.config.powertrain.idleRPM;this.gear=1;for(const wheel of this.wheels)wheel.reset();for(const abs of this.wheelABS)abs.active=false;this.readPose();this.previousPosition={...this.position};this.previousRotation={...this.rotation};}
+ /** Spin the engine up to the current wheel speeds (after placing the car). */
+ syncEngine(){const c=this.config;this.driveModel.syncEngine(this.wheels.reduce((sum,w,i)=>sum+w.angularSpeed*(i<2?c.frontDrive/2:(1-c.frontDrive)/2),0),this.driveDirection===-1);this.rpm=this.driveModel.engineRPM;}
  beforeStep(input:DriveInput,dt:number,enabled:boolean){
  const c=this.config,vel=this.body.linvel(),q=this.body.rotation();
  this.body.resetForces(false);this.body.resetTorques(false);
@@ -76,7 +77,7 @@ export class RallyVehicle{
  for(let i=0;i<4;i++){
   const w=this.wheels[i];let angle=0;
   if(i<2&&Math.abs(this.steer)>.0001){const radius=wheelbase/Math.tan(Math.abs(this.steer)),inside=this.steer>0?i===0:i===1;angle=Math.sign(this.steer)*Math.atan(wheelbase/(radius+(inside?-1:1)*c.track/2));}
-  w.steer=angle;w.contactStep();
+  w.steer=angle;w.contactStep(dt);
  }
  // Physical support transfer across each axle; tire forces use the resulting loads.
  for(const [left,right,rate] of [[0,1,c.frontAntiRoll],[2,3,c.rearAntiRoll]]){
@@ -98,11 +99,9 @@ export class RallyVehicle{
  // One engine curve at driven shaft speed, then the donor's center/front/rear
  // differential tree. Wheel-speed differences redistribute torque physically.
  const shaftSpeed=this.wheels.reduce((sum,w,i)=>sum+w.angularSpeed*(i<2?c.frontDrive/2:(1-c.frontDrive)/2),0);
- const ratio=reverse?c.powertrain.reverseRatio*c.powertrain.finalDriveRatio:this.driveModel.driveRatio;
- const driveTorque=this.driveModel.wheelForce(driveDemand,shaftSpeed,1,reverse)*c.radius*this.driveDirection;
- const friction=engineFrictionTorque(shaftSpeed,ratio,c.powertrain.engineMaxRPM,c.powertrain.idleRPM,c.powertrain.engineHorsepower*7022/c.powertrain.engineMaxRPM,this.throttle,c.engineBraking);
  const disengaged=this.handbrake>.02;
- this.engineWheelTorque=disengaged?0:driveTorque+friction;
+ // Crank inertia and an auto-clutch between the engine and the differential tree.
+ this.engineWheelTorque=this.driveModel.engineStep(dt,driveDemand,shaftSpeed,reverse,c.wheelInertia*4,disengaged);
  const center=differentialTorques(this.engineWheelTorque,(this.wheels[0].angularSpeed+this.wheels[1].angularSpeed)/2,(this.wheels[2].angularSpeed+this.wheels[3].angularSpeed)/2,c.wheelInertia*2,c.wheelInertia*2,dt,disengaged?{...differential.center,antiSlip:0}:differential.center);
  const front=differentialTorques(center.side1,this.wheels[0].angularSpeed,this.wheels[1].angularSpeed,c.wheelInertia,c.wheelInertia,dt,differential.front);
  const rear=differentialTorques(center.side2,this.wheels[2].angularSpeed,this.wheels[3].angularSpeed,c.wheelInertia,c.wheelInertia,dt,differential.rear);
