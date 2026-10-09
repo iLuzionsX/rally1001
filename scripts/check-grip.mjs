@@ -18,12 +18,13 @@ try{
     writeFileSync(join(temp,name+'.cjs'),outputText.replace(/require\("\.\/(.*?)"\)/g,'require("./$1.cjs")'));
   }
   const course=require(join(temp,'course.cjs')),{VEHICLES}=require(join(temp,'vehicle-config.cjs')),{RallyVehicle}=require(join(temp,'vehicle.cjs'));
+  const tires=require(join(temp,'vendor/stunt-rally/pacejka.cjs')),gravelTire=tires.TIRES.gravel;
   const {advanceVehicle}=require(join(temp,'simulation.cjs'));
   const productionSurface=course.surfaceAt;
   await RAPIER.init();
   const beta=v=>Math.atan2(-v.velocity.x*v.forward.z+v.velocity.z*v.forward.x,v.forwardSpeed);
   function rig(kind,grip,rollingResistance){
-    course.surfaceAt=()=>({grip,rollingResistance,rollingDrag:4,mud:grip<.4,label:grip<.4?'WET MUD':'LOOSE DIRT'});
+    course.surfaceAt=()=>({type:grip<.4?'mud':'gravel',grip,rollingResistance,rollingDrag:4,mud:grip<.4,label:grip<.4?'WET MUD':'LOOSE DIRT'});
     const world=new RAPIER.World({x:0,y:-9.81,z:0});world.timestep=dt;world.integrationParameters.numSolverIterations=8;
     world.createCollider(RAPIER.ColliderDesc.cuboid(2000,.5,2000).setTranslation(0,-.5,0));
     const v=new RallyVehicle(world,kind),step=(input=zero,enabled=true)=>{advanceVehicle(v,world,input,dt,enabled);};
@@ -39,10 +40,11 @@ try{
   }
   const comparison=[];
   for(const kind of ['suv','truck']){
-    const config=VEHICLES[kind],tunedResponse={...config.tireLateralResponse},tunedBraking=config.engineBraking;
+    const config=VEHICLES[kind],tunedBraking=config.engineBraking;
     const profiles=[];
     for(const profile of ['previous','revised']){
-      config.tireLateralResponse=profile==='previous'?{front:1,rear:1}:tunedResponse;
+      // Previous: the donor's single gravel curve (side force peaking ~45°).
+      tires.TIRES.gravel=profile==='previous'?tires.STUNT_RALLY_GRAVEL:gravelTire;
       config.engineBraking=profile==='previous'?0:tunedBraking;
       const r=rig(kind,profile==='previous'?.55:.59,profile==='previous'?.016:.025),{v,step,atSpeed}=r;
       atSpeed(80);for(let i=0;i<75;i++)step({...zero,steer:.4,throttle:.7});
@@ -56,7 +58,7 @@ try{
       profiles.push({profile,cornerEntrySideslipDegrees:+(entry*180/Math.PI).toFixed(2),countersteerRecoverySeconds:+recovery.toFixed(2),speedAfterFourSecondLift:+liftSpeed.toFixed(2),gentleCornerSideslipDegrees:+gentleSlip.toFixed(2)});
       r.world.free();
     }
-    config.tireLateralResponse=tunedResponse;config.engineBraking=tunedBraking;
+    tires.TIRES.gravel=gravelTire;config.engineBraking=tunedBraking;
     const [before,after]=profiles;
     assert(after.countersteerRecoverySeconds>0&&after.countersteerRecoverySeconds<before.countersteerRecoverySeconds,'The revised tires must catch the same slide sooner');
     assert(after.cornerEntrySideslipDegrees<before.cornerEntrySideslipDegrees,'Moderate cornering must produce less unintended sideslip');
@@ -68,5 +70,34 @@ try{
   course.surfaceAt=productionSurface;
   const dry=productionSurface(course.courseAt(.1).x,course.courseAt(.1).z),wet=productionSurface(course.courseAt(.36).x,course.courseAt(.36).z);
   assert(wet.grip<dry.grip&&wet.rollingResistance>dry.rollingResistance,'Mud must retain lower grip and greater resistance than dry gravel');
-  console.log(JSON.stringify({comparison,surfaceContrast:'passed'},null,2));
+  // Per-surface tire curves at a 3.7 kN corner load: where each peaks, and how
+  // much force it keeps past the peak.
+  const curves=[],deg=Math.PI/180,load=3700;
+  for(const [type,tire] of Object.entries(tires.TIRES)){
+    const {sigmaHat,alphaHat}=tire.optimumSlip(load),peakY=tire.force(load,1,0,alphaHat*deg).side,peakX=tire.force(load,1,sigmaHat,0).long;
+    const sideAt=angle=>+(tire.force(load,1,0,angle*deg).side/peakY).toFixed(3),longAt=ratio=>+(tire.force(load,1,ratio,0).long/peakX).toFixed(3);
+    curves.push({type,peakSlipAngleDeg:+alphaHat.toFixed(1),peakSlipRatio:+sigmaHat.toFixed(3),sideAt30Deg:sideAt(30),sideAt60Deg:sideAt(60),longLocked:longAt(1),steerSlipDeg:+(tire.slipAtShare(load,VEHICLES.suv.steeringRack.slipShare)/deg).toFixed(1)});
+  }
+  const curve=type=>curves.find(c=>c.type===type);
+  assert(curve('tarmac').peakSlipAngleDeg>=8&&curve('tarmac').peakSlipAngleDeg<=12,'Tarmac side force must peak at 8-12 deg');
+  assert(curve('gravel').peakSlipAngleDeg>=12&&curve('gravel').peakSlipAngleDeg<=18,'Gravel side force must peak at 12-18 deg');
+  assert(curve('tarmac').peakSlipRatio>=.08&&curve('tarmac').peakSlipRatio<=.12,'Tarmac drive/brake force must peak at slip 0.08-0.12');
+  assert(curve('gravel').peakSlipRatio>curve('tarmac').peakSlipRatio&&curve('mud').peakSlipRatio>curve('gravel').peakSlipRatio,'Looser surfaces must peak at higher slip ratios');
+  assert(curve('tarmac').sideAt30Deg<.92,'Tarmac side force must fall away past its peak');
+  assert(curve('gravel').sideAt30Deg>.95&&curve('mud').sideAt60Deg>curve('gravel').sideAt60Deg&&curve('mud').longLocked>curve('gravel').longLocked,'Loose surfaces must stay flatter past the peak, mud flattest');
+  // The patch springs hold a braked car on a slope, along it and across it.
+  const parking=[];
+  for(const [direction,gravity] of [['downhill',a=>({x:0,y:-9.81*Math.cos(a),z:9.81*Math.sin(a)})],['across',a=>({x:9.81*Math.sin(a),y:-9.81*Math.cos(a),z:0})]])for(const degrees of [10,20]){
+    course.surfaceAt=()=>({type:'gravel',grip:.59,rollingResistance:.025,rollingDrag:4,loose:.55,bump:0,mud:false,label:'LOOSE DIRT'});
+    const world=new RAPIER.World(gravity(degrees*deg));world.integrationParameters.numSolverIterations=8;
+    world.createCollider(RAPIER.ColliderDesc.cuboid(2000,.5,2000).setTranslation(0,-.5,0));
+    const v=new RallyVehicle(world,'suv');v.reset({x:0,y:0,z:0,tx:0,tz:-1,width:12,s:0,distance:0});
+    for(let i=0;i<120;i++)advanceVehicle(v,world,zero,dt,false);
+    const start={...v.position};for(let i=0;i<300;i++)advanceVehicle(v,world,zero,dt,false);
+    const centimetres=Math.hypot(v.position.x-start.x,v.position.z-start.z)*100;
+    parking.push({direction,degrees,creepCmIn5s:+centimetres.toFixed(2)});world.free();
+    assert(centimetres<2,`A braked car must hold ${direction} on a ${degrees} deg slope (${centimetres.toFixed(1)} cm)`);
+  }
+  course.surfaceAt=productionSurface;
+  console.log(JSON.stringify({comparison,surfaceContrast:'passed',curves,parking},null,2));
 }finally{rmSync(temp,{recursive:true,force:true});}

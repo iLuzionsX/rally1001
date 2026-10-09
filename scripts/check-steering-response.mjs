@@ -22,10 +22,12 @@ try{
   const course=require(join(temp,'course.cjs'));
   const {RallyVehicle}=require(join(temp,'vehicle.cjs')),{advanceVehicle}=require(join(temp,'simulation.cjs'));
   await RAPIER.init();
-  course.surfaceAt=()=>({grip:.59,rollingResistance:.025,rollingDrag:4,loose:.55,bump:0,mud:false,label:'LOOSE DIRT'});
+  const surfaces={gravel:{type:'gravel',grip:.59,rollingResistance:.025,rollingDrag:4,loose:.55,bump:0,mud:false,label:'LOOSE DIRT'},tarmac:{...course.SURFACES.tarmac,bump:0,mud:false}};
+  course.surfaceAt=()=>surfaces.gravel;
   // Body slip angle: + when the velocity points left of the heading.
   const beta=v=>Math.atan2(-(v.velocity.x*-v.forward.z+v.velocity.z*v.forward.x),v.forwardSpeed);
-  function rig(kind,mode){
+  function rig(kind,mode,surface='gravel'){
+    course.surfaceAt=()=>surfaces[surface];
     const world=new RAPIER.World({x:0,y:-9.81,z:0});world.integrationParameters.numSolverIterations=8;
     world.createCollider(RAPIER.ColliderDesc.cuboid(2000,.5,2000).setTranslation(0,-.5,0));
     const v=new RallyVehicle(world,kind,mode);
@@ -51,8 +53,8 @@ try{
   // Constant-radius skidpad: a pure-pursuit driver holds a 30 m left circle while
   // speed rises in stages. Each stage settles for 3 s, then averages 2 s.
   const RADIUS=30;
-  function skidpad(kind,mode){
-    const {world,v,hold}=rig(kind,mode),c=v.config,wheelbase=c.back-c.front,stages=[];
+  function skidpad(kind,mode,surface){
+    const {world,v,hold}=rig(kind,mode,surface),c=v.config,wheelbase=c.back-c.front,stages=[];
     for(const kmh of [15,25,35,45,55]){
       const samples=[];
       for(let i=0;i<300;i++){
@@ -80,8 +82,8 @@ try{
   }
 
   // Step steer at constant speed: rack and yaw-rate 90% rise times, overshoot.
-  function stepSteer(kind,mode,kmh,command){
-    const {world,v,atSpeed,hold}=rig(kind,mode);atSpeed(kmh);
+  function stepSteer(kind,mode,kmh,command,surface){
+    const {world,v,atSpeed,hold}=rig(kind,mode,surface);atSpeed(kmh);
     for(let i=0;i<30;i++)hold(kmh/3.6,0);
     const yaw=[],steer=[];
     for(let i=0;i<240;i++){hold(kmh/3.6,command);yaw.push(v.body.angvel().y);steer.push(v.steer);}
@@ -103,7 +105,7 @@ try{
     return {peakDeg:+(peak*deg).toFixed(2),after075sDeg:+(late*deg).toFixed(3),heading:+Math.abs(Math.atan2(v.velocity.x,-v.velocity.z)*deg).toFixed(1)};
   }
 
-  const report={skidpad:[],stepSteer:[],shimmy:[]};
+  const report={skidpad:[],stepSteer:[],shimmy:[],tarmac:[]};
   for(const kind of ['suv','truck']){
     for(const mode of ['rally','baseline']){
       const pad=skidpad(kind,mode);report.skidpad.push({kind,mode,...pad});
@@ -127,6 +129,11 @@ try{
         assert(s.yawOvershootPercent<60,`${kind}: yaw overshoot at ${s.kmh} km/h too large (${s.yawOvershootPercent}%)`);
       }
     }
+    // Tarmac (no stage on the course yet): the same tests on the tarmac curve.
+    const pad=skidpad(kind,'rally','tarmac'),step=stepSteer(kind,'rally',100,.15,'tarmac');
+    report.tarmac.push({kind,understeerDegPerG:pad.understeerDegPerG,peakLateralG:Math.max(...pad.stages.map(s=>s.lateralG)),stepSteer100:step});
+    assert(pad.understeerDegPerG>.3&&pad.understeerDegPerG<8,`${kind}: tarmac understeer gradient out of range (${pad.understeerDegPerG} deg/g)`);
+    assert(step.yawOvershootPercent<60,`${kind}: tarmac yaw overshoot too large (${step.yawOvershootPercent}%)`);
     const kick=shimmy(kind);report.shimmy.push({kind,...kick});
     assert(kick.after075sDeg<.5,`${kind}: a hands-off rack disturbance must settle without shimmy (${kick.after075sDeg} deg)`);
     assert(kick.heading<3,`${kind}: hands-off straight-line running must hold its heading (${kick.heading} deg)`);

@@ -87,8 +87,18 @@ function washboard(distance:number,lateral:number){
 }
 export function roadHeight(p:CoursePoint,lateral:number){const ruts=Math.exp(-(((Math.abs(lateral)-.72)/.18)**2))*.045;return p.y+.09+Math.max(0,1-Math.abs(lateral)/(p.width/2))*.07-ruts+roadDetail(p.distance,lateral);}
 export function terrainHeight(x:number,z:number,n=nearestRoad(x,z)){const d=n.distance,w=n.point.width/2,h=baseHeight(x,z);if(d<w+3){const blend=clamp((d-w)/3,0,1);return roadHeight(n.point,n.lateral)-.09+(h-roadHeight(n.point,n.lateral)+.09)*blend*blend*(3-2*blend);}const pond=Math.hypot(x-POND_CENTER.x,z-POND_CENTER.z);if(pond<31){const t=clamp((pond-22)/9,0,1);return -3.5+(h+3.5)*t*t*(3-2*t);}return h;}
+/** Selects the tire curve set; `grip` scales that curve's force level. */
+export type SurfaceType='tarmac'|'gravel'|'mud';
+export type Surface={type:SurfaceType;grip:number;rollingResistance:number;rollingDrag:number;loose:number;bump:number;mud:boolean;label:string};
 // loose: how much material a sliding tire can dig into and push against.
-export function surfaceAt(x:number,z:number){const n=nearestRoad(x,z),s=n.point.s,off=n.distance>n.point.width/2,mud=!off&&((s>.345&&s<.39)||(s>.64&&s<.682));return {grip:mud?.34:off?.46:.59,rollingResistance:mud?.045:off?.035:.025,rollingDrag:mud?45:off?25:4,loose:mud?.9:off?.8:.55,bump:surfaceBump(n.point.distance,n.lateral,off,mud,x,z),mud,label:mud?'WET MUD':off?'FOREST FLOOR':'LOOSE DIRT'};}
+// Tarmac has no stage on this course yet; it is here so one can be laid.
+export const SURFACES={
+ dirt:{type:'gravel',grip:.59,rollingResistance:.025,rollingDrag:4,loose:.55,label:'LOOSE DIRT'},
+ forest:{type:'gravel',grip:.46,rollingResistance:.035,rollingDrag:25,loose:.8,label:'FOREST FLOOR'},
+ mud:{type:'mud',grip:.34,rollingResistance:.045,rollingDrag:45,loose:.9,label:'WET MUD'},
+ tarmac:{type:'tarmac',grip:.64,rollingResistance:.013,rollingDrag:0,loose:0,label:'TARMAC'},
+} as const;
+export function surfaceAt(x:number,z:number):Surface{const n=nearestRoad(x,z),s=n.point.s,off=n.distance>n.point.width/2,mud=!off&&((s>.345&&s<.39)||(s>.64&&s<.682)),base=mud?SURFACES.mud:off?SURFACES.forest:SURFACES.dirt;return {...base,bump:surfaceBump(n.point.distance,n.lateral,off,mud,x,z),mud};}
 export function makeTerrainData(){const count=240,step=WORLD_SIZE/count,vertices=new Float32Array((count+1)**2*3),colors=new Float32Array(vertices.length),indices=new Uint32Array(count**2*6);for(let z=0;z<=count;z++)for(let x=0;x<=count;x++){const px=x*step-WORLD_SIZE/2,pz=z*step-WORLD_SIZE/2,i=(z*(count+1)+x)*3,h=terrainHeight(px,pz);vertices.set([px,h,pz],i);const v=(Math.sin(px*.9+pz*1.3)+1)*.04;colors.set([.78+v,.84+v,.72+v*.5],i);}for(let z=0;z<count;z++)for(let x=0;x<count;x++){const a=z*(count+1)+x;indices.set([a,a+count+1,a+1,a+1,a+count+1,a+count+2],(z*count+x)*6);}return {vertices,colors,indices};}
 // Dense enough (~0.5 m x 0.75 m) for the collision mesh to carry roadDetail bumps.
 export const ROAD_ROWS=2880,ROAD_COLS=16;

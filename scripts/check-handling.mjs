@@ -29,7 +29,7 @@ try {
   const productionSurface = course.surfaceAt;
   await RAPIER.init();
   function rig(kind, grip=.59) {
-    course.surfaceAt = ()=>({grip, rollingResistance:grip<.4?.045:.025, rollingDrag:grip<.4?45:4, mud:grip<.4, label:grip<.4?'WET MUD':'LOOSE DIRT'});
+    course.surfaceAt = ()=>({type:grip<.4?'mud':'gravel', grip, rollingResistance:grip<.4?.045:.025, rollingDrag:grip<.4?45:4, mud:grip<.4, label:grip<.4?'WET MUD':'LOOSE DIRT'});
     const world = new RAPIER.World({x:0,y:-9.81,z:0});
     world.timestep = dt;
     world.integrationParameters.numSolverIterations = 8;

@@ -23,7 +23,7 @@ try{
   await RAPIER.init();
   const beta=v=>Math.atan2(-v.velocity.x*v.forward.z+v.velocity.z*v.forward.x,v.forwardSpeed)*180/Math.PI;
   function rig(kind,mode,wet=false){
-    course.surfaceAt=()=>({grip:wet?.34:.59,rollingResistance:wet?.045:.025,rollingDrag:wet?45:4,mud:wet,label:wet?'WET MUD':'LOOSE DIRT'});
+    course.surfaceAt=()=>({type:wet?'mud':'gravel',grip:wet?.34:.59,rollingResistance:wet?.045:.025,rollingDrag:wet?45:4,mud:wet,label:wet?'WET MUD':'LOOSE DIRT'});
     const world=new RAPIER.World({x:0,y:-9.81,z:0});world.integrationParameters.numSolverIterations=8;
     world.createCollider(RAPIER.ColliderDesc.cuboid(2000,.5,2000).setTranslation(0,-.5,0));
     const v=new RallyVehicle(world,kind,mode);

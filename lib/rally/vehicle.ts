@@ -1,8 +1,8 @@
 import RAPIER from '@dimforge/rapier3d-compat';
 import {EcctrlDriveModel} from './drive-model';
 import {RallyWheel} from './wheel-model';
-import {GravelABS} from './vendor/stunt-rally/abs';
-import {gravelSlipAtShare} from './vendor/stunt-rally/pacejka';
+import {TireABS} from './vendor/stunt-rally/abs';
+import {TIRES} from './vendor/stunt-rally/pacejka';
 import {SteeringRack,steerBounds} from './steering';
 import {differentialTorques} from './vendor/stunt-rally/differential';
 import {DRIVELINE_STEP} from './simulation';
@@ -18,7 +18,7 @@ const rotateInverse=(q:{x:number;y:number;z:number;w:number},v:V3)=>{
  const x=-q.x,y=-q.y,z=-q.z,w=q.w,tx=2*(y*v.z-z*v.y),ty=2*(z*v.x-x*v.z),tz=2*(x*v.y-y*v.x);
  return {x:v.x+w*tx+y*tz-z*ty,y:v.y+w*ty+z*tx-x*tz,z:v.z+w*tz+x*ty-y*tx};
 };
-/** Downloaded Stunt Rally gravel tire forces + Ecctrl contact/rotation model.
+/** Stunt Rally/VDrift per-surface tire forces + Ecctrl contact/rotation model.
  * Rapier resolves chassis/world collisions. There is no sideways velocity clamp. */
 export class RallyVehicle{
  body:RAPIER.RigidBody;config:typeof VEHICLES[VehicleKind];
@@ -27,12 +27,12 @@ export class RallyVehicle{
  steerLimits:[number,number]=[0,0];rack:SteeringRack;throttle=0;brake=0;speed=0;forwardSpeed=0;rpm=900;gear=1;surface='LOOSE DIRT';airborne=0;
  driveModel:EcctrlDriveModel;driveDirection:1|-1=1;directionTimer=0;handbrake=0;engineWheelTorque=0;diffTransfer={front:0,rear:0,center:0};
  wheels:WheelPose[]=[];position:V3={x:0,y:0,z:0};rotation={x:0,y:0,z:0,w:1};velocity:V3={x:0,y:0,z:0};forward:V3={x:0,y:0,z:-1};previousPosition:V3={x:0,y:0,z:0};previousRotation={x:0,y:0,z:0,w:1};
- private wheelABS=Array.from({length:4},()=>new GravelABS());
+ private wheelABS=Array.from({length:4},()=>new TireABS());
  constructor(public world:RAPIER.World,public kind:VehicleKind,public handlingMode:HandlingMode='rally'){
  const c=this.config=VEHICLES[kind];this.rack=new SteeringRack(c.steeringRack,c.steering);this.driveModel=new EcctrlDriveModel(c.powertrain,c.radius,c.engineBraking);this.body=world.createRigidBody(RAPIER.RigidBodyDesc.dynamic().setCcdEnabled(true).setCanSleep(false).setLinearDamping(0).setAngularDamping(.08).setAdditionalSolverIterations(4));
  world.createCollider(RAPIER.ColliderDesc.cuboid(c.width*.42,.26,c.length*.45).setTranslation(0,-.18,0).setDensity(0).setFriction(.6).setRestitution(.02),this.body);
  world.createCollider(RAPIER.ColliderDesc.cuboid(c.width*.36,.46,kind==='suv'?1.24:.84).setTranslation(0,.48,kind==='suv'?.18:-.58).setDensity(0).setFriction(.5),this.body);
- this.body.setAdditionalMassProperties(c.mass,{x:0,y:c.centerOfMass,z:kind==='suv'?-.08:-.22},{x:c.mass*(c.length*c.length+1.7)/12,y:c.mass*(c.length*c.length+c.width*c.width)/12,z:c.mass*(c.width*c.width+1.7)/12},{x:0,y:0,z:0,w:1},true);
+ this.body.setAdditionalMassProperties(c.mass,{x:0,y:c.centerOfMass,z:c.centerOfMassForward},{x:c.mass*(c.length*c.length+1.7)/12,y:c.mass*(c.length*c.length+c.width*c.width)/12,z:c.mass*(c.width*c.width+1.7)/12},{x:0,y:0,z:0,w:1},true);
  // Apply deferred mass changes before the first vehicle query, including swaps.
  this.body.recomputeMassPropertiesFromColliders();
  this.wheels=[{x:-c.track/2,z:c.front},{x:c.track/2,z:c.front},{x:-c.track/2,z:c.back},{x:c.track/2,z:c.back}].map(p=>new RallyWheel(world,this.body,kind,p.x,p.z));
@@ -41,7 +41,7 @@ export class RallyVehicle{
  }
  setHandlingMode(mode:HandlingMode){
   this.handlingMode=mode;
-  for(const wheel of this.wheels){wheel.handlingMode=mode;wheel.relaxedSlipAngle=0;}
+  for(const wheel of this.wheels){wheel.handlingMode=mode;wheel.relaxedSlipAngle=wheel.relaxedSlip=0;}
   this.rack.angle=this.steerCommand=this.steer;this.rack.rate=0;
  }
  reset(point:CoursePoint){const yaw=Math.atan2(-point.tx,-point.tz);this.body.setTranslation({x:point.x,y:point.y+this.config.radius+this.config.suspension-this.config.mount+.12,z:point.z},true);this.body.setRotation({x:0,y:Math.sin(yaw/2),z:0,w:Math.cos(yaw/2)},true);this.body.setLinvel({x:0,y:0,z:0},true);this.body.setAngvel({x:0,y:0,z:0},true);this.body.resetForces(true);this.body.resetTorques(true);this.rack.reset();this.steer=this.steerCommand=this.throttle=this.brake=this.speed=this.forwardSpeed=this.airborne=this.handbrake=this.directionTimer=0;this.driveDirection=1;this.engineWheelTorque=0;this.diffTransfer={front:0,rear:0,center:0};this.driveModel.reset();this.rpm=this.config.powertrain.idleRPM;this.gear=1;for(const wheel of this.wheels)wheel.reset();for(const abs of this.wheelABS)abs.active=false;this.readPose();this.previousPosition={...this.position};this.previousRotation={...this.rotation};}
@@ -125,7 +125,7 @@ export class RallyVehicle{
  for(let i=0;i<4;i++){
   const w=this.wheels[i],hand=i>1?this.handbrake:0;
   const brakeShare=i<2?c.frontBrake/2:(1-c.frontBrake)/2;
-  const absDemand=this.wheelABS[i].update(this.brake,w.longSlip*Math.sign(w.longVelocity),w.force,maxWheelSpeed);
+  const absDemand=this.wheelABS[i].update(this.brake,w.longSlip*Math.sign(w.longVelocity),w.force,maxWheelSpeed,TIRES[w.surface]);
   const brakeTorque=absDemand*c.brake*c.radius*brakeShare+hand*c.brake*c.radius*.38;
   const wheelTorque=torques[i];
   w.solve(dt,hand>.02||Math.abs(wheelTorque)<.05?0:wheelTorque,brakeTorque);
@@ -151,8 +151,9 @@ export class RallyVehicle{
   */
  private steerRack(shaped:number,dt:number){
   const c=this.config,r=c.steeringRack,front=this.wheels[0],other=this.wheels[1];
-  const load=front.contact||other.contact?(front.force+other.force)/2:c.mass*9.81/4;
-  const slip=gravelSlipAtShare(load,r.slipShare)/c.tireLateralResponse.front;
+  // Each front tire's own surface curve at its own load; static load if airborne.
+  const share=(w:typeof front)=>TIRES[w.surface].slipAtShare(w.contact?w.force:c.mass*9.81/4,r.slipShare);
+  const slip=(share(front)+share(other))/2;
   const fade=clamp((this.speed-r.fullLockSpeed)/(r.slipLockSpeed-r.fullLockSpeed),0,1);
   this.steerLimits=steerBounds(this.axleTravel(c.front),c.steering+(slip-c.steering)*fade,c.steering);
   const target=shaped*(shaped>0?this.steerLimits[1]:this.steerLimits[0]);
