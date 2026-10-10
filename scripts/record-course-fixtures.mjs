@@ -29,6 +29,9 @@ try{
   }
   for(let i=0;i<600;i++){const p=c.courseAt(rand()),lateral=(rand()-.5)*p.width;report.road.push([p.s,lateral,c.roadHeight(p,lateral)]);}
   mkdirSync(join(root,'reference/golden-traces'),{recursive:true});
-  writeFileSync(join(root,'reference/golden-traces/course.json'),JSON.stringify(report)+'\n');
+  // 12 significant digits: Node/V8 versions differ in the last bits of Math.sin
+  // and friends, and CI diffs this file. The port compares at 1e-9.
+  const round=(_,v)=>typeof v==='number'&&Number.isFinite(v)?Number(v.toPrecision(12)):v;
+  writeFileSync(join(root,'reference/golden-traces/course.json'),JSON.stringify(report,round)+'\n');
   console.log('course length',c.COURSE_LENGTH.toFixed(1),'m;',report.nearest.length,'samples');
 }finally{rmSync(temp,{recursive:true,force:true});}
