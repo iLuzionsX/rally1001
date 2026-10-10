@@ -1,0 +1,203 @@
+{
+  "rapier": "0.21.0",
+  "traces": [
+    {
+      "file": "sti-launch.json",
+      "kind": "sti",
+      "scenario": "launch",
+      "finalKmh": 136.83,
+      "finalPosition": [
+        0.000015,
+        0.747774,
+        -180.114334
+      ]
+    },
+    {
+      "file": "sti-brake-100.json",
+      "kind": "sti",
+      "scenario": "brake-100",
+      "finalKmh": 0,
+      "finalPosition": [
+        0.000002,
+        0.757893,
+        -34.253696
+      ]
+    },
+    {
+      "file": "sti-step-steer-60.json",
+      "kind": "sti",
+      "scenario": "step-steer-60",
+      "finalKmh": 60.09,
+      "finalPosition": [
+        -34.554687,
+        0.739406,
+        -59.137863
+      ]
+    },
+    {
+      "file": "sti-step-steer-100-tarmac.json",
+      "kind": "sti",
+      "scenario": "step-steer-100-tarmac",
+      "finalKmh": 100.24,
+      "finalPosition": [
+        -19.590843,
+        0.726813,
+        -122.220139
+      ]
+    },
+    {
+      "file": "sti-handbrake-turn-60.json",
+      "kind": "sti",
+      "scenario": "handbrake-turn-60",
+      "finalKmh": 51.26,
+      "finalPosition": [
+        5.215433,
+        0.758278,
+        -7.29348
+      ]
+    },
+    {
+      "file": "sti-mud-launch.json",
+      "kind": "sti",
+      "scenario": "mud-launch",
+      "finalKmh": 81.26,
+      "finalPosition": [
+        0.000009,
+        0.747103,
+        -74.684135
+      ]
+    },
+    {
+      "file": "sti-forest-slalom.json",
+      "kind": "sti",
+      "scenario": "forest-slalom",
+      "finalKmh": 50.19,
+      "finalPosition": [
+        -16.705652,
+        0.735279,
+        -107.41156
+      ]
+    },
+    {
+      "file": "sti-reverse.json",
+      "kind": "sti",
+      "scenario": "reverse",
+      "finalKmh": 25.22,
+      "finalPosition": [
+        -6.524242,
+        0.764031,
+        17.267918
+      ]
+    },
+    {
+      "file": "sti-baseline-step-steer-60.json",
+      "kind": "sti",
+      "scenario": "baseline-step-steer-60",
+      "finalKmh": 60.1,
+      "finalPosition": [
+        -43.030426,
+        0.738052,
+        -45.01292
+      ]
+    },
+    {
+      "file": "truck-launch.json",
+      "kind": "truck",
+      "scenario": "launch",
+      "finalKmh": 117.37,
+      "finalPosition": [
+        -0.000008,
+        0.872839,
+        -146.121521
+      ]
+    },
+    {
+      "file": "truck-brake-100.json",
+      "kind": "truck",
+      "scenario": "brake-100",
+      "finalKmh": 0,
+      "finalPosition": [
+        0.000002,
+        0.877021,
+        -39.137428
+      ]
+    },
+    {
+      "file": "truck-step-steer-60.json",
+      "kind": "truck",
+      "scenario": "step-steer-60",
+      "finalKmh": 60.2,
+      "finalPosition": [
+        -27.042425,
+        0.859266,
+        -65.958092
+      ]
+    },
+    {
+      "file": "truck-step-steer-100-tarmac.json",
+      "kind": "truck",
+      "scenario": "step-steer-100-tarmac",
+      "finalKmh": 100.26,
+      "finalPosition": [
+        -18.065199,
+        0.847251,
+        -122.541969
+      ]
+    },
+    {
+      "file": "truck-handbrake-turn-60.json",
+      "kind": "truck",
+      "scenario": "handbrake-turn-60",
+      "finalKmh": 46.45,
+      "finalPosition": [
+        -10.015069,
+        0.876101,
+        -5.228702
+      ]
+    },
+    {
+      "file": "truck-mud-launch.json",
+      "kind": "truck",
+      "scenario": "mud-launch",
+      "finalKmh": 83.01,
+      "finalPosition": [
+        0.000012,
+        0.87063,
+        -76.000755
+      ]
+    },
+    {
+      "file": "truck-forest-slalom.json",
+      "kind": "truck",
+      "scenario": "forest-slalom",
+      "finalKmh": 49.99,
+      "finalPosition": [
+        -23.200489,
+        0.85532,
+        -107.383293
+      ]
+    },
+    {
+      "file": "truck-reverse.json",
+      "kind": "truck",
+      "scenario": "reverse",
+      "finalKmh": 23.23,
+      "finalPosition": [
+        -2.243788,
+        0.885972,
+        13.199649
+      ]
+    },
+    {
+      "file": "truck-baseline-step-steer-60.json",
+      "kind": "truck",
+      "scenario": "baseline-step-steer-60",
+      "finalKmh": 60.12,
+      "finalPosition": [
+        -34.384521,
+        0.852421,
+        -58.724331
+      ]
+    }
+  ]
+}
