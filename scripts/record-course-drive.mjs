@@ -7,6 +7,9 @@ import ts from 'typescript';
 // A drive on the real course: terrain and road trimesh colliders, production
 // surfaceAt, a pure-pursuit driver on the centreline from the start line for
 // 14 s per car. Inputs are recorded as applied for open-loop replay.
+// Not part of `traces:record` (and so not diffed in CI): 14 s of chaotic driving
+// amplifies last-bit differences between Node/V8 versions. Re-record it with
+// `pnpm traces:record-course-drive` when the physics changes.
 // Output: reference/golden-traces/course-drive.json.
 const root=dirname(dirname(fileURLToPath(import.meta.url))),cache=join(root,'node_modules/.cache');
 mkdirSync(cache,{recursive:true});const temp=mkdtempSync(join(cache,'rally-course-drive-'));
