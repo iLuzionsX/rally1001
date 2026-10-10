@@ -6,7 +6,7 @@ import {TIRES} from './vendor/stunt-rally/pacejka';
 import {SteeringRack,steerBounds} from './steering';
 import {differentialTorques} from './vendor/stunt-rally/differential';
 import {DRIVELINE_STEP} from './simulation';
-import {clamp,damp,courseAt,surfaceAt,type CoursePoint} from './course';
+import {clamp,damp,spawnPoint,surfaceAt,type CoursePoint} from './course';
 import {VEHICLES,type VehicleKind,type DriveInput,type V3,type HandlingMode} from './vehicle-config';
 export {VEHICLES,type VehicleKind,type DriveInput,type V3,type HandlingMode} from './vehicle-config';
 export type WheelPose=RallyWheel;
@@ -37,7 +37,7 @@ export class RallyVehicle{
  this.body.recomputeMassPropertiesFromColliders();
  this.wheels=[{x:-c.track/2,z:c.front},{x:c.track/2,z:c.front},{x:-c.track/2,z:c.back},{x:c.track/2,z:c.back}].map(p=>new RallyWheel(world,this.body,kind,p.x,p.z));
  this.setHandlingMode(handlingMode);
- this.reset(courseAt(0));
+ this.reset(spawnPoint(0));
  }
  setHandlingMode(mode:HandlingMode){
   this.handlingMode=mode;

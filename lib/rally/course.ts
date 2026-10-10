@@ -86,6 +86,11 @@ function washboard(distance:number,lateral:number){
  return (.4+.6*smoothNoise(distance/13,5.1))*(.007*Math.sin(distance*4.2+lateral*.5)+.004*Math.sin(distance*6.9-lateral*1.9+1.7));
 }
 export function roadHeight(p:CoursePoint,lateral:number){const ruts=Math.exp(-(((Math.abs(lateral)-.72)/.18)**2))*.045;return p.y+.09+Math.max(0,1-Math.abs(lateral)/(p.width/2))*.07-ruts+roadDetail(p.distance,lateral);}
+/** Where to place the car at course position s: on the road surface at the
+ * centreline, rather than the knot's base height. The road's crown, crests and
+ * ramps sit up to ~0.6 m above that base, which spawned the car with its
+ * suspension inside the road and the bump stop threw it into the air. */
+export function spawnPoint(s:number):CoursePoint{const p=courseAt(s);return {...p,y:roadHeight(p,0)};}
 export function terrainHeight(x:number,z:number,n=nearestRoad(x,z)){const d=n.distance,w=n.point.width/2,h=baseHeight(x,z);if(d<w+3){const blend=clamp((d-w)/3,0,1);return roadHeight(n.point,n.lateral)-.09+(h-roadHeight(n.point,n.lateral)+.09)*blend*blend*(3-2*blend);}const pond=Math.hypot(x-POND_CENTER.x,z-POND_CENTER.z);if(pond<31){const t=clamp((pond-22)/9,0,1);return -3.5+(h+3.5)*t*t*(3-2*t);}return h;}
 /** Selects the tire curve set; `grip` scales that curve's force level. */
 export type SurfaceType='tarmac'|'gravel'|'mud';
