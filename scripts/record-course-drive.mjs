@@ -33,7 +33,7 @@ try{
       const ex=ahead.x-p.x,ez=ahead.z-p.z,left=v.forward.z*ex-v.forward.x*ez,demand=Math.atan(2.6*2*left/Math.max(1,ex*ex+ez*ez));
       const target=kind==='sti'?15:13,input={steer:course.clamp(demand*6,-1,1),throttle:v.speed<target?1:.25,brake:v.speed>target+4?.4:0,handbrake:0};
       advanceVehicle(v,world,input,dt,true);
-      frames.push({input,position:[v.position.x,v.position.y,v.position.z],speed:v.speed,gear:v.gear,surface:v.surface});if(process.env.DEBUG&&i%30===0){const m=course.nearestRoad(v.position.x,v.position.z);console.log(kind,i,(m.point.s*course.COURSE_LENGTH).toFixed(0),m.lateral.toFixed(1),input.steer.toFixed(2),(v.speed*3.6).toFixed(0));}
+      frames.push({input,position:[v.position.x,v.position.y,v.position.z],speed:v.speed,gear:v.gear,surface:v.surface});
     }
     world.free();
     runs.push({kind,frames});
