@@ -1,4 +1,4 @@
-import {readFileSync,writeFileSync,mkdirSync,mkdtempSync,rmSync} from 'node:fs';
+import {readFileSync,writeFileSync,mkdirSync,mkdtempSync,rmSync,readdirSync} from 'node:fs';
 import {createRequire} from 'node:module';
 import {dirname,join} from 'node:path';
 import {fileURLToPath} from 'node:url';
@@ -72,7 +72,9 @@ try{
     'reverse':{ticks:300,drive:(i)=>({...zero,brake:1,steer:i>150?.5:0})},
     'baseline-step-steer-60':{mode:'baseline',kmh:60,ticks:270,drive:(i,v,hold)=>hold(60/3.6,{steer:i<30?0:.25})},
   };
-  rmSync(out,{recursive:true,force:true});mkdirSync(out,{recursive:true});
+  // Replace only this script's traces: other recorders share the directory.
+  mkdirSync(out,{recursive:true});
+  for(const f of readdirSync(out))if(/^(sti|truck)-.*\.json$|^index\.json$/.test(f))rmSync(join(out,f));
   const index=[];
   for(const kind of ['sti','truck'])for(const [name,s] of Object.entries(scenarios)){
     const {initial,frames}=run(kind,s),file=`${kind}-${name}.json`;
