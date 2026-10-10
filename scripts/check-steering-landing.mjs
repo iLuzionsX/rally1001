@@ -43,7 +43,7 @@ try{
     return {world,v,step,slide};
   }
   const report={steering:[],landing:[]};
-  for(const kind of ['suv','truck']){
+  for(const kind of ['sti','truck']){
     // Hands off in a slide: the tires' aligning torque trails the wheels toward
     // travel (countersteer) only with relaxed hands, and the slide recovers
     // sooner than with the wheels held centred.

@@ -1,7 +1,7 @@
 {
   "results": [
     {
-      "kind": "suv",
+      "kind": "sti",
       "wet": false,
       "mode": "refined",
       "maneuver": "coast",
@@ -45,7 +45,7 @@
       ]
     },
     {
-      "kind": "suv",
+      "kind": "sti",
       "wet": false,
       "mode": "refined",
       "maneuver": "trail",
@@ -89,7 +89,7 @@
       ]
     },
     {
-      "kind": "suv",
+      "kind": "sti",
       "wet": false,
       "mode": "refined",
       "maneuver": "power",
@@ -133,7 +133,7 @@
       ]
     },
     {
-      "kind": "suv",
+      "kind": "sti",
       "wet": false,
       "mode": "rally",
       "maneuver": "coast",
@@ -177,7 +177,7 @@
       ]
     },
     {
-      "kind": "suv",
+      "kind": "sti",
       "wet": false,
       "mode": "rally",
       "maneuver": "trail",
@@ -221,7 +221,7 @@
       ]
     },
     {
-      "kind": "suv",
+      "kind": "sti",
       "wet": false,
       "mode": "rally",
       "maneuver": "power",
@@ -265,7 +265,7 @@
       ]
     },
     {
-      "kind": "suv",
+      "kind": "sti",
       "wet": true,
       "mode": "refined",
       "maneuver": "coast",
@@ -309,7 +309,7 @@
       ]
     },
     {
-      "kind": "suv",
+      "kind": "sti",
       "wet": true,
       "mode": "refined",
       "maneuver": "trail",
@@ -353,7 +353,7 @@
       ]
     },
     {
-      "kind": "suv",
+      "kind": "sti",
       "wet": true,
       "mode": "refined",
       "maneuver": "power",
@@ -397,7 +397,7 @@
       ]
     },
     {
-      "kind": "suv",
+      "kind": "sti",
       "wet": true,
       "mode": "rally",
       "maneuver": "coast",
@@ -441,7 +441,7 @@
       ]
     },
     {
-      "kind": "suv",
+      "kind": "sti",
       "wet": true,
       "mode": "rally",
       "maneuver": "trail",
@@ -485,7 +485,7 @@
       ]
     },
     {
-      "kind": "suv",
+      "kind": "sti",
       "wet": true,
       "mode": "rally",
       "maneuver": "power",
@@ -1059,7 +1059,7 @@
   ],
   "braking": [
     {
-      "kind": "suv",
+      "kind": "sti",
       "wet": false,
       "profiles": [
         {
@@ -1075,7 +1075,7 @@
       ]
     },
     {
-      "kind": "suv",
+      "kind": "sti",
       "wet": true,
       "profiles": [
         {
@@ -1125,7 +1125,7 @@
   ],
   "cadence": [
     {
-      "kind": "suv",
+      "kind": "sti",
       "result": "30 / 60 / 120 Hz steering reversals, mode switching and parked stability passed"
     },
     {

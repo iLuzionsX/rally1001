@@ -19,7 +19,9 @@
     "check:exposure": "node scripts/check-exposure.mjs",
     "check:corner-balance": "node scripts/check-corner-balance.mjs",
     "check:steering-landing": "node scripts/check-steering-landing.mjs",
-    "check:steering-response": "node scripts/check-steering-response.mjs"
+    "check:steering-response": "node scripts/check-steering-response.mjs",
+    "check:all": "pnpm run check:handling && pnpm run check:handling-comparison && pnpm run check:grip && pnpm run check:rally && pnpm run check:corner-balance && pnpm run check:steering-landing && pnpm run check:steering-response",
+    "typecheck": "tsc --noEmit -p ."
   },
   "dependencies": {
     "@base-ui/react": "^1.7.0",

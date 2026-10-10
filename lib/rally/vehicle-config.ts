@@ -1,9 +1,9 @@
 export type HandlingMode = 'rally' | 'refined' | 'baseline';
-export type VehicleKind = 'suv' | 'truck';
+export type VehicleKind = 'sti' | 'truck';
 export type DriveInput = {steer:number; throttle:number; brake:number; handbrake:number};
 export type V3 = {x:number; y:number; z:number};
 export const VEHICLES = {
-  suv: {
+  sti: {
     name:'Subaru Impreza WRX STI', mass:1520, scale:1,
     front:-1.27495, back:1.30635, track:1.52434, radius:.31424,
     suspension:.42, mount:-.1, springRate:48000, compressionDamping:4000, reboundDamping:4700,

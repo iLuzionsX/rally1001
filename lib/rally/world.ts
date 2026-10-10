@@ -42,7 +42,7 @@ export async function createWorld(physics:RAPIER.World,progress:(n:number)=>void
  for(const [mesh,data] of [[terrainMesh,terrain],[roadMesh,road]] as const){mesh.receiveShadow=true;scene.add(mesh);physics.createCollider(RAPIER.ColliderDesc.trimesh(data.vertices,data.indices).setFriction(.9));}progress(.18);
  const loader=new GLTFLoader();let loaded=0;
  const all=await Promise.all(files.map(async file=>{const gltf=await loader.loadAsync('/assets/models/'+file+'.glb');progress(.18+(++loaded)/files.length*.52);return gltf.scene;}));
- const models=new Map<VehicleKind,THREE.Group>([['suv',all[5]],['truck',all[6]]]);
+ const models=new Map<VehicleKind,THREE.Group>([['sti',all[5]],['truck',all[6]]]);
  const scenery=createScenery(scene,physics,all.slice(0,5));const props=scenery.props;addTrackside(scene,physics);
  const rand=random(5924);progress(.79);
  const gates:THREE.Group[]=[],dark=new THREE.MeshStandardMaterial({color:'#263526',roughness:.75});for(let i=0;i<GATE_COUNT;i++){const p=courseAt(i/GATE_COUNT),g=new THREE.Group();g.position.set(p.x,p.y,p.z);g.rotation.y=Math.atan2(-p.tx,-p.tz);for(const side of [-1,1]){const pole=new THREE.Mesh(new THREE.CylinderGeometry(i===0?.11:.055,.1,i===0?7:3.5,7),dark);pole.position.set(side*(p.width/2+.65),i===0?3.5:1.7,0);pole.castShadow=true;g.add(pole);if(i>0){const flag=new THREE.Mesh(new THREE.PlaneGeometry(.85,1.85),new THREE.MeshStandardMaterial({color:i===1?'#d5f75b':'#efeee0',side:THREE.DoubleSide}));flag.position.set(pole.position.x,2.4,0);g.add(flag);}}if(i===0){const b=banner('WILDTRAIL');b.position.y=6.2;g.add(b);for(let row=0;row<2;row++)for(let col=0;col<12;col++){
