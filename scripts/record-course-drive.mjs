@@ -26,7 +26,7 @@ try{
     for(const data of [terrain,road])world.createCollider(RAPIER.ColliderDesc.trimesh(data.vertices,data.indices).setFriction(.9));
     const v=new RallyVehicle(world,kind,'rally');v.slideSteering=true;
     for(let i=0;i<50;i++)advanceVehicle(v,world,zero,dt,false); // as selectVehicle
-    v.reset(course.courseAt(0));
+    v.reset(course.spawnPoint(0));
     const frames=[];
     for(let i=0;i<840;i++){
       const p=v.position,n=course.nearestRoad(p.x,p.z),ahead=course.courseAt(n.point.s+(8+v.speed*.6)/course.COURSE_LENGTH);
