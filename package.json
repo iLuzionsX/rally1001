@@ -22,7 +22,7 @@
     "check:steering-response": "node scripts/check-steering-response.mjs",
     "check:all": "pnpm run check:handling && pnpm run check:handling-comparison && pnpm run check:grip && pnpm run check:rally && pnpm run check:corner-balance && pnpm run check:steering-landing && pnpm run check:steering-response && pnpm run traces:record",
     "typecheck": "tsc --noEmit -p .",
-    "traces:record": "node scripts/record-golden-traces.mjs && node scripts/record-tire-fixtures.mjs && node scripts/record-module-fixtures.mjs"
+    "traces:record": "node scripts/record-golden-traces.mjs && node scripts/record-tire-fixtures.mjs && node scripts/record-module-fixtures.mjs && node scripts/record-wheel-fixtures.mjs"
   },
   "dependencies": {
     "@base-ui/react": "^1.7.0",
