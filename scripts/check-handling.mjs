@@ -41,7 +41,7 @@ try {
     return {world,v,step,dispose:()=>world.free()};
   }
   const results = [];
-  for (const kind of ['suv','truck']) {
+  for (const kind of ['sti','truck']) {
     const r=rig(kind), {v,step}=r;
     let accelTime=null,zeroTo100=null,maxGear=1;
     for(let i=0;i<600;i++){step({...zero,throttle:1});if(accelTime===null&&v.speed*3.6>=60)accelTime=(i+1)*dt;if(zeroTo100===null&&v.speed*3.6>=100)zeroTo100=(i+1)*dt;maxGear=Math.max(maxGear,v.gear);}
@@ -51,7 +51,7 @@ try {
     assert(maxGear>=3,'Automatic gearbox must shift under acceleration');
     for(let i=0;i<900;i++){step({...zero,throttle:1});maxGear=Math.max(maxGear,v.gear);}
     const sustainedSpeed=v.speed*3.6;
-    assert(sustainedSpeed>(kind==='suv'?200:165),kind+' must keep accelerating well beyond 100 km/h');
+    assert(sustainedSpeed>(kind==='sti'?200:165),kind+' must keep accelerating well beyond 100 km/h');
     // Higher road speeds must remain stoppable with the same production brakes.
     v.body.setLinvel({x:0,y:0,z:-120/3.6},true);v.wheels.forEach(w=>w.angularSpeed=120/3.6/v.config.radius);
     const fastBrakeStart={...v.position};let brake120Time=0;
@@ -137,7 +137,7 @@ try {
     v.body.setLinvel({x:0,y:0,z:-kmh/3.6},true);v.wheels.forEach(w=>w.angularSpeed=kmh/3.6/v.config.radius);
     return staticFront;
   }
-  for(const kind of ['suv','truck']){
+  for(const kind of ['sti','truck']){
     const r=rig(kind),{v}=r;atSpeed(r,80);
     v.body.setLinvel({x:2,y:0,z:-80/3.6},true);r.step(zero);
     assert(v.velocity.x>1.75,'Tires must build lateral force through slip instead of snapping velocity onto heading');
@@ -177,7 +177,7 @@ try {
   course.surfaceAt=productionSurface;
   const terrain=course.makeTerrainData(),road=course.makeRoadData();
   const laps=[];
-  for(const kind of ['suv','truck']){
+  for(const kind of ['sti','truck']){
     const world=new RAPIER.World({x:0,y:-9.81,z:0});world.timestep=dt;world.integrationParameters.numSolverIterations=8;
     for(const mesh of [terrain,road])world.createCollider(RAPIER.ColliderDesc.trimesh(mesh.vertices,mesh.indices).setFriction(.9));
     const v=new RallyVehicle(world,kind,['baseline','rally'].includes(process.env.RALLY_HANDLING_MODE)?process.env.RALLY_HANDLING_MODE:'refined');
@@ -215,7 +215,7 @@ try {
   }
 
   // Camera response at multiple render rates, reversing, obstacles and vehicle swaps.
-  const frame={position:new THREE.Vector3(0,1,0),rotation:new THREE.Quaternion(),velocity:{x:0,y:0,z:-20},speed:20,forwardSpeed:20,steer:.1,kind:'suv',mode:'chase',portrait:false,dt};
+  const frame={position:new THREE.Vector3(0,1,0),rotation:new THREE.Quaternion(),velocity:{x:0,y:0,z:-20},speed:20,forwardSpeed:20,steer:.1,kind:'sti',mode:'chase',portrait:false,dt};
   const standard=new RallyDrivingCamera();
   const slow=standard.update({...frame,speed:0,force:true},undefined,()=>0);
   const slowEye=slow.position.clone(),slowTarget=slow.target.clone();
@@ -225,7 +225,7 @@ try {
   assert.equal(slow.fov,fast.fov,'Standard camera must not zoom with speed');
   const dynamic=standard.update({...frame,speed:30,dynamic:true,force:true},undefined,()=>0);
   assert(dynamic.fov>fast.fov&&dynamic.position.z>slowEye.z,'Optional dynamic camera should retain speed effects');
-  for(const kind of ['suv','truck'])for(const dynamicMode of [false,true]){
+  for(const kind of ['sti','truck'])for(const dynamicMode of [false,true]){
     const high=standard.update({...frame,kind,dynamic:dynamicMode,force:true},undefined,()=>0).position.clone();
     const low=standard.update({...frame,kind,dynamic:dynamicMode,lowAngle:true,force:true},undefined,()=>0).position.clone();
     assert(high.y-low.y>.7,'Low angle must lower both vehicles in either chase style');

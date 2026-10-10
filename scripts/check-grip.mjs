@@ -39,7 +39,7 @@ try{
     return {world,v,step,atSpeed};
   }
   const comparison=[];
-  for(const kind of ['suv','truck']){
+  for(const kind of ['sti','truck']){
     const config=VEHICLES[kind],tunedBraking=config.engineBraking;
     const profiles=[];
     for(const profile of ['previous','revised']){
@@ -76,7 +76,7 @@ try{
   for(const [type,tire] of Object.entries(tires.TIRES)){
     const {sigmaHat,alphaHat}=tire.optimumSlip(load),peakY=tire.force(load,1,0,alphaHat*deg).side,peakX=tire.force(load,1,sigmaHat,0).long;
     const sideAt=angle=>+(tire.force(load,1,0,angle*deg).side/peakY).toFixed(3),longAt=ratio=>+(tire.force(load,1,ratio,0).long/peakX).toFixed(3);
-    curves.push({type,peakSlipAngleDeg:+alphaHat.toFixed(1),peakSlipRatio:+sigmaHat.toFixed(3),sideAt30Deg:sideAt(30),sideAt60Deg:sideAt(60),longLocked:longAt(1),steerSlipDeg:+(tire.slipAtShare(load,VEHICLES.suv.steeringRack.slipShare)/deg).toFixed(1)});
+    curves.push({type,peakSlipAngleDeg:+alphaHat.toFixed(1),peakSlipRatio:+sigmaHat.toFixed(3),sideAt30Deg:sideAt(30),sideAt60Deg:sideAt(60),longLocked:longAt(1),steerSlipDeg:+(tire.slipAtShare(load,VEHICLES.sti.steeringRack.slipShare)/deg).toFixed(1)});
   }
   const curve=type=>curves.find(c=>c.type===type);
   assert(curve('tarmac').peakSlipAngleDeg>=8&&curve('tarmac').peakSlipAngleDeg<=12,'Tarmac side force must peak at 8-12 deg');
@@ -91,7 +91,7 @@ try{
     course.surfaceAt=()=>({type:'gravel',grip:.59,rollingResistance:.025,rollingDrag:4,loose:.55,bump:0,mud:false,label:'LOOSE DIRT'});
     const world=new RAPIER.World(gravity(degrees*deg));world.integrationParameters.numSolverIterations=8;
     world.createCollider(RAPIER.ColliderDesc.cuboid(2000,.5,2000).setTranslation(0,-.5,0));
-    const v=new RallyVehicle(world,'suv');v.reset({x:0,y:0,z:0,tx:0,tz:-1,width:12,s:0,distance:0});
+    const v=new RallyVehicle(world,'sti');v.reset({x:0,y:0,z:0,tx:0,tz:-1,width:12,s:0,distance:0});
     for(let i=0;i<120;i++)advanceVehicle(v,world,zero,dt,false);
     const start={...v.position};for(let i=0;i<300;i++)advanceVehicle(v,world,zero,dt,false);
     const centimetres=Math.hypot(v.position.x-start.x,v.position.z-start.z)*100;

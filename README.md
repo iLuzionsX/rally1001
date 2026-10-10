@@ -1,6 +1,6 @@
 # Wildtrail Rally
 
-Private jungle time trial for Sites, with downloaded GitHub assets and the existing Rapier/Bullet raycast vehicle controller. The SUV and pickup have distinct mass, wheelbase, suspension, steering response, acceleration and braking settings.
+Private jungle time trial for Sites, with downloaded GitHub assets and the existing Rapier/Bullet raycast vehicle controller. The Subaru Impreza WRX STI and Ford F-150 have distinct mass, wheelbase, suspension, steering response, acceleration and braking settings.
 
 ## Driving
 

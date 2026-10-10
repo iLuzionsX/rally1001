@@ -45,7 +45,7 @@ try{
     return {world,v,step,atSpeed};
   }
   const comparison=[];
-  for(const kind of ['suv','truck'])for(const wet of [false,true]){
+  for(const kind of ['sti','truck'])for(const wet of [false,true]){
     const profiles=[];
     for(const mode of ['baseline','refined']){
       const {world,v,step,atSpeed}=rig(kind,mode,wet);
@@ -97,7 +97,7 @@ try{
   for(const mode of ['baseline','refined']){
     const runs=[];
     for(const hz of [30,60,120]){
-      const {world,v,step,atSpeed}=rig('suv',mode);atSpeed(70);
+      const {world,v,step,atSpeed}=rig('sti',mode);atSpeed(70);
       for(let i=0;i<hz*4;i++)step({...zero,steer:i<hz*2?.2:-.2,brake:i<hz?.3:0,throttle:i>=hz?.4:0},1/hz);
       runs.push({hz,x:v.position.x,z:v.position.z,speed:v.speed});world.free();
     }

@@ -106,7 +106,7 @@ try{
   }
 
   const report={skidpad:[],stepSteer:[],shimmy:[],tarmac:[]};
-  for(const kind of ['suv','truck']){
+  for(const kind of ['sti','truck']){
     for(const mode of ['rally','baseline']){
       const pad=skidpad(kind,mode);report.skidpad.push({kind,mode,...pad});
       for(const [kmh,command] of [[60,.25],[100,.15]])report.stepSteer.push({kind,mode,...stepSteer(kind,mode,kmh,command)});

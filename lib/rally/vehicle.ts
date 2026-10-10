@@ -31,7 +31,7 @@ export class RallyVehicle{
  constructor(public world:RAPIER.World,public kind:VehicleKind,public handlingMode:HandlingMode='rally'){
  const c=this.config=VEHICLES[kind];this.rack=new SteeringRack(c.steeringRack,c.steering);this.driveModel=new EcctrlDriveModel(c.powertrain,c.radius,c.engineBraking);this.body=world.createRigidBody(RAPIER.RigidBodyDesc.dynamic().setCcdEnabled(true).setCanSleep(false).setLinearDamping(0).setAngularDamping(.08).setAdditionalSolverIterations(4));
  world.createCollider(RAPIER.ColliderDesc.cuboid(c.width*.42,.26,c.length*.45).setTranslation(0,-.18,0).setDensity(0).setFriction(.6).setRestitution(.02),this.body);
- world.createCollider(RAPIER.ColliderDesc.cuboid(c.width*.36,.46,kind==='suv'?1.24:.84).setTranslation(0,.48,kind==='suv'?.18:-.58).setDensity(0).setFriction(.5),this.body);
+ world.createCollider(RAPIER.ColliderDesc.cuboid(c.width*.36,.46,kind==='sti'?1.24:.84).setTranslation(0,.48,kind==='sti'?.18:-.58).setDensity(0).setFriction(.5),this.body);
  this.body.setAdditionalMassProperties(c.mass,{x:0,y:c.centerOfMass,z:c.centerOfMassForward},{x:c.mass*(c.length*c.length+1.7)/12,y:c.mass*(c.length*c.length+c.width*c.width)/12,z:c.mass*(c.width*c.width+1.7)/12},{x:0,y:0,z:0,w:1},true);
  // Apply deferred mass changes before the first vehicle query, including swaps.
  this.body.recomputeMassPropertiesFromColliders();

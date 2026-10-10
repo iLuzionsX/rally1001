@@ -37,10 +37,10 @@ try{
     return {world,v,step,atSpeed};
   }
   const launches=[];
-  const c=VEHICLES.suv,savedCenter={...c.differential.center};
+  const c=VEHICLES.sti,savedCenter={...c.differential.center};
   for(const enabled of [false,true]){
     c.differential.center={...savedCenter,antiSlip:enabled?savedCenter.antiSlip:0};
-    const {world,v,step}=rig('suv');let maxAxleDifference=0,axleDifferenceSum=0,samples=0,previousGear=1,downshifts=0,zeroTo60=0;
+    const {world,v,step}=rig('sti');let maxAxleDifference=0,axleDifferenceSum=0,samples=0,previousGear=1,downshifts=0,zeroTo60=0;
     for(let i=0;i<240;i++){
       step({...zero,throttle:1});
       if(v.speed>2&&v.speed<6){const w=v.wheels,difference=Math.abs((w[0].angularSpeed+w[1].angularSpeed-w[2].angularSpeed-w[3].angularSpeed)/2);maxAxleDifference=Math.max(maxAxleDifference,difference);axleDifferenceSum+=difference;samples++;}
@@ -60,7 +60,7 @@ try{
   assert.equal(launches[1].downshifts,0,'The tuned launch must not hunt between gears');
 
   const throttleControl=[];
-  for(const kind of ['suv','truck']){
+  for(const kind of ['sti','truck']){
     const profiles=[];
     for(const throttle of [.15,.75]){
       const {world,v,step,atSpeed}=rig(kind);atSpeed(80);
@@ -92,7 +92,7 @@ try{
 
   const frameRates=[];
   for(const hz of [30,60,120]){
-    const {world,v,step}=rig('suv');
+    const {world,v,step}=rig('sti');
     for(let i=0;i<hz*6;i++)step({...zero,throttle:.7,steer:i>=hz*3?.2:0},1/hz);
     frameRates.push({hz,x:v.position.x,z:v.position.z,speed:v.speed*3.6});
     world.free();

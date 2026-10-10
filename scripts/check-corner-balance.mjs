@@ -46,7 +46,7 @@ try{
     return {world,v,step,atSpeed};
   }
   const results=[];
-  for(const kind of ['suv','truck'])for(const wet of [false,true])for(const mode of ['refined','rally']){
+  for(const kind of ['sti','truck'])for(const wet of [false,true])for(const mode of ['refined','rally']){
     for(const maneuver of ['coast','trail','power']){
       const {world,v,step,atSpeed}=rig(kind,mode,wet);atSpeed(wet?55:70);
       let peakSlip=0,peakYaw=0,heading=0,entryHeading=0,entryFrontLoad=0,powerHeading=0;
@@ -90,7 +90,7 @@ try{
     if(!original.wet&&original.maneuver==='coast')assert(current.entryHeading>original.entryHeading,'Coast setup must allow measurably more dry corner-entry rotation');
   }
   const braking=[],cadence=[];
-  for(const kind of ['suv','truck'])for(const wet of [false,true]){
+  for(const kind of ['sti','truck'])for(const wet of [false,true]){
     const profiles=[];
     for(const mode of ['refined','rally']){
       const {world,v,step,atSpeed}=rig(kind,mode,wet);atSpeed(80);
@@ -104,7 +104,7 @@ try{
     assert(profiles[1].metres<profiles[0].metres*1.05,'Braking must stay within 5% of Refined');
     braking.push({kind,wet,profiles});
   }
-  for(const kind of ['suv','truck']){
+  for(const kind of ['sti','truck']){
     const runs=[];
     for(const hz of [30,60,120]){
       const {world,v,step,atSpeed}=rig(kind,'rally');atSpeed(70);
@@ -121,7 +121,7 @@ try{
   }
   const {differentialTorques}=require(join(temp,'vendor/stunt-rally/differential.cjs'));
   const {VEHICLES}=require(join(temp,'vehicle-config.cjs'));
-  for(const kind of ['suv','truck'])for(const config of Object.values(VEHICLES[kind].rallyDifferential))
+  for(const kind of ['sti','truck'])for(const config of Object.values(VEHICLES[kind].rallyDifferential))
     for(const torque of [-2000,0,2000])for(const speeds of [[80,70],[-80,-70],[0,100],[100,100]]){
       const result=differentialTorques(torque,...speeds,2,2,dt,config);
       assert(Math.abs(result.side1+result.side2-torque)<1e-9,'Coupling must conserve drive torque');

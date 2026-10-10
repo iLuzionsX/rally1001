@@ -1,0 +1,23 @@
+name: Checks
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+
+jobs:
+  rally:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - run: pnpm install --frozen-lockfile
+      - run: pnpm typecheck
+      # Physics regression checks. check:exposure is left out: it needs a GPU-backed Python renderer.
+      - run: pnpm check:all
+      - name: Validation records match the committed ones
+        run: git diff --exit-code -- reference

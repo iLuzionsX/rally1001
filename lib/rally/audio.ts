@@ -13,7 +13,7 @@ type Voice={kind:VehicleKind;role:EngineRole;anchor:number;source:AudioBufferSou
 type Loop={source:AudioBufferSourceNode;gain:GainNode};
 
 const VEHICLE_RECORDINGS:Record<VehicleKind,VehicleSources>={
- suv:{
+ sti:{
   // Recorded 2003 Subaru Impreza WRX, ulose2piranha, Freesound #273334, CC0.
   idle:['https://cdn.freesound.org/previews/273/273334_4168822-hq.mp3','https://freesound.org/data/previews/273/273334_4168822-hq.mp3'],
   motion:['https://cdn.freesound.org/previews/273/273334_4168822-hq.mp3','https://freesound.org/data/previews/273/273334_4168822-hq.mp3'],
@@ -94,7 +94,7 @@ export class RallyAudio{
  /** Dedicated recording-only engine bus; engine is dominant over the roadbed. */
  private engineBus:GainNode|null=null;
  enabled=true;
- kind:VehicleKind='suv';
+ kind:VehicleKind='sti';
  private voices:Voice[]=[];
  private surface=new Map<keyof typeof SURFACE_RECORDINGS,Loop>();
  private loading:Promise<void>|null=null;
@@ -171,7 +171,7 @@ export class RallyAudio{
  private beginLoading(){
   if(this.loading)return;
   const jobs:Promise<unknown>[]=[
-   this.loadEngine('suv'),this.loadEngine('truck'),
+   this.loadEngine('sti'),this.loadEngine('truck'),
    this.loadSurface('gravel'),this.loadSurface('scrub'),this.loadSurface('ambience'),
   ];
   this.loading=Promise.allSettled(jobs).then(results=>{
