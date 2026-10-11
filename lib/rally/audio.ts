@@ -1,44 +1,26 @@
 /**
  * Recording-only rally audio. No oscillator, procedural engine tone, or generated noise.
  * The Subaru WRX and Ford pickup use separate real vehicle recordings.
- * Freesound preview URLs have a primary CDN and original-host fallback.
+ * Engine grains are prepared from credited real takes and served locally.
  * Asset credits and licenses: public/assets/audio/CREDITS.txt
  */
 import {clamp} from './course';
+import engineGrains from './engine-grains.json';
 import type {VehicleKind} from './vehicle-config';
 
 type EngineRole='idle'|'pull-low'|'pull-mid'|'pull-high'|'coast-low'|'coast-high';
-type VehicleSources={idle:string[];motion:string[]};
-type Voice={kind:VehicleKind;role:EngineRole;anchor:number;source:AudioBufferSourceNode;gain:GainNode};
-type Loop={source:AudioBufferSourceNode;gain:GainNode};
+type Voice={kind:VehicleKind;role:EngineRole;anchor:number;source:AudioBufferSourceNode;gain:GainNode;filter?:BiquadFilterNode};
+type Loop={source:AudioBufferSourceNode;gain:GainNode;filter?:BiquadFilterNode};
 
-const VEHICLE_RECORDINGS:Record<VehicleKind,VehicleSources>={
- sti:{
-  // Recorded 2003 Subaru Impreza WRX, ulose2piranha, Freesound #273334, CC0.
-  idle:['https://cdn.freesound.org/previews/273/273334_4168822-hq.mp3','https://freesound.org/data/previews/273/273334_4168822-hq.mp3'],
-  motion:['https://cdn.freesound.org/previews/273/273334_4168822-hq.mp3','https://freesound.org/data/previews/273/273334_4168822-hq.mp3'],
- },
- truck:{
-  // Recorded Ford pickup: start/idle #332499 and driving away #332503,
-  // rambler52, Freesound, CC BY 4.0. (Vintage pickup, not an F-150.)
-  idle:['https://cdn.freesound.org/previews/332/332499_2291385-hq.mp3','https://freesound.org/data/previews/332/332499_2291385-hq.mp3'],
-  motion:['https://cdn.freesound.org/previews/332/332503_2291385-hq.mp3','https://freesound.org/data/previews/332/332503_2291385-hq.mp3'],
- },
-};
 const SURFACE_RECORDINGS={
  gravel:'https://raw.githubusercontent.com/yashimosh/border-run/main/public/sfx/tires_gravel.mp3',
  scrub:'/assets/audio/squeal.mp3',
  ambience:'https://raw.githubusercontent.com/pbojinov/jungle-sketchbook/main/public/audio/jungle-ambience.mp3',
 };
-const ENGINE_LAYERS:{role:EngineRole;anchor:number;rank:number}[]=[
- {role:'idle',anchor:950,rank:.15},
- {role:'pull-low',anchor:2100,rank:.42},
- {role:'pull-mid',anchor:4000,rank:.7},
- {role:'pull-high',anchor:6100,rank:.95},
- {role:'coast-low',anchor:2350,rank:.30},
- {role:'coast-high',anchor:5000,rank:.62},
-];
 const smooth=(value:number,min:number,max:number)=>{const x=clamp((value-min)/(max-min),0,1);return x*x*(3-2*x);};
+// Independent recording buses retain the engine-forward mix without lifting road noise.
+const ENGINE_BUS_GAIN=4.3;
+const ENVIRONMENT_BUS_GAIN=.85;
 
 /** Select steady, audible sections by recorded loudness, then splice a short
  * crossfade into each loop. Every output sample is derived from original audio. */
@@ -62,7 +44,11 @@ function makeRecordedLoop(context:AudioContext,recording:AudioBuffer,rank:number
  const stable=candidates.filter(x=>x.stability<x.level*.7);
  const all=(stable.length>5?stable:candidates).sort((a,b)=>a.level-b.level);
  const position=all.length?all[Math.round(clamp(rank,0,1)*(all.length-1))].start:0;
- const fade=Math.min(Math.floor(rate*.11),Math.floor(n/8));
+ return spliceLoop(context,recording,position,n,Math.min(Math.floor(rate*.11),Math.floor(n/8)));
+}
+
+function spliceLoop(context:AudioContext,recording:AudioBuffer,position:number,n:number,fade:number){
+ const rate=recording.sampleRate;
  const size=n-fade;
  const buffer=context.createBuffer(recording.numberOfChannels,size,rate);
  for(let channel=0;channel<recording.numberOfChannels;channel++){
@@ -70,7 +56,7 @@ function makeRecordedLoop(context:AudioContext,recording:AudioBuffer,rank:number
   for(let i=0;i<size;i++){
    if(i<fade){
     const t=i/fade;
-    output[i]=input[position+i]*Math.sin(t*Math.PI/2)+input[position+size+i]*Math.cos(t*Math.PI/2);
+    output[i]=input[position+i]*t+input[position+size+i]*(1-t);
    }else output[i]=input[position+i];
   }
  }
@@ -78,7 +64,7 @@ function makeRecordedLoop(context:AudioContext,recording:AudioBuffer,rank:number
  let sum=0,peak=0,count=0;
  for(let channel=0;channel<buffer.numberOfChannels;channel++){
   const data=buffer.getChannelData(channel);
-  for(let i=0;i<data.length;i+=61){sum+=data[i]*data[i];peak=Math.max(peak,Math.abs(data[i]));count++;}
+  for(let i=0;i<data.length;i++){sum+=data[i]*data[i];peak=Math.max(peak,Math.abs(data[i]));count++;}
  }
  const rms=Math.sqrt(sum/Math.max(1,count));
  const gain=Math.min(12,.82/Math.max(peak,.0001),.18/Math.max(rms,.0001));
@@ -93,7 +79,10 @@ export class RallyAudio{
  master:GainNode|null=null;
  /** Dedicated recording-only engine bus; engine is dominant over the roadbed. */
  private engineBus:GainNode|null=null;
+ private environmentBus:GainNode|null=null;
  enabled=true;
+ engineVolume=1;
+ environmentVolume=.7;
  kind:VehicleKind='sti';
  private voices:Voice[]=[];
  private surface=new Map<keyof typeof SURFACE_RECORDINGS,Loop>();
@@ -106,11 +95,25 @@ export class RallyAudio{
  private lastSlip=0;
  private lastSurface='LOOSE DIRT';
  private lastBrake=0;
+ private contact=1;
+ private shiftCut=false;
+ private blip=0;
+ private limiterCut=false;
  private failureCount=0;
  /** Number of failed remote recordings; useful when diagnosing unavailable hosts. */
  get unavailableRecordings(){return this.failureCount;}
  /** The engine remains silent rather than substituting fake synthesized engine audio. */
  get recordedEngineReady(){return this.voices.some(v=>v.kind===this.kind);}
+ /** Live engine control; a zero value silences only the engine. */
+ setEngineVolume(value:number){
+  this.engineVolume=clamp(Number.isFinite(value)?value:1,0,1);
+  if(this.context&&this.engineBus)this.engineBus.gain.setTargetAtTime(ENGINE_BUS_GAIN*this.engineVolume,this.context.currentTime,.045);
+ }
+ /** Controls recorded gravel, tire scrubbing and outdoor ambience. */
+ setEnvironmentVolume(value:number){
+  this.environmentVolume=clamp(Number.isFinite(value)?value:.7,0,1);
+  if(this.context&&this.environmentBus)this.environmentBus.gain.setTargetAtTime(ENVIRONMENT_BUS_GAIN*this.environmentVolume,this.context.currentTime,.045);
+ }
  private async getRecording(urls:string[]):Promise<AudioBuffer>{
   const context=this.context;
   if(!context)throw new Error('Audio context not initialized');
@@ -136,26 +139,24 @@ export class RallyAudio{
  private playLoop(buffer:AudioBuffer,volume=0,filterType?:BiquadFilterType,cutoff=0,output?:AudioNode):Loop{
   const ctx=this.context!,source=ctx.createBufferSource(),gain=ctx.createGain();
   source.buffer=buffer;source.loop=true;gain.gain.value=volume;
+  let filter:BiquadFilterNode|undefined;
   if(filterType){
-   const filter=ctx.createBiquadFilter();filter.type=filterType;filter.frequency.value=cutoff;
+   filter=ctx.createBiquadFilter();filter.type=filterType;filter.frequency.value=cutoff;
    source.connect(filter);filter.connect(gain);
   }else source.connect(gain);
   gain.connect(output??this.master!);
   source.start();
-  return {source,gain};
+  return {source,gain,filter};
  }
  private async loadEngine(kind:VehicleKind){
   const context=this.context!;
-  const recordings=VEHICLE_RECORDINGS[kind];
-  const [idle,motion]=await Promise.all([
-   this.getRecording(recordings.idle),this.getRecording(recordings.motion),
-  ]);
-  if(context.state==='closed')return;
-  for(const layer of ENGINE_LAYERS){
-   const take=layer.role==='idle'?idle:motion;
-   const buffer=makeRecordedLoop(context,take,layer.rank,1.85,layer.role==='idle');
-   const {source,gain}=this.playLoop(buffer,0,'lowpass',layer.role==='idle'?2500:5500,this.engineBus!);
-   this.voices.push({...layer,kind,source,gain});
+  const layers=engineGrains[kind];
+  const buffers=await Promise.all(layers.map(layer=>this.getRecording([layer.url])));
+  if(context.state==='closed'||this.context!==context)return;
+  for(let i=0;i<layers.length;i++){
+   const layer=layers[i];
+   const loop=this.playLoop(buffers[i],0,'lowpass',2500,this.engineBus!);
+   this.voices.push({...layer,...loop,role:layer.role as EngineRole,kind});
   }
   this.mix();
  }
@@ -164,7 +165,7 @@ export class RallyAudio{
   const decoded=await this.getRecording([SURFACE_RECORDINGS[name]]);
   if(context.state==='closed')return;
   const looped=name==='ambience'?decoded:makeRecordedLoop(context,decoded,.65,3.5);
-  const voice=this.playLoop(looped,0,name==='scrub'?'highpass':'lowpass',name==='scrub'?320:3700);
+  const voice=this.playLoop(looped,0,name==='scrub'?'highpass':'lowpass',name==='scrub'?320:3700,this.environmentBus!);
   this.surface.set(name,voice);
   this.mix();
  }
@@ -188,8 +189,9 @@ export class RallyAudio{
    limiter.attack.value=.003;limiter.release.value=.16;
    const master=this.master=context.createGain();
    master.gain.value=0;master.connect(limiter);limiter.connect(context.destination);
-   // +8.6 dB for engines, without turning up ambience/gravel or adding synthesized audio.
-   this.engineBus=context.createGain();this.engineBus.gain.value=2.7;this.engineBus.connect(master);
+   // Louder default engine mix, routed independently from the environment.
+   this.engineBus=context.createGain();this.engineBus.gain.value=ENGINE_BUS_GAIN*this.engineVolume;this.engineBus.connect(master);
+   this.environmentBus=context.createGain();this.environmentBus.gain.value=ENVIRONMENT_BUS_GAIN*this.environmentVolume;this.environmentBus.connect(master);
   }
   if(this.context.state==='suspended')await this.context.resume();
   this.beginLoading();
@@ -205,9 +207,10 @@ export class RallyAudio{
   osc.connect(gain);gain.connect(ctx.destination);osc.start(time);osc.stop(time+.15);
   osc.onended=()=>{osc.disconnect();gain.disconnect();};
  }
- update(rpm:number,throttle:number,speed:number,slip:number,active:boolean,surface='LOOSE DIRT',brake=0){
+ update(rpm:number,throttle:number,speed:number,slip:number,active:boolean,surface='LOOSE DIRT',brake=0,contact=1,shiftCut=false,blip=0,limiterCut=false){
   this.lastRPM=rpm;this.lastThrottle=throttle;this.lastSpeed=speed;this.lastSlip=slip;
   this.lastSurface=surface;this.lastBrake=brake;this.active=active;
+  this.contact=clamp(contact,0,1);this.shiftCut=shiftCut;this.blip=blip;this.limiterCut=limiterCut;
   this.mix();
  }
  private mix(){
@@ -215,40 +218,49 @@ export class RallyAudio{
   if(!ctx||!master)return;
   const t=ctx.currentTime;
   master.gain.setTargetAtTime(this.enabled&&this.active?.94:0,t,.13);
-  const rpm=clamp(this.lastRPM,700,7300),throttle=clamp(this.lastThrottle,0,1);
+  const rpm=clamp(this.lastRPM,700,8500);
+  const pedal=clamp(Math.max(this.lastThrottle,this.blip),0,1);
+  const throttle=this.shiftCut||this.limiterCut?0:pedal;
   const brake=clamp(this.lastBrake,0,1),speed=Math.max(0,this.lastSpeed);
-  const idle=1-smooth(rpm,950,1900);
-  const on=clamp(.06+throttle*.94,0,1),off=clamp((1-throttle)*(.65+brake*.25),0,1);
+  // Normalize the RPM blend so crossings never pile up unrelated engine takes.
+  // All voices follow crank RPM, including coasting and stationary throttle blips.
+  const selected=this.voices.filter(v=>v.kind===this.kind);
+  const weights=selected.map(v=>Math.exp(-Math.pow(Math.log(rpm/v.anchor)/.48,2)));
+  const sum=weights.reduce((a,b)=>a+b,0)||1;
+  const load=.22+.68*throttle+.08*brake;
+  const cut=this.shiftCut||this.limiterCut?.3:1;
   for(const voice of this.voices){
-   const selected=voice.kind===this.kind?1:0;
-   let weight=0;
-   if(voice.role==='idle')weight=idle*.77;
-   else{
-    const width=voice.role==='pull-low'?1900:voice.role==='pull-mid'?2200:voice.role==='pull-high'?2200:voice.role==='coast-low'?2400:2900;
-    const rWeight=clamp(1-Math.abs(rpm-voice.anchor)/width,0,1);
-    weight=rWeight*(voice.role.startsWith('pull')?on*.43:off*.25)*(1-idle*.7);
-   }
-   voice.gain.gain.setTargetAtTime(selected*weight,t,.09);
-   voice.source.playbackRate.setTargetAtTime(clamp(rpm/voice.anchor,.68,1.38),t,.085);
+   const index=selected.indexOf(voice);
+   const pull=voice.role.startsWith('pull'),coast=voice.role.startsWith('coast');
+   const mode=pull?.12+.88*throttle:coast?1-.86*throttle:1;
+   // Normalize each load family separately; idle fades out above launch RPM.
+   const family=selected.reduce((total,v,i)=>total+(v.role.startsWith('pull')===pull&&v.role.startsWith('coast')===coast?weights[i]:0),0)||sum;
+   const idle=1-smooth(rpm,1100,1900);
+   const weight=index<0?0:voice.role==='idle'?idle*.72:weights[index]/family*mode*load*(1-idle);
+   voice.gain.gain.setTargetAtTime(weight*cut,t,.018);
+   // No fixed-rate plateau: pitch keeps moving throughout the rev range.
+   voice.source.playbackRate.setTargetAtTime(clamp(rpm/voice.anchor,.15,12),t,.018);
+   voice.filter?.frequency.setTargetAtTime(950+rpm*.55+throttle*3300,t,.025);
   }
   // Road contact texture grows with ground speed. Sliding multiplies gravel
   // crunch, while recorded scrubbing activates only after tire saturation.
   const loose=/dirt|gravel|mud|sand|trail/i.test(this.lastSurface);
   const speedGain=smooth(speed,.6,18);
   const slip=clamp(this.lastSlip,0,3);
-  const gravel=speedGain*(loose?.25:.06)*(1+Math.min(1,slip)*.6);
-  const scrub=smooth(slip,.28,1.15)*smooth(speed,1.5,11)*.27;
+  const gravel=this.contact*speedGain*(loose?.25:.025)*(1+Math.min(1,slip)*.6);
+  const scrub=this.contact*smooth(slip,.28,1.15)*smooth(speed,1.5,11)*(loose?.08:.27);
   this.surface.get('gravel')?.gain.gain.setTargetAtTime(gravel,t,.09);
   this.surface.get('scrub')?.gain.gain.setTargetAtTime(scrub,t,.065);
-  this.surface.get('ambience')?.gain.gain.setTargetAtTime(.11,t,.5);
+  this.surface.get('ambience')?.gain.gain.setTargetAtTime(.025*(1-.65*throttle),t,.25);
   const rate=this.surface.get('gravel')?.source.playbackRate;
   rate?.setTargetAtTime(clamp(.7+speed*.026,.78,1.55),t,.12);
  }
  dispose(){
-  for(const voice of this.voices){try{voice.source.stop();}catch{}voice.source.disconnect();voice.gain.disconnect();}
-  for(const loop of this.surface.values()){try{loop.source.stop();}catch{}loop.source.disconnect();loop.gain.disconnect();}
-  this.voices=[];this.surface.clear();this.decoded.clear();
+  for(const voice of this.voices){try{voice.source.stop();}catch{}voice.source.disconnect();voice.gain.disconnect();voice.filter?.disconnect();}
+  for(const loop of this.surface.values()){try{loop.source.stop();}catch{}loop.source.disconnect();loop.gain.disconnect();loop.filter?.disconnect();}
+  this.voices=[];this.surface.clear();this.decoded.clear();this.loading=null;
   this.engineBus?.disconnect();this.engineBus=null;
+  this.environmentBus?.disconnect();this.environmentBus=null;
   this.master?.disconnect();this.master=null;
   const ctx=this.context;this.context=null;if(ctx)void ctx.close();
  }

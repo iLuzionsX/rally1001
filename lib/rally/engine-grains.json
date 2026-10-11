@@ -1,0 +1,66 @@
+{
+  "sti": [
+    {
+      "role": "idle",
+      "anchor": 950,
+      "url": "/assets/audio/engines/sti-idle.wav"
+    },
+    {
+      "role": "pull-low",
+      "anchor": 899,
+      "url": "/assets/audio/engines/sti-pull-low.wav"
+    },
+    {
+      "role": "pull-mid",
+      "anchor": 899,
+      "url": "/assets/audio/engines/sti-pull-mid.wav"
+    },
+    {
+      "role": "pull-high",
+      "anchor": 899,
+      "url": "/assets/audio/engines/sti-pull-high.wav"
+    },
+    {
+      "role": "coast-low",
+      "anchor": 899,
+      "url": "/assets/audio/engines/sti-coast-low.wav"
+    },
+    {
+      "role": "coast-high",
+      "anchor": 899,
+      "url": "/assets/audio/engines/sti-coast-high.wav"
+    }
+  ],
+  "truck": [
+    {
+      "role": "idle",
+      "anchor": 950,
+      "url": "/assets/audio/engines/truck-idle.wav"
+    },
+    {
+      "role": "pull-low",
+      "anchor": 2019,
+      "url": "/assets/audio/engines/truck-pull-low.wav"
+    },
+    {
+      "role": "pull-mid",
+      "anchor": 2019,
+      "url": "/assets/audio/engines/truck-pull-mid.wav"
+    },
+    {
+      "role": "pull-high",
+      "anchor": 2019,
+      "url": "/assets/audio/engines/truck-pull-high.wav"
+    },
+    {
+      "role": "coast-low",
+      "anchor": 2019,
+      "url": "/assets/audio/engines/truck-coast-low.wav"
+    },
+    {
+      "role": "coast-high",
+      "anchor": 2019,
+      "url": "/assets/audio/engines/truck-coast-high.wav"
+    }
+  ]
+}

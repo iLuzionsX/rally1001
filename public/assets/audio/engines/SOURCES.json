@@ -1,0 +1,8 @@
+{
+  "sampleRate": 44100,
+  "sourceSHA256": {
+    "sti": "a710a18ecab0aa9460e6d3e9b5d3fd17892f84700cbe179ebcdf653a88686da3",
+    "truck-idle": "9dc24ab0d8a69e885d20142e08a8f751d80e6e2c06d5fdf1324235b97216083a",
+    "truck-motion": "4e1d0b51e6e07519e8b09cabab8f96d9f02b910fb17acf309831b3b9e8277af0"
+  }
+}

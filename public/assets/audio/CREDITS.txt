@@ -61,3 +61,16 @@ Technical note: The recorded MP3s above are fetched from their public hosts by
 the browser after the player enables audio. External hosts must remain reachable
 and allow browser CORS. If an engine recording cannot load, the engine stays
 silent rather than imitating it with oscillators.
+
+REACTIVE ENGINE GRAINS — 2026-10-11
+  public/assets/audio/engines/*.wav are mono sustained excerpts from the same
+  Subaru and Ford takes credited above. Each grain loops roughly 0.16 seconds,
+  with a one-period linear splice and RMS/peak normalization. No synthesized
+  engine samples. Repetition rate is estimated from waveform autocorrelation;
+  RPM anchors are relative to the idle take, not measured crank RPM.
+  Original-source SHA-256 hashes: engines/SOURCES.json.
+  Rebuild: node scripts/prepare-engine-recordings.mjs <source-directory>
+  Engines now load locally; only gravel and ambience depend on external hosts.
+  Throttle/load filtering, shift ignition cuts, blips, limiter cuts and contact
+  gating are driven by the simulation. Pull/coast grains are derived from the
+  same takes; these are not purpose-recorded steady RPM/load sample banks.
